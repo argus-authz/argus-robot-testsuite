@@ -1,0 +1,47 @@
+*** Settings ***
+Library    OperatingSystem
+Resource   lib/utils.txt
+Resource   variables.txt
+
+
+*** Keywords ***
+
+Prepare
+  ${policies}=  catenate  SEPARATOR=
+  ...  resource ".*" { \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  ...  resource ".*" { \n
+  ...    action ".*" { \n
+  ...      rule deny { fqan="/badvo" } \n
+  ...    } \n
+  ...  } \n
+  [Return]  ${policies}
+
+Prepare with error
+  ${policies}=  catenate  SEPARATOR=
+  ...  resource ".*" { \n
+  ...    action ".*" { \n
+  ...      rule deni { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  [Return]  ${policies}
+
+
+*** Test Cases ***
+Add policy from file
+  ${policy}=  Prepare
+  Create policy file  ${policy}
+  ${rc}=  Load policyfile
+  Should Be Equal As Integers  ${rc}  0
+  [Teardown]  Clean up
+
+Add policy from file with error
+  ${policy}  Prepare with error
+  Create policy file  ${policy}
+  ${rc}=  Load policyfile
+  Should Not Be Equal As Integers  ${rc}  0
+  [Teardown]  Clean up
+  

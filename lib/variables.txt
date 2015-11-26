@@ -12,4 +12,6 @@ ${TEST_VO}  test.vo
 
 
 #### MISC ####
-${POLICYFILE}  /tmp/policyfile.txt
+${POLICY_FILE}  /tmp/policyfile.txt
+${DUMMY_ID}  dummy-id
+${DUMMY_FILE}  dummy.txt

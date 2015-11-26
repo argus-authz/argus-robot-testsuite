@@ -1,0 +1,61 @@
+*** Settings ***
+Library    OperatingSystem
+Resource   lib/utils.txt
+Resource   variables.txt
+
+
+*** Keywords ***
+
+Prepare
+  ${policy}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  Prepare environment  ${policy}
+
+Prepare new policy file
+  ${policy}=  catenate  SEPARATOR=
+  ...  resource ".*" { \n
+  ...    action ".*" { \n
+  ...      rule permit { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  Create policy file  ${policy}
+
+Prepare new policy file with only an action
+  ${policy}=  catenate  SEPARATOR=
+  ...  action ".*" { \n
+  ...   rule permit { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...  } \n
+  Create policy file  ${policy}
+  
+  
+*** Test Cases ***
+
+Update from file with non existing file
+  Execute and Check Failure  pap-admin upf ${DUMMY_ID} ${DUMMY_FILE}
+
+Update from file with non existing resource id
+  [Setup]  Prepare
+  Remove policy file
+  Prepare new policy file
+  Execute and Check Failure  pap-admin upf ${DUMMY_ID} ${POLICY_FILE}
+  [Teardown]  Clean up
+
+Update from file with correct resource id
+  [Setup]  Prepare
+  Remove policy file
+  Prepare new policy file
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -srai | egrep 'id=[^p][0-9a-f\-]*' | sed 's/id=//'
+  Execute and Check Success  pap-admin upf ${output} ${POLICY_FILE}
+  [Teardown]  Clean up
+  
+Update from file with changing only an action
+  [Setup]  Prepare
+  Remove policy file
+  Prepare new policy file with only an action
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -srai | egrep 'id=public' | awk '{print $1}' | sed 's/id=//'
+  Execute and Check Success  pap-admin upf ${output} ${POLICY_FILE}
+  [Teardown]  Clean up

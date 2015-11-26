@@ -1,0 +1,121 @@
+*** Settings ***
+Library    OperatingSystem
+Resource   lib/utils.txt
+Resource   variables.txt
+
+
+*** Keywords ***
+
+Prepare
+  ${policies}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  ...  resource "resource_2" { \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  ...  resource "resource_3" { \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  Prepare environment  ${policies}
+
+Prepare test 3
+  ${policies}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    action "submit-job" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  \n
+  ...    action "get-status" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  Prepare environment  ${policies}
+
+Prepare test 4
+  ${policies}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    action "get-status" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" } \n
+  ...    } \n
+  ...  } \n
+  Prepare environment  ${policies}
+
+Prepare test 5
+  ${policies}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    action "get-status" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" } \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999997/CN=user name 3" } \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" } \n
+  ...    } \n
+  ...  } \n
+  Prepare environment  ${policies}
+
+
+*** Test Cases ***
+
+Remove all policies
+  [Setup]  Prepare
+  Execute and Check Success  pap-admin rap
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep -c 'id='
+  Should Be Equal As Integers  ${output}  0
+  [Teardown]  Clean up
+
+Remove with non existing id
+  Execute and Check Failure  pap-admin rp ${DUMMY_ID}
+
+Remove with resource id
+  [Setup]  Prepare
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -srai | egrep -m 1 'id=' | awk '{print $1}' | sed 's/id=//'
+  Execute and Check Success  pap-admin rp ${output}
+  [Teardown]  Clean up
+  
+Remove with action id
+  [Setup]  Prepare test 3
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -srai | egrep 'id=' | tail -1 | awk '{print $1}' | sed 's/id=//'
+  Execute and Check Success  pap-admin rp ${output}
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -srai | egrep -c 'id='
+  Should Be Equal As Integers  ${rc}  0
+  Should Be Equal As Integers  ${output}  2
+  [Teardown]  Clean up
+  
+Remove with rule id
+  [Setup]  Prepare test 4
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep 'id=' | tail -1 | awk '{print $1}' | sed 's/id=//' | xargs
+  Execute and Check Success  pap-admin rp ${output}
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep -c 'id='
+  Should Be Equal As Integers  ${rc}  0
+  Should Be Equal As Integers  ${output}  3
+  [Teardown]  Clean up
+
+Remove with multiple rules
+  [Setup]  Prepare test 5
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep 'id=' | tail -4 | head -3 | awk '{print $1}' | sed 's/id=//' | xargs
+  Execute and Check Success  pap-admin rp ${output}
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep -c 'id='
+  Should Be Equal As Integers  ${rc}  0
+  Should Be Equal As Integers  ${output}  3
+  [Teardown]  Clean up
+  
+Remove with multiple rules and one wrong
+  [Setup]  Prepare test 5
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep 'id=' | tail -4 | head -3 | awk '{print $1}' | sed 's/id=//' | xargs
+  Execute and Check Failure  pap-admin rp ${output} ${DUMMY_ID}
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep -c 'id='
+  Should Be Equal As Integers  ${rc}  0
+  Should Be Equal As Integers  ${output}  3
+  [Teardown]  Clean up
+  
+Remove with empty repository
+  [Setup]  Clean policy repository
+  Execute and Check Failure  pap-admin rp ${DUMMY_ID}
+  

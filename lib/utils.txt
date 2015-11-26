@@ -16,14 +16,14 @@ Execute and Check Failure  [Arguments]   ${cmd}
   [Return]  ${output}
 
 Create policyfile  [Arguments]  ${policies}
-  Create File  ${POLICYFILE}  ${policies}
+  Create File  ${POLICY_FILE}  ${policies}
 
 Load policyfile
-  ${rc}=  Run And Return Rc  pap-admin apf ${POLICYFILE}
+  ${rc}=  Run And Return Rc  pap-admin apf ${POLICY_FILE}
   [Return]  ${rc}
 
 Remove policyfile
-  Remove File  ${POLICYFILE}
+  Remove File  ${POLICY_FILE}
   
 Clean policy repository
   Execute And Check Success  pap-admin rap
@@ -35,4 +35,5 @@ Clean up
 Prepare environment  [Arguments]  ${policies}
   Create policyfile  ${policies}
   Clean policy repository
-  Load policyfile
+  ${rc}=  Load policyfile
+  Should Be Equal As Integers  ${rc}  0

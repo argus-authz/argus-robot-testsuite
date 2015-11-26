@@ -1,0 +1,10 @@
+*** Settings ***
+Library   OperatingSystem
+Resource   variables.txt
+
+*** Test Cases ***
+Ban user
+  Execute and Check Success  pap-admin ban subject "${TEST_USER_DN}"
+
+Ban VO FQAN
+  Execute and Check Success  pap-admin ban fqan "/${TEST_VO}"

@@ -1,0 +1,44 @@
+*** Settings ***
+Library    OperatingSystem
+Resource   variables.txt
+
+
+*** Keywords ***
+
+Load policies
+  ${policies}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {} \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  ...  resource "resource_2" { \n
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {} \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  ...  resource "resource_3" { \n
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {} \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  Create policyfile  ${policies}
+  Load policyfile
+
+
+*** Test Cases ***
+List empty repository
+  Execute and Check Success  pap-admin lp
+
+List policies
+  [Setup]  Load policies
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep -c 'id='
+  Should Be Equals As Integer  ${rc}  0
+  Should Be Equals As Integer  ${output}  9
+  [Teardown]  Remove policyfile
+  
+List policies with wrong pap-alias
+  Execute And Check Failure  pap-admin lp -sai --pap "dummy_pap"

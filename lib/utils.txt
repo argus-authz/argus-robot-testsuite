@@ -1,0 +1,26 @@
+** Settings ***
+
+Library   OperatingSystem
+Resource   variables.txt
+
+*** Keywords ***
+
+Execute and Check Success  [Arguments]  ${cmd}
+  ${rc}  ${output}=  Run and Return RC And Output  ${cmd}
+  Should Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}  False
+  [Return]  ${output}  ${EMPTY}
+
+Execute and Check Failure  [Arguments]   ${cmd}
+  ${rc}  ${output}=   Run and Return RC And Output  ${cmd}
+  Should Not Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}
+  [Return]  ${output}
+
+Create policyfile  [Arguments]  ${policies}
+  Create File  ${POLICYFILE}  ${policies}
+
+Load policyfile
+  ${rc}=  Run And Return Rc  pap-admin apf ${POLICYFILE}
+  [Return]  ${rc}
+
+Remove policyfile
+  Remove File  ${POLICYFILE}

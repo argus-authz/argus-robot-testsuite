@@ -1,0 +1,15 @@
+*** Variables ***
+
+##### CREDENTIALS #####
+
+${TEST_USER}  test0
+${TEST_USER_DN}  "CN=Test0, O=IGI, C=IT"
+
+
+##### VOs ######
+
+${TEST_VO}  test.vo
+
+
+#### MISC ####
+${POLICYFILE}  /tmp/policyfile.txt

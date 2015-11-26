@@ -1,0 +1,18 @@
+*** Settings ***
+Library   OperatingSystem
+Resource   variables.txt
+
+*** Test Cases ***
+Un-ban user
+  [Setup] Execute and Check Success  pap-admin ban subject "${TEST_USER_DN}"
+  Execute and Check Success          pap-admin un-ban subject "${TEST_USER_DN}"
+  
+Un-ban not existing user
+  Execute and Check Failure  pap-admin un-ban subject "${TEST_USER_DN}"
+
+Un-ban VO FQAN
+  [Setup] Execute and Check Success  pap-admin ban fqan "/${TEST_VO}"
+  Execute and Check Success          pap-admin un-ban fqan "/${TEST_VO}"
+  
+Un-ban not existing VO FQAN
+  Execute and Check Failure  pap-admin un-ban fqan "/${TEST_VO}"

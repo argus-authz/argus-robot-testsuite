@@ -24,3 +24,15 @@ Load policyfile
 
 Remove policyfile
   Remove File  ${POLICYFILE}
+  
+Clean policy repository
+  Execute And Check Success  pap-admin rap
+
+Clean up
+  Clean policy repository
+  Remove policyfile
+
+Prepare environment  [Arguments]  ${policies}
+  Create policyfile  ${policies}
+  Clean policy repository
+  Load policyfile

@@ -1,5 +1,7 @@
 *** Variables ***
 
+${ENV_FILE}  ${CURDIR}${/}..${/}env_config.py
+
 ##### CREDENTIALS #####
 
 ${TEST_USER}  test0

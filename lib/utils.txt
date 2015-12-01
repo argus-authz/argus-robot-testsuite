@@ -1,7 +1,10 @@
 ** Settings ***
 
-Library   OperatingSystem
+Library    OperatingSystem
+Library    Process
 Resource   variables.txt
+
+Variables  ${ENV_FILE}
 
 *** Keywords ***
 
@@ -19,8 +22,8 @@ Create policyfile  [Arguments]  ${policies}
   Create File  ${POLICY_FILE}  ${policies}
 
 Load policyfile
-  ${rc}=  Run And Return Rc  pap-admin apf ${POLICY_FILE}
-  [Return]  ${rc}
+  ${result}=  Run Process  pap-admin  apf  ${POLICY_FILE}
+  [Return]  ${result.rc}
 
 Remove policyfile
   Remove File  ${POLICY_FILE}
@@ -37,3 +40,158 @@ Prepare environment  [Arguments]  ${policies}
   Clean policy repository
   ${rc}=  Load policyfile
   Should Be Equal As Integers  ${rc}  0
+
+Load environment variables
+  Execute and Check Success  source ${ENV_FILE}
+
+Create working directory
+  ${secs}=  Get Time  epoch
+  ${workdir}=  Join Path  ${TMP_DIR}  argus-testsuite_${secs}
+  Create Directory  ${workdir}
+  [Return]  ${workdir}
+
+Make backup of the configuration
+  ${workdir}=  Create working directory
+  Set Environment Variable  WORKDIR  ${workdir}
+  ${bck_conf_dir}=  Join Path  ${workdir}  conf_backup
+  Create Directory  ${bck_conf_dir}
+  Copy File  ${T_PDP_CONF}/${T_PDP_INI}  ${bck_conf_dir}
+  Copy File  ${T_PEP_CONF}/${T_PEP_INI}  ${bck_conf_dir}
+  Copy File  ${T_PAP_CONF}/${T_PAP_ADMIN_INI}  ${bck_conf_dir} 
+  Copy File  ${T_PAP_CONF}/${T_PAP_AUTH_INI}  ${bck_conf_dir}
+  Copy File  ${T_PAP_CONF}/${T_PAP_CONF_INI}  ${bck_conf_dir}
+  Copy File  ${GRIDDIR}/${GRID_MAPFILE}  ${bck_conf_dir}
+  Copy File  ${GRIDDIR}/${GROUPMAPFILE}  ${bck_conf_dir}
+  Copy Directory  ${GRIDDIR}/${GRIDMAPDIR}    ${bck_conf_dir}
+  
+Restore PAP configuration
+  ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup
+  Copy File  ${bck_conf_dir}/${T_PAP_CONF_INI}  ${T_PAP_CONF}/${T_PAP_CONF_INI}
+  Copy File  ${bck_conf_dir}/${T_PAP_AUTH_INI}  ${T_PAP_CONF}/${T_PAP_AUTH_INI}
+  Copy File  ${bck_conf_dir}/${T_PAP_ADMIN_INI}  ${T_PAP_CONF}/${T_PAP_ADMIN_INI}
+
+Restore PDP configuration
+  ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup
+  Copy File  ${bck_conf_dir}/${T_PDP_INI}  ${T_PDP_CONF}/${T_PDP_INI}
+
+Restore PEP configuration
+  ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup
+  Copy File  ${bck_conf_dir}/${T_PEP_INI}  ${T_PEP_CONF}/${T_PEP_INI}
+  
+Restore configurations
+  Restore PAP configuration
+  Restore PDP configuration
+  Restore PEP configuration
+  
+Restore services
+  Stop PAP service
+  Stop PDP service
+  Stop PEP service
+  Sleep  5
+  Start PAP service
+  Start PDP service
+  Start PEP service
+ 
+Change parameter value  [Arguments]  ${file}  ${parameter}  ${value}
+  Execute and Check Success  sed -i 's/^\(${parameter} =\).*/\1'\ ${value}'/' ${file}
+
+Comment parameter  [Arguments]  ${file}  ${parameter}
+  Execute and Check Success  sed -i 's/${parameter}/#${parameter}/g' ${file}
+
+Replace string  [Arguments]  ${file}  ${old_string}  ${new_string}
+  Execute and Check Success  sed -i 's/${old_string}/${new_string}/g' ${file}
+
+Get PAP status
+  ${result}=  Run Process  pgrep  -cf  org.glite.authz.pap.server.standalone.PAPServer
+  [Return]  ${result.stdout}
+
+Get PDP status
+  ${result}=  Run Process  pgrep  -cf  org.glite.authz.pdp.server.PDPDaemon
+  [Return]  ${result.stdout}
+  
+Get PEP status
+  ${result}=  Run Process  pgrep  -cf  org.glite.authz.pep.server.PEPDaemon
+  [Return]  ${result.stdout}
+  
+Check port  [Arguments]  ${port}
+  ${result}=  Run Process  ss  -tnl  |  grep  ${port}
+  [Return]  ${result.rc}
+  
+Port not reachable  [Arguments]  ${port}
+  ${result}=  Run Process  ss  -tnl  |  grep  -c  ${port}
+  [Return]  ${result.stdout}
+
+Start PAP
+  ${result}=  Run Process  systemctl  start  argus-pap
+  Log  PAP started
+  [Return]  ${result.rc}
+  
+Start PDP
+  ${result}=  Run Process  systemctl  start  argus-pdp
+  Log  PDP started
+  [Return]  ${result.rc}
+
+Start PEP
+  ${result}=  Run Process  systemctl  start  argus-pepd
+  Log  PEP started
+  [Return]  ${result.rc}
+
+Start PAP service
+  ${status}=  Get PAP status
+  Run Keyword If  ${status} == 0  Start PAP  ELSE  Log  PAP alreary running.
+  Wait Until Keyword Succeeds  5 x  2 sec  Check port  '${T_PAP_ADMIN_PORT}\|${T_PAP_PORT}'
+  
+Start PDP service
+  ${status}=  Get PDP status
+  Run Keyword If  ${status} == 0  Start PDP  ELSE  Log  PDP alreary running.
+  Wait Until Keyword Succeeds  5 x  2 sec  Check port  '${T_PDP_ADMIN_PORT}\|${T_PDP_PORT}'
+
+Start PEP service
+  ${status}=  Get PEP status
+  Run Keyword If  ${status} == 0  Start PEP  ELSE  Log  PEP alreary running.
+  Wait Until Keyword Succeeds  5 x  2 sec  Check port  '${T_PEP_ADMIN_PORT}\${T_PEP_PORT}'
+
+Stop PAP
+  Run Process  systemctl  stop  argus-pap
+  Wait Until Keyword Succeeds  5 x  2 sec  Port not reachable  '${T_PAP_ADMIN_PORT}\|${T_PAP_PORT}'
+  Log  PAP stopped
+
+Stop PDP
+  Run Process  systemctl  stop  argus-pdp
+  Wait Until Keyword Succeeds  5 x  2 sec  Port not reachable  '${T_PDP_ADMIN_PORT}\|${T_PDP_PORT}'
+  Log  PDP stopped
+
+Stop PEP
+  Run Process  systemctl  stop  argus-pepd
+  Wait Until Keyword Succeeds  5 x  2 sec  Port not reachable  '${T_PEP_ADMIN_PORT}\|${T_PEP_PORT}'
+  Log  PEP stopped
+
+Stop PAP service
+  #${status}=  Get PAP status
+  #Run Keyword If  ${status} == 1  Stop PAP  ELSE  Log  PAP already stopped.
+  Stop PAP
+
+Stop PDP service
+  #${status}=  Get PDP status
+  #Run Keyword If  ${status} == 1  Stop PDP  ELSE  Log  PDP already stopped.
+  Stop PDP
+
+Stop PEP service
+  #${status}=  Get PEP status
+  #Run Keyword If  ${status} == 1  Stop PEP  ELSE  Log  PEP already stopped.
+  Stop PEP
+
+Restore PAP
+  Stop PAP service
+  Restore PAP configuration
+  Start PAP service
+
+Setup Argus suite
+  Make backup of the configuration
+  #Start PAP service
+  #Start PDP service
+  #Start PEP service
+
+Teardown Argus suite
+  Restore configurations
+  #Restore services

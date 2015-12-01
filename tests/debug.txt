@@ -1,0 +1,25 @@
+*** Settings ***
+Library    OperatingSystem
+Resource   lib/utils.txt
+Resource   variables.txt
+
+
+*** Test Cases ***
+
+Start PAP
+  Start PAP service
+  
+Stop PAP
+  Stop PAP service
+  
+Start PDP
+  Start PDP service
+  
+Stop PDP
+  Stop PDP service
+  
+Start PEP
+  Start PEP service
+
+Stop PEP
+  Stop PEP service

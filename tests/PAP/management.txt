@@ -1,0 +1,21 @@
+*** Settings ***
+Library    OperatingSystem
+Resource   lib/utils.txt
+Resource   variables.txt
+
+Suite Setup       Setup Argus suite
+Suite Teardown    Teardown Argus suite
+
+*** Test Cases ***
+
+PAP ping
+  Start PAP service
+  Execute and Check Success  pap-admin ping
+
+Refresh cache with non existing alias
+  Start PAP service
+  Execute and Check Failure  pap-admin rc Do-Not-Exist
+
+Refresh cache with a local PAP
+  Start PAP service
+  Execute and Check Failure  pap-admin rc default

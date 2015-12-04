@@ -90,7 +90,7 @@ Restore services
   Start PEP service
  
 Change parameter value  [Arguments]  ${file}  ${parameter}  ${value}
-  Execute and Check Success  sed -i 's/^\(${parameter} =\).*/\1'\ ${value}'/' ${file}
+  Execute and Check Success  sed -i 's/${parameter}\ =.*/${parameter}\ =\ ${value}/' ${file}
 
 Comment parameter  [Arguments]  ${file}  ${parameter}
   Execute and Check Success  sed -i 's/${parameter}/#${parameter}/g' ${file}

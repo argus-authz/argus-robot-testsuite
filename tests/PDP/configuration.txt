@@ -1,0 +1,13 @@
+*** Settings ***
+Library    OperatingSystem
+Resource   lib/utils.txt
+Resource   variables.txt
+
+Suite Setup     Make backup of the configuration
+Suite Teardown  Restore configurations
+
+*** Test Cases ***
+PDP status
+  Start PDP service
+  ${cmd}=  Set Variable  ${T_PDP_CTRL} status | grep -q "Status: OK"
+  Execute and Check Success  ${cmd}

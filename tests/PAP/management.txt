@@ -6,6 +6,44 @@ Resource   variables.txt
 Suite Setup       Setup Argus suite
 Suite Teardown    Teardown Argus suite
 
+*** Variables ***
+${alias}  mypap
+${new_pap}  NewPAP
+
+${std_poll_interval}  14400
+${poll_interval}  100
+
+*** Keywords ***
+Add PAP  [Arguments]  ${pap_name}
+  Execute And Check Success   pap-admin add-pap ${pap_name}
+  
+Remove PAP  [Arguments]  ${pap_name}
+  Execute And Check Success   pap-admin remove-pap ${pap_name}
+
+Add PAPs list  [Arguments]  @{list}
+  :FOR  ${elem}  IN  @{list}
+  \  Add PAP  ${elem}
+
+Remove PAPs list  [Arguments]  @{list}
+  :FOR  ${elem}  IN  @{list}
+  \  Remove PAP  ${elem}
+    
+Get content test 1
+  ${text}=  catenate  SEPARATOR=
+  ...  [dn]\n
+  ...  ANYONE : CONFIGURATION_READ\n
+  ...  \n
+  ...  [fqan]\n
+  [Return]  ${text}
+  
+Get content test 2
+  ${text}=  catenate  SEPARATOR=
+  ...  [dn]\n
+  ...  ANYONE : ALL\n
+  ...  \n
+  ...  [fqan]\n
+  [Return]  ${text}
+
 *** Test Cases ***
 
 PAP ping
@@ -14,22 +52,115 @@ PAP ping
 
 Refresh cache with non existing alias
   Start PAP service
-  Execute and Check Failure  pap-admin rc Do-Not-Exist
+  Execute and Check Failure  pap-admin refresh-cache Do-Not-Exist
 
 Refresh cache with a local PAP
   Start PAP service
-  Execute and Check Failure  pap-admin rc default
+  Execute and Check Failure  pap-admin refresh-cache default
   
-Testing apap with existing alias
+Add PAP with existing alias
   Start PAP service
-  Execute and Check Failure  pap-admin apap default
+  Execute and Check Failure  pap-admin add-pap ${DEFAULT_PAP}
   
-Testing apap with wrong endpoint
+Add PAP with wrong endpoint
   Start PAP service
-  Execute and Check Failure  pap-admin apap NewPAP --url "https://localhost:8555/pap/services/"
+  Execute and Check Failure  pap-admin add-pap NewPAP --url "https://localhost:8555/pap/services/"
 
-Testing apap local
+Add and remove PAP local
   Start PAP service
-  Execute and Check Success  pap-admin apap NewPAP
-  ${cmd}=  Set Variable  pap-admin list-paps | grep -q 'NewPAP'
+  Add PAP  ${new_pap}
+  ${cmd}=  Set Variable  pap-admin list-paps | grep -q ${new_pap}
   Execute and Check Success  ${cmd}
+  Remove PAP  ${new_pap}
+  
+Remove local default PAP
+  Start PAP service
+  Execute and Check Failure  pap-admin remove-pap ${DEFAULT_PAP}
+  
+Remove non-existing PAP
+  Start PAP service
+  Execute and Check Failure  pap-admin remove-pap ${DUMMY_PAP}
+  
+Disable PAP with non existing PAP
+  Start PAP service
+  Execute and Check Failure  pap-admin disable-pap ${DUMMY_PAP}
+  
+Disable PAP with already disabled PAP
+  Start PAP service
+  Add PAP  ${alias}
+  Execute and Check Success  pap-admin disable-pap ${alias}
+  [Teardown]  Remove PAP  ${alias}
+
+Enable PAP with wrong alias
+  Start PAP service
+  Execute and Check Failure  pap-admin enable-pap ${DUMMY_PAP}
+
+Enable/disable PAP with good alias
+  Start PAP service
+  Add PAP  ${alias}
+  Execute and Check Success  pap-admin enable-pap ${alias}
+  ${cmd}=  Set Variable  pap-admin list-paps | grep ${alias} | grep -q enabled
+  Execute and Check Success  ${cmd}
+  Execute and Check Success  pap-admin disable-pap ${alias}
+  ${cmd}=  Set Variable  pap-admin list-paps | grep ${alias} | grep -q disabled
+  Execute and Check Success  ${cmd}
+  [Teardown]  Remove PAP  ${alias}
+  
+Disable/Enable default PAP
+  Start PAP service
+  Execute and Check Success  pap-admin disable-pap ${DEFAULT_PAP}
+  ${cmd}=  Set Variable  pap-admin list-paps | grep ${DEFAULT_PAP} | grep -q disabled
+  Execute and Check Success  ${cmd}
+  Execute and Check Success  pap-admin enable-pap ${DEFAULT_PAP}
+  ${cmd}=  Set Variable  pap-admin list-paps | grep ${DEFAULT_PAP} | grep -q enabled
+  Execute and Check Success  ${cmd}
+
+Update PAP with non existing alias
+  Start PAP service
+  Execute and Check Failure  pap-admin update-pap ${DUMMY_PAP}
+
+Get PAPs order with non order
+  Start PAP service
+  Execute and Check Success  pap-admin get-paps-order
+  
+Set PAPs order and change it with 3 PAPs
+  Start PAP service
+  @{paps}=  Create List  local-pap1  local-pap2  local-pap3
+  Add PAPs list  @{paps}
+  ${cmd}=  Set Variable  pap-admin set-paps-order local-pap1 local-pap2 local-pap3 ${DEFAULT_PAP}
+  Execute and Check Success  ${cmd}
+  ${cmd}=  Set Variable  pap-admin set-paps-order ${DEFAULT_PAP} local-pap3 local-pap2 local-pap1
+  [Teardown]  Remove PAPs list  @{paps}
+
+Set PAPs order using a non existing alias
+  Start PAP service
+  @{paps}=  Create List  local-pap1  local-pap2  local-pap3
+  Add PAPs list  @{paps}
+  ${cmd}=  Set Variable  pap-admin set-paps-order local-pp1 local-pp2 local-pp3 ${DEFAULT_PAP}
+  Execute and Check Failure  ${cmd}
+  [Teardown]  Remove PAPs list  @{paps}
+  
+Setting polling time
+  Start PAP service
+  Execute and Check Success  pap-admin set-polling-interval ${poll_interval}
+  ${cmd}=  Set Variable  pap-admin gpi | sed 's/Polling interval in seconds: //g'
+  ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
+  Should Be Equal As Integers  ${output}  ${poll_interval}
+
+List policies with no authorization
+  Stop PAP service
+  ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
+  ${content}=  Get content test 1
+  Create File  ${file}  ${content}
+  Start PAP service
+  Execute and Check Failure  pap-admin list-policies >/dev/null 2>&1
+  [Teardown]  Restore PAP configuration
+
+List policies with anyone full power
+  Stop PAP service
+  ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
+  ${content}=  Get content test 2
+  Create File  ${file}  ${content}
+  Start PAP service
+  Execute and Check Success  pap-admin list-policies >/dev/null 2>&1
+  [Teardown]  Restore PAP configuration

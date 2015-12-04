@@ -114,71 +114,44 @@ Get PEP status
   [Return]  ${result.stdout}
   
 Check port  [Arguments]  ${port}
-  ${cmd}=  Set Variable  nmap -Pn -p ${port} localhost | grep -q open
+  ${cmd}=  Set Variable  nmap -Pn -p ${port} `hostname` | grep -q open
   ${rc}=  Run And Return Rc  ${cmd}
   Should Be Equal As Integers  ${rc}  0
   
 Port not reachable  [Arguments]  ${port}
-  ${cmd}=  Set Variable  nmap -Pn -p ${port} localhost | grep -q open
+  ${cmd}=  Set Variable  nmap -Pn -p ${port} `hostname` | grep -q open
   ${rc}=  Run And Return Rc  ${cmd}
   Should Be Equal As Integers  ${rc}  1
 
-Start PAP
-  ${result}=  Run Process  systemctl  start  argus-pap
-  Log  PAP started
-  [Return]  ${result.rc}
-  
-Start PDP
-  ${result}=  Run Process  systemctl  start  argus-pdp
-  Log  PDP started
-  [Return]  ${result.rc}
-
-Start PEP
-  ${result}=  Run Process  systemctl  start  argus-pepd
-  Log  PEP started
-  [Return]  ${result.rc}
-
 Start PAP service
-  Start PAP
+  Run Process  systemctl  start  argus-pap
   Wait Until Keyword Succeeds  1 min  2 sec  Check port  ${T_PAP_PORT}
+  Log  PAP started
   
 Start PDP service
-  Start PDP
+  Run Process  systemctl  start  argus-pdp
   Wait Until Keyword Succeeds  1 min  2 sec  Check port  ${T_PDP_PORT}
+  Log  PDP started
 
 Start PEP service
-  Start PEP
+  Run Process  systemctl  start  argus-pepd
   Wait Until Keyword Succeeds  1 min  2 sec  Check port  ${T_PEP_PORT}
-
-Stop PAP
-  Run Process  systemctl  stop  argus-pap
-  Wait Until Keyword Succeeds  5 x  2 sec  Port not reachable  '${T_PAP_ADMIN_PORT}\|${T_PAP_PORT}'
-  Log  PAP stopped
-
-Stop PDP
-  Run Process  systemctl  stop  argus-pdp
-  Wait Until Keyword Succeeds  5 x  2 sec  Port not reachable  '${T_PDP_ADMIN_PORT}\|${T_PDP_PORT}'
-  Log  PDP stopped
-
-Stop PEP
-  Run Process  systemctl  stop  argus-pepd
-  Wait Until Keyword Succeeds  5 x  2 sec  Port not reachable  '${T_PEP_ADMIN_PORT}\|${T_PEP_PORT}'
-  Log  PEP stopped
+  Log  PEP started
 
 Stop PAP service
-  #${status}=  Get PAP status
-  #Run Keyword If  ${status} == 1  Stop PAP  ELSE  Log  PAP already stopped.
-  Stop PAP
+  Run Process  systemctl  stop  argus-pap
+  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PAP_ADMIN_PORT},${T_PAP_PORT}
+  Log  PAP stopped
 
 Stop PDP service
-  #${status}=  Get PDP status
-  #Run Keyword If  ${status} == 1  Stop PDP  ELSE  Log  PDP already stopped.
-  Stop PDP
+  Run Process  systemctl  stop  argus-pdp
+  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PDP_ADMIN_PORT},${T_PDP_PORT}
+  Log  PDP stopped
 
 Stop PEP service
-  #${status}=  Get PEP status
-  #Run Keyword If  ${status} == 1  Stop PEP  ELSE  Log  PEP already stopped.
-  Stop PEP
+  Run Process  systemctl  stop  argus-pepd
+  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PEP_ADMIN_PORT},${T_PEP_PORT}
+  Log  PEP stopped
 
 Restore PAP
   Stop PAP service
@@ -187,10 +160,10 @@ Restore PAP
 
 Setup Argus suite
   Make backup of the configuration
-  #Start PAP service
-  #Start PDP service
-  #Start PEP service
+  Start PAP service
+  Start PDP service
+  Start PEP service
 
 Teardown Argus suite
   Restore configurations
-  #Restore services
+  Restore services

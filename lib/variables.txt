@@ -17,3 +17,6 @@ ${TEST_VO}  test.vo
 ${POLICY_FILE}  /tmp/policyfile.txt
 ${DUMMY_ID}  dummy-id
 ${DUMMY_FILE}  dummy.txt
+
+${DUMMY_PAP}  Dummy
+${DEFAULT_PAP}  default

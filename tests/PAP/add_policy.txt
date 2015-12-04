@@ -3,8 +3,28 @@ Library    OperatingSystem
 Resource   lib/utils.txt
 Resource   variables.txt
 
+Suite Setup     Make backup of the configuration
+Suite Teardown  Restore configurations
 
-*** Keywords ***
+Test Setup     Start PAP service
+Test Teardown  Clean up
+
+
+*** Test Cases ***
+Add policy from file
+  ${policy}=  Prepare
+  Create policy file  ${policy}
+  ${rc}=  Load policyfile
+  Should Be Equal As Integers  ${rc}  0
+
+Add policy from file with error
+  ${policy}  Prepare with error
+  Create policy file  ${policy}
+  ${rc}=  Load policyfile
+  Should Not Be Equal As Integers  ${rc}  0
+  
+
+  *** Keywords ***
 
 Prepare
   ${policies}=  catenate  SEPARATOR=
@@ -28,20 +48,3 @@ Prepare with error
   ...    } \n
   ...  } \n
   [Return]  ${policies}
-
-
-*** Test Cases ***
-Add policy from file
-  ${policy}=  Prepare
-  Create policy file  ${policy}
-  ${rc}=  Load policyfile
-  Should Be Equal As Integers  ${rc}  0
-  [Teardown]  Clean up
-
-Add policy from file with error
-  ${policy}  Prepare with error
-  Create policy file  ${policy}
-  ${rc}=  Load policyfile
-  Should Not Be Equal As Integers  ${rc}  0
-  [Teardown]  Clean up
-  

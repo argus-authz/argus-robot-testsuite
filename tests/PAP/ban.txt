@@ -3,11 +3,23 @@ Library   OperatingSystem
 Resource   lib/utils.txt
 Resource   variables.txt
 
-Suite Teardown  Clean up
+Suite Setup     Make backup of the configuration
+Suite Teardown  Restore configurations
+
+Test Setup     Start PAP service
+Test Teardown  Clean up
 
 *** Test Cases ***
-Ban user
+Ban/un-ban user
   Execute and Check Success  pap-admin ban subject ${TEST_USER_DN}
+  Execute and Check Success  pap-admin un-ban subject ${TEST_USER_DN}
 
-Ban VO FQAN
+Ban/un-ban VO FQAN
   Execute and Check Success  pap-admin ban fqan "/${TEST_VO}"
+  Execute and Check Success  pap-admin un-ban fqan "/${TEST_VO}"
+  
+Un-ban not existing user
+  Execute and Check Failure  pap-admin un-ban subject ${TEST_USER_DN}
+
+Un-ban not existing VO FQAN
+  Execute and Check Failure  pap-admin un-ban fqan "/${TEST_VO}"

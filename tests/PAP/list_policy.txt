@@ -3,6 +3,24 @@ Library    OperatingSystem
 Resource   lib/utils.txt
 Resource   variables.txt
 
+Suite Setup     Make backup of the configuration
+Suite Teardown  Restore configurations
+
+*** Test Cases ***
+List empty repository
+  [Setup]  Clean policy repository
+  Execute and Check Success  pap-admin lp
+
+List policies
+  [Setup]  Prepare
+  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep -c 'id='
+  Should Be Equal As Integers  ${rc}  0
+  Should Be Equal As Integers  ${output}  9
+  [Teardown]  Clean up
+  
+List policies with wrong pap-alias
+  Execute And Check Failure  pap-admin lp -sai --pap "dummy_pap"
+
 
 *** Keywords ***
 
@@ -27,19 +45,3 @@ Prepare
   ...    } \n
   ...  } \n
   Prepare environment  ${policies}
-
-
-*** Test Cases ***
-List empty repository
-  [Setup]  Clean policy repository
-  Execute and Check Success  pap-admin lp
-
-List policies
-  [Setup]  Prepare
-  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep -c 'id='
-  Should Be Equal As Integers  ${rc}  0
-  Should Be Equal As Integers  ${output}  9
-  [Teardown]  Clean up
-  
-List policies with wrong pap-alias
-  Execute And Check Failure  pap-admin lp -sai --pap "dummy_pap"

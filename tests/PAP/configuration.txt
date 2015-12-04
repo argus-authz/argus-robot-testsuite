@@ -3,95 +3,90 @@ Library    OperatingSystem
 Resource   lib/utils.txt
 Resource   variables.txt
 
-Suite Setup       Setup Argus suite
-Suite Teardown    Teardown Argus suite
+Suite Setup     Make backup of the configuration
+Suite Teardown  Restore configurations
 
-*** Keywords ***
-Get content test 6
-  ${text}=  catenate  SEPARATOR=
-  ...  [dn] \n
-  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300"  ALL \n
-  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE \n
-  ...  \n
-  ...  [fqan] \n
-  [Return]  ${text}
-  
-Get content test 7
-  ${text}=  catenate  SEPARATOR=
-  ...  [dn] \n
-  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300" \n
-  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE \n
-  ...  \n
-  ...  [fqan] \n
-  [Return]  ${text}
+Test Setup     Stop PAP service
+Test Teardown  Restore PAP configuration
 
 *** Test Cases ***
 
 Missing configuration file
-  Stop PAP service
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
   Remove File  ${file}
   List Directory  ${T_PAP_CONF}
-  Start PAP service
+  Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-  [Teardown]  Restore PAP configuration
   
 Missing Argus file
-  Stop PAP service
-  ${status}=  Get PAP status
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   Remove File  ${file}
   List Directory  ${T_PAP_CONF}
-  Start PAP service
+  Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
   [Teardown]  Restore PAP configuration
   
 Required pool_interval
-  Stop PAP service
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
   Comment parameter  ${file}  poll_interval
-  Start PAP service
+  Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-  [Teardown]  Restore PAP configuration
   
-Syntax error: missing '='
-  Stop PAP service
-  ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
-  Replace string  ${file}  certificate\ =  certificate\ 
-  Start PAP service
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-  [Teardown]  Restore PAP configuration
+#Syntax error: missing '='
+#  Stop PAP service
+#  ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
+#  Replace string  ${file}  entity_id\ =  entity_id\ \ 
+#  Start PAP service
+#  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
+#  [Teardown]  Restore PAP configuration
   
 Syntax error: missing ']'
-  Stop PAP service
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
-  Replace string  ${file}  [standalone-service]  [standalone-service
-  Start PAP service
+  Replace string  ${file}  \\[paps:properties\\]  \\[paps:properties
+  Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-  [Teardown]  Restore PAP configuration
   
 Argus syntax error: missing ']'
-  Stop PAP service
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
-  Replace string  ${file}  \[dn\]  \[dn
-  Start PAP service
+  Replace string  ${file}  \\[dn\\]  \\[dn
+  Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-  [Teardown]  Restore PAP
   
 Argus syntax error: missing ':'
-  Stop PAP service
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   ${content}=  Get content test 6
   Create File  ${file}  ${content}
-  Start PAP service
+  Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-  [Teardown]  Restore PAP configuration
 
 Argus syntax error: missing 'permission'
-  Stop PAP service
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
-  ${content}=  Get content test 6
+  ${content}=  Get content test 7
   Create File  ${file}  ${content}
-  Start PAP service
+  Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-  [Teardown]  Restore PAP configuration
+
+
+*** Keywords ***
+Get content test 6
+  ${text}=  catenate  SEPARATOR=
+  ...  [dn]\n
+  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300"  ALL\n
+  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE\n
+  ...  \n
+  ...  [fqan]\n
+  [Return]  ${text}
+  
+Get content test 7
+  ${text}=  catenate  SEPARATOR=
+  ...  [dn]\n
+  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300" \n
+  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE\n
+  ...  \n
+  ...  [fqan]\n
+  [Return]  ${text}
+  
+Start PAP
+  Run Process  systemctl  start  argus-pap
+  Sleep  15s
+  

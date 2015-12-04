@@ -41,9 +41,6 @@ Prepare environment  [Arguments]  ${policies}
   ${rc}=  Load policyfile
   Should Be Equal As Integers  ${rc}  0
 
-Load environment variables
-  Execute and Check Success  source ${ENV_FILE}
-
 Create working directory
   ${secs}=  Get Time  epoch
   ${workdir}=  Join Path  ${TMP_DIR}  argus-testsuite_${secs}
@@ -99,20 +96,9 @@ Comment parameter  [Arguments]  ${file}  ${parameter}
   Execute and Check Success  sed -i 's/${parameter}/#${parameter}/g' ${file}
 
 Replace string  [Arguments]  ${file}  ${old_string}  ${new_string}
-  Execute and Check Success  sed -i 's/${old_string}/${new_string}/g' ${file}
+  ${cmd}=  Set Variable  sed -i 's/${old_string}/${new_string}/g' ${file}
+  Execute and Check Success  ${cmd}
 
-Get PAP status
-  ${result}=  Run Process  pgrep  -cf  org.glite.authz.pap.server.standalone.PAPServer
-  [Return]  ${result.stdout}
-
-Get PDP status
-  ${result}=  Run Process  pgrep  -cf  org.glite.authz.pdp.server.PDPDaemon
-  [Return]  ${result.stdout}
-  
-Get PEP status
-  ${result}=  Run Process  pgrep  -cf  org.glite.authz.pep.server.PEPDaemon
-  [Return]  ${result.stdout}
-  
 Check port  [Arguments]  ${port}
   ${cmd}=  Set Variable  nmap -Pn -p ${port} `hostname` | grep -q open
   ${rc}=  Run And Return Rc  ${cmd}
@@ -152,11 +138,6 @@ Stop PEP service
   Run Process  systemctl  stop  argus-pepd
   Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PEP_ADMIN_PORT},${T_PEP_PORT}
   Log  PEP stopped
-
-Restore PAP
-  Stop PAP service
-  Restore PAP configuration
-  Start PAP service
 
 Setup Argus suite
   Make backup of the configuration

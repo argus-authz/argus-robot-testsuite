@@ -3,8 +3,9 @@ Library    OperatingSystem
 Resource   lib/utils.txt
 Resource   variables.txt
 
-Suite Setup       Setup Argus suite
-Suite Teardown    Teardown Argus suite
+Suite Setup     Make backup of the configuration
+Suite Teardown  Restore configurations
+
 
 *** Variables ***
 ${alias}  mypap
@@ -13,36 +14,6 @@ ${new_pap}  NewPAP
 ${std_poll_interval}  14400
 ${poll_interval}  100
 
-*** Keywords ***
-Add PAP  [Arguments]  ${pap_name}
-  Execute And Check Success   pap-admin add-pap ${pap_name}
-  
-Remove PAP  [Arguments]  ${pap_name}
-  Execute And Check Success   pap-admin remove-pap ${pap_name}
-
-Add PAPs list  [Arguments]  @{list}
-  :FOR  ${elem}  IN  @{list}
-  \  Add PAP  ${elem}
-
-Remove PAPs list  [Arguments]  @{list}
-  :FOR  ${elem}  IN  @{list}
-  \  Remove PAP  ${elem}
-    
-Get content test 1
-  ${text}=  catenate  SEPARATOR=
-  ...  [dn]\n
-  ...  ANYONE : CONFIGURATION_READ\n
-  ...  \n
-  ...  [fqan]\n
-  [Return]  ${text}
-  
-Get content test 2
-  ${text}=  catenate  SEPARATOR=
-  ...  [dn]\n
-  ...  ANYONE : ALL\n
-  ...  \n
-  ...  [fqan]\n
-  [Return]  ${text}
 
 *** Test Cases ***
 
@@ -164,3 +135,35 @@ List policies with anyone full power
   Start PAP service
   Execute and Check Success  pap-admin list-policies >/dev/null 2>&1
   [Teardown]  Restore PAP configuration
+  
+  
+*** Keywords ***
+Add PAP  [Arguments]  ${pap_name}
+  Execute And Check Success   pap-admin add-pap ${pap_name}
+  
+Remove PAP  [Arguments]  ${pap_name}
+  Execute And Check Success   pap-admin remove-pap ${pap_name}
+
+Add PAPs list  [Arguments]  @{list}
+  :FOR  ${elem}  IN  @{list}
+  \  Add PAP  ${elem}
+
+Remove PAPs list  [Arguments]  @{list}
+  :FOR  ${elem}  IN  @{list}
+  \  Remove PAP  ${elem}
+    
+Get content test 1
+  ${text}=  catenate  SEPARATOR=
+  ...  [dn]\n
+  ...  ANYONE : CONFIGURATION_READ\n
+  ...  \n
+  ...  [fqan]\n
+  [Return]  ${text}
+  
+Get content test 2
+  ${text}=  catenate  SEPARATOR=
+  ...  [dn]\n
+  ...  ANYONE : ALL\n
+  ...  \n
+  ...  [fqan]\n
+  [Return]  ${text}

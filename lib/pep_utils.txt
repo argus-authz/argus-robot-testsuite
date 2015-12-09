@@ -1,0 +1,71 @@
+** Settings ***
+
+Library    OperatingSystem
+Library    Process
+Resource   variables.txt
+
+Resource   common_utils.txt
+Resource   file_utils.txt
+Resource   service_utils.txt
+Resource   x509_utils.txt
+
+Variables  ${ENV_FILE}
+
+
+*** Keywords ***
+
+Add PEP authz test policy
+  ${user_dn}=  Get user dn
+  ${cmd}=  Set Variable  ${PAP_ADMIN} add-policy --resource "${TEST_RESOURCE}" --action "${TEST_ACTION}" --obligation "${TEST_OBLIGATION}" "${TEST_RULE}" subject="${user_dn}"
+  Execute and Check Success  ${cmd}
+
+Do PEP request
+  ${cmd}=  catenate
+  ...  ${PEPCLI} -p https://`hostname`:8154/authz --capath /etc/grid-security/certificates/ 
+  ...  --key ${USERKEYRSA} --cert ${USERCERT} -k ${USERCERT} 
+  ...  -r "${TEST_RESOURCE}" -a "${TEST_ACTION}" -f "/${VO}"
+  ${output}=  Execute and Check Success  ${cmd}
+  [Return]  ${output}
+
+Init configuration  [Arguments]  ${pref_dn_for_login}  ${pref_dn_for_primary_group}  ${no_primary_group_is_error}
+  ${file}=  Set Variable  ${T_PEP_CONF}/${T_PEP_INI}
+  Add conf parameter  ${file}  preferDNForLoginName  ${pref_dn_for_login}
+  Add conf parameter  ${file}  preferDNForPrimaryGroupName  ${pref_dn_for_primary_group}
+  Add conf parameter  ${file}  noPrimaryGroupNameIsError  ${no_primary_group_is_error}
+
+Init grid map file  [Arguments]  ${vo_map}  ${dn_map}
+  ${file}=  Set Variable  ${GRIDDIR}/${GRIDMAPFILE}
+  ${user_dn}=  Get user dn
+  Empty file  ${file}
+  Run Keyword If  '${vo_map}' == 'yes'  Append To File  ${file}  "${VO_PRIMARY_GROUP}" ".${VO}"
+  Run Keyword If  '${dn_map}' == 'yes'  Append To File  ${file}  "${user_dn}" ${TEST_DN_UID}
+
+Init grid group map file  [Arguments]  ${group_vo_map}  ${group_vo_secondary_map}  ${group_dn_map}
+  ${file}=  Set Variable  ${GRIDDIR}/${GROUPMAPFILE}
+  ${user_dn}=  Get user dn
+  Empty file  ${file}
+  Run Keyword If  '${group_vo_map}' == 'yes'  Append To File  ${file}  "${VO_PRIMARY_GROUP}" ${VO}
+  Run Keyword If  '${group_vo_secondary_map}' == 'yes'  Append To File  ${file}  "${VO_SECONDARY_GROUP}" ${VO}-secondary
+  Run Keyword If  '${group_dn_map}' == 'yes'  Append To File  ${file}  "${user_dn}" ${TEST_DN_UID_GROUP}
+  
+Init pool accounts
+  :FOR  ${idx}  IN RANGE  1  3
+  \  Touch pool account  ${VO}00${idx}
+
+Prepare PEP environment  [Arguments]  ${vo_map}  ${dn_map}  ${grp_vo_map}  ${grp_vo_secondary_map}  ${grp_dn_map}  ${pref_dn_for_login}  ${pref_dn_for_primary_group}  ${no_primary_group_is_error}
+  Create Directory  /etc/vomses
+  Create File  /etc/vomses/${VO}  ${VOMSES_STRING}
+  Create user proxy
+  Remove all leases in gridmapdir
+  Init grid map file  ${vo_map}  ${dn_map}
+  Init grid group map file  ${grp_vo_map}  ${grp_vo_secondary_map}  ${grp_dn_map}
+  Init pool accounts
+  ${file}=  Set Variable  ${T_PEP_CONF}/${T_PEP_INI}
+  Check string presence into file  ${file}  'org.glite.authz.pep.obligation.dfpmap.DFPMObligationHandlerConfigurationParser'
+  Init configuration  ${pref_dn_for_login}  ${pref_dn_for_primary_group}  ${no_primary_group_is_error}
+  Restart PEP service
+  Start PDP service
+  Start PAP service
+  Clean policy repository
+  Add PEP authz test policy
+  Reload policies

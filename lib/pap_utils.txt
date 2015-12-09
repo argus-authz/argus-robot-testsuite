@@ -1,0 +1,32 @@
+** Settings ***
+
+Library    OperatingSystem
+Library    Process
+Resource   variables.txt
+
+Resource   common_utils.txt
+
+Variables  ${ENV_FILE}
+
+*** Keywords ***
+
+Clean policy repository
+  Execute And Check Success  ${PAP_ADMIN} rap
+
+Clean up
+  Clean policy repository
+  Remove policy file
+
+Create policy file  [Arguments]  ${policies}
+  Create File  ${POLICY_FILE}  ${policies}
+
+Load policy file
+  Execute and Check Success  ${PAP_ADMIN} apf ${POLICY_FILE}
+
+Prepare PAP environment  [Arguments]  ${policies}
+  Create policyfile  ${policies}
+  Clean policy repository
+  Load policy file
+
+Remove policy file
+  Remove File  ${POLICY_FILE}

@@ -1,0 +1,14 @@
+** Settings ***
+
+Library    OperatingSystem
+Library    Process
+Resource   variables.txt
+
+Resource   common_utils.txt
+
+Variables  ${ENV_FILE}
+
+*** Keywords ***
+
+Reload policies
+  Execute and Check Success  ${T_PDP_CTRL} reloadPolicy

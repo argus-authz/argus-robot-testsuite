@@ -1,0 +1,49 @@
+** Settings ***
+
+Library    OperatingSystem
+Library    Process
+Resource   variables.txt
+
+Resource   common_utils.txt
+
+Variables  ${ENV_FILE}
+
+
+*** Variables ***
+${tmp_userkey}  /tmp/tmp-userkey.pem
+
+
+*** Keywords ***
+
+Create user proxy
+  ${user}=  Get user name
+  ${owner}=  Get key owner
+  ${key}=  Set Variable If  '${user}' == '${owner}'  ${USERKEY}  Get temporary user key
+  ${cmd}=  Set Variable  voms-proxy-init -voms ${VO} -cert ${USERCERT} -key ${key} -pwstdin < ${USERPWD_FILE}
+  ${rc}=  Run And Return Rc  ${cmd}
+  Should Be Equal As Integers  ${rc}  0
+  [Teardown]  Remove temporary user key
+
+Get user DN
+  ${cmd}=  Set Variable  openssl x509 -in ${USERCERT} -subject -noout | sed 's/subject= //'
+  ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
+  [Return]  ${output}
+
+Get key owner
+  ${rc}  ${output}=  Run And Return Rc And Output  stat -c '%U' ${USERKEY}
+  [Return]  ${output}
+
+Get user proxy path
+  ${uid}=  Get user id
+  [Return]  /tmp/x509up_u${uid}
+  
+Get temporary user key
+  Copy File  ${USERKEY}  ${tmp_userkey}
+  [Return]  ${tmp_userkey}
+
+Remove user proxy certificate
+  ${filepath}=  Get user proxy path
+  Remove File  ${filepath}
+
+Remove temporary user key
+  Remove File  ${tmp_userkey}

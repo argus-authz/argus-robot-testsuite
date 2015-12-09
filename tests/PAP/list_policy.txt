@@ -6,21 +6,49 @@ Resource   variables.txt
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations
 
+Test Setup  Start PAP service
+
 *** Test Cases ***
 List empty repository
-  [Setup]  Clean policy repository
-  Execute and Check Success  pap-admin lp
+  Clean policy repository
+  Execute and Check Success  ${PAP_ADMIN} lp
 
 List policies
-  [Setup]  Prepare
-  ${rc}  ${output}=  Run And Return Rc And Output  pap-admin lp -sai | egrep -c 'id='
+  Prepare
+  ${rc}  ${output}=  Run And Return Rc And Output  ${PAP_ADMIN} lp -sai | egrep -c 'id='
   Should Be Equal As Integers  ${rc}  0
   Should Be Equal As Integers  ${output}  9
   [Teardown]  Clean up
   
 List policies with wrong pap-alias
-  Execute And Check Failure  pap-admin lp -sai --pap "dummy_pap"
+  Execute And Check Failure  ${PAP_ADMIN} lp -sai --pap "dummy_pap"
 
+List by resource or action with incremental loading (bug 60044)
+  @{list}=  Get policy list
+  :FOR  ${pol}  IN  @{list}
+  \  Create policy file  ${pol}
+  \  Load policy file
+  \  Remove policy file
+  ${cmd}=  Set Variable  ${PAP_ADMIN} lp --resource "resource_2" | grep -q "999998"
+  Execute and Check Success  ${cmd}
+  ${cmd}=  Set Variable  ${PAP_ADMIN} lp --action "execute" | grep -q "999997"
+  Execute and Check Success  ${cmd}
+  ${cmd}=  Set Variable  ${PAP_ADMIN} lp --action "spare" | grep -q "No policies has been found."
+  Execute and Check Success  ${cmd}
+  [Teardown]  Clean up
+
+Calling pap-admin from a symlink (bug 63180)
+  ${tmp_bin}=  Set Variable  /tmp/bin
+  Create Directory  ${tmp_bin}
+  Execute and Check Success  ln -fs ${T_PAP_HOME}/bin/pap-admin ${tmp_bin}/pap-admin
+  Execute and Check Success  ${tmp_bin}/pap-admin remove-all-policies
+  @{list}=  Get policy list
+  :FOR  ${pol}  IN  @{list}
+  \  Create policy file  ${pol}
+  \  Execute and Check Success  ${tmp_bin}/pap-admin add-policies-from-file ${POLICY_FILE}
+  \  Remove policy file
+  Execute and Check Success  ${tmp_bin}/pap-admin lp > /dev/null
+  [Teardown]  Clean up
 
 *** Keywords ***
 
@@ -44,4 +72,39 @@ Prepare
   ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
   ...    } \n
   ...  } \n
-  Prepare environment  ${policies}
+  Prepare PAP environment  ${policies}
+  
+Get policy 1
+  ${policy}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  [Return]  ${policy}
+
+Get policy 2
+  ${policy}=  catenate  SEPARATOR=
+  ...  resource "resource_2" { \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  [Return]  ${policy}
+  
+Get policy 3
+  ${policy}=  catenate  SEPARATOR=
+  ...  resource "resource_3" { \n
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {} \n
+  ...    action "execute" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999997/CN=user name" } \n
+  ...    } \n
+  ...  }
+  [Return]  ${policy}
+  
+Get policy list
+  ${pol1}=  Get policy 1
+  ${pol2}=  Get policy 2
+  ${pol3}=  Get policy 3
+  @{list}=  Create List  ${pol1}  ${pol2}  ${pol3}
+  [Return]  @{list}

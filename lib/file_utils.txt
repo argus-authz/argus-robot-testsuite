@@ -1,0 +1,70 @@
+** Settings ***
+
+Library    OperatingSystem
+Library    Process
+Resource   variables.txt
+
+Resource   common_utils.txt
+
+Variables  ${ENV_FILE}
+
+
+*** Keywords ***
+
+Create working directory
+  ${secs}=  Get Time  epoch
+  ${workdir}=  Join Path  ${TMP_DIR}  argus-testsuite_${secs}
+  Create Directory  ${workdir}
+  [Return]  ${workdir}
+  
+Empty file  [Arguments]  ${file}
+  Create File  ${file}
+
+Make backup of the configuration
+  ${workdir}=  Create working directory
+  Set Environment Variable  WORKDIR  ${workdir}
+  ${bck_conf_dir}=  Join Path  ${workdir}  conf_backup
+  Create Directory  ${bck_conf_dir}
+  Copy File  ${T_PDP_CONF}/${T_PDP_INI}  ${bck_conf_dir}
+  Copy File  ${T_PEP_CONF}/${T_PEP_INI}  ${bck_conf_dir}
+  Copy File  ${T_PAP_CONF}/${T_PAP_ADMIN_INI}  ${bck_conf_dir} 
+  Copy File  ${T_PAP_CONF}/${T_PAP_AUTH_INI}  ${bck_conf_dir}
+  Copy File  ${T_PAP_CONF}/${T_PAP_CONF_INI}  ${bck_conf_dir}
+  Copy File  ${GRIDDIR}/${GRIDMAPFILE}  ${bck_conf_dir}
+  Copy File  ${GRIDDIR}/${GROUPMAPFILE}  ${bck_conf_dir}
+  Copy File  ${GRIDDIR}/${VOMSGRIDMAPFILE}  ${bck_conf_dir}
+  Copy Directory  ${GRIDDIR}/${GRIDMAPDIR}    ${bck_conf_dir}
+
+Remove all leases in gridmapdir
+  Remove File  ${GRIDDIR}/${GRIDMAPDIR}/%*
+
+Restore grid files
+  ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup
+  Copy File  ${bck_conf_dir}/${GRIDMAPFILE}  ${GRIDDIR}/${GRIDMAPFILE}
+  Copy File  ${bck_conf_dir}/${GROUPMAPFILE}  ${GRIDDIR}/${GROUPMAPFILE}
+  Copy File  ${bck_conf_dir}/${VOMSGRIDMAPFILE}  ${GRIDDIR}/${VOMSGRIDMAPFILE}
+
+Restore PAP configuration
+  ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup
+  Copy File  ${bck_conf_dir}/${T_PAP_CONF_INI}  ${T_PAP_CONF}/${T_PAP_CONF_INI}
+  Copy File  ${bck_conf_dir}/${T_PAP_AUTH_INI}  ${T_PAP_CONF}/${T_PAP_AUTH_INI}
+  Copy File  ${bck_conf_dir}/${T_PAP_ADMIN_INI}  ${T_PAP_CONF}/${T_PAP_ADMIN_INI}
+
+Restore PDP configuration
+  ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup
+  Copy File  ${bck_conf_dir}/${T_PDP_INI}  ${T_PDP_CONF}/${T_PDP_INI}
+
+Restore PEP configuration
+  ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup
+  Copy File  ${bck_conf_dir}/${T_PEP_INI}  ${T_PEP_CONF}/${T_PEP_INI}
+  Restore grid files
+  
+Restore configurations
+  Restore PAP configuration
+  Restore PDP configuration
+  Restore PEP configuration
+  
+Touch pool account  [Arguments]  ${account}
+  ${file}=  Set Variable  ${GRIDDIR}/${GRIDMAPDIR}/${account}
+  Touch  ${file}
+  

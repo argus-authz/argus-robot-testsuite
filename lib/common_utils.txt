@@ -1,0 +1,61 @@
+** Settings ***
+
+Library    OperatingSystem
+Library    Process
+Resource   variables.txt
+
+Resource   file_utils.txt
+Resource   service_utils.txt
+Resource   x509_utils.txt
+
+Variables  ${ENV_FILE}
+
+*** Keywords ***
+
+Add conf parameter  [Arguments]  ${file}  ${parameter}  ${value}
+  ${cmd}=  Set Variable  sed -i '/^${parameter}.*/d' ${file}
+  Execute and Check Success  ${cmd}
+  ${row}=  Set Variable  ${parameter} = ${value}
+  Append To File  ${file}  ${row}
+
+Change parameter value  [Arguments]  ${file}  ${parameter}  ${value}
+  Execute and Check Success  sed -i 's/${parameter}\ =.*/${parameter}\ =\ ${value}/' ${file}
+
+Check string presence into file  [Arguments]  ${file}  ${string}
+  ${cmd}=  Set Variable  grep -q ${string} ${file}
+  Execute and Check Success  ${cmd}
+
+Comment parameter  [Arguments]  ${file}  ${parameter}
+  Execute and Check Success  sed -i 's/${parameter}/#${parameter}/g' ${file}
+
+Execute and Check Success  [Arguments]  ${cmd}
+  ${rc}  ${output}=  Run and Return RC And Output  ${cmd}
+  Should Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}  False
+  [Return]  ${output}  ${EMPTY}
+
+Execute and Check Failure  [Arguments]   ${cmd}
+  ${rc}  ${output}=   Run and Return RC And Output  ${cmd}
+  Should Not Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}
+  [Return]  ${output}
+  
+Get user id
+  ${rc}  ${output}=  Run And Return Rc And Output  id -u
+  [Return]  ${output}
+  
+Get user name
+  ${rc}  ${output}=  Run And Return Rc And Output  id -nu
+  [Return]  ${output}
+
+Replace string  [Arguments]  ${file}  ${old_string}  ${new_string}
+  ${cmd}=  Set Variable  sed -i 's/${old_string}/${new_string}/g' ${file}
+  Execute and Check Success  ${cmd}
+
+Setup Argus suite
+  Make backup of the configuration
+  Start PAP service
+  Start PDP service
+  Start PEP service
+
+Teardown Argus suite
+  Restore configurations
+  Restore services

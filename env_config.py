@@ -38,8 +38,9 @@ PAP_ADMIN='/usr/bin/pap-admin'
 
 # Grid specific files
 GRIDDIR='/mnt/grid-security'
-GRID_MAPFILE='grid-mapfile'
+GRIDMAPFILE='grid-mapfile'
 GROUPMAPFILE='groupmapfile'
+VOMSGRIDMAPFILE='voms-grid-mapfile'
 GRIDMAPDIR='gridmapdir'
 
 # Test specific configurations

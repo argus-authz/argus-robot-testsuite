@@ -1,0 +1,32 @@
+*** Settings ***
+Library    OperatingSystem
+Library    String
+Resource   lib/utils.txt
+Resource   variables.txt
+
+Suite Setup     Make backup of the configuration
+Suite Teardown  Restore configurations
+
+
+*** Test Cases ***
+User group mapping (bug 64340)
+  ${vo_map}=  Set Variable  no
+  ${dn_map}=  Set Variable  yes
+  ${grp_vo_map}=  Set Variable  no
+  ${grp_vo_secondary_map}=  Set Variable  no
+  ${grp_dn_map}=  Set Variable  yes
+  ${pref_dn_for_login}=  Set Variable  true
+  ${pref_dn_for_primary_group}=  Set Variable  true
+  ${no_primary_group_is_error}=  Set Variable  true
+  Prepare PEP environment  ${vo_map}  ${dn_map}  ${grp_vo_map}  ${grp_vo_secondary_map}  ${grp_dn_map}  ${pref_dn_for_login}  ${pref_dn_for_primary_group}  ${no_primary_group_is_error}
+  ${output}=  Do PEP request
+  Should Contain  ${output}  ${TEST_RESOURCE}  Did not find expected resource: ${TEST_RESOURCE}
+  Should Contain  ${output}  ${TEST_RULE}  Did not find expected rule: ${TEST_RULE}
+  ${username}=  Get Regexp Matches  ${output}  Username: (.*)
+  Should Not Be Empty  ${username}[0]  No user account mapped.
+  ${group}=  Get Regexp Matches  ${output}  Group: (.*)
+  Should Not Be Empty  ${group}[0]  No user group mapped.
+  ${sec_group}=  Get REgexp Matches  ${output}  Secondary Groups: (.*)
+  Should Not Be Empty  ${sec_group}[0]  No user secondary group mapped.
+  Should Be Equals  ${group}[0]  ${sec_group}[0]
+  [Teardown]  Restore PEP configuration

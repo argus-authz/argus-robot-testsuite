@@ -14,18 +14,15 @@ Test Teardown  Clean up
 Add policy from file
   ${policy}=  Prepare
   Create policy file  ${policy}
-  ${rc}=  Load policyfile
-  Should Be Equal As Integers  ${rc}  0
+  Load policy file
 
 Add policy from file with error
-  ${policy}  Prepare with error
+  ${policy}=  Prepare with error
   Create policy file  ${policy}
-  ${rc}=  Load policyfile
-  Should Not Be Equal As Integers  ${rc}  0
-  
+  Execute and Check Failure  ${PAP_ADMIN} apf ${POLICY_FILE}
 
-  *** Keywords ***
 
+*** Keywords ***
 Prepare
   ${policies}=  catenate  SEPARATOR=
   ...  resource ".*" { \n

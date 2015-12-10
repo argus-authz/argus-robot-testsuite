@@ -1,25 +1,17 @@
 *** Settings ***
 Library    OperatingSystem
+Library    String
 Resource   lib/utils.txt
 Resource   variables.txt
 
 
 *** Test Cases ***
 
-Start PAP
-  Start PAP service
-  
-Stop PAP
-  Stop PAP service
-  
-Start PDP
-  Start PDP service
-  
-Stop PDP
-  Stop PDP service
-  
-Start PEP
-  Start PEP service
+Contain substring
+  ${output}=  Execute and Check Success  echo "hello world"
+  Should Contain  ${output}  hello
 
-Stop PEP
-  Stop PEP service
+Escape
+  ${str}=  Set variable  /hello/world
+  String.Replace String  ${str}  /  \/
+  Should Be Equal  ${str}  \/hello\/world

@@ -66,6 +66,20 @@ Argus syntax error: missing 'permission'
   Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
+Error exit codes (bug 65542)
+  Execute and Check Failure  ${T_PAP_CTRL} status
+  
+Status handler of PAP (bug 65802)
+  [Setup]  Start PAP service
+  Execute and Check Success  wget http://localhost:${T_PAP_ADMIN_PORT}/status
+  ${cmd}=  catenate
+  ...  wget --certificate=/etc/grid-security/hostcert.pem
+  ...  --private-key=/etc/grid-security/hostkey.pem
+  ...  --ca-directory=/etc/grid-security/certificates
+  ...  --no-check-certificate
+  ...  https://`hostname`:8150/status
+  Execute and Check Failure  ${cmd}
+
 
 *** Keywords ***
 Get content test 6

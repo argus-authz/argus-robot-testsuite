@@ -57,7 +57,7 @@ Remove with multiple rules and one wrong
   Should Be Equal As Integers  ${output}  3
   
 Remove with empty repository
-  [Setup]  Clean policy repository
+  [Setup]  Remove all policies
   Execute and Check Failure  ${PAP_ADMIN} rp ${DUMMY_ID}
 
 

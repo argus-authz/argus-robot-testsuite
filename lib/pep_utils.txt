@@ -6,6 +6,7 @@ Resource   variables.txt
 
 Resource   common_utils.txt
 Resource   file_utils.txt
+Resource   pap_utils.txt
 Resource   service_utils.txt
 Resource   x509_utils.txt
 
@@ -16,16 +17,7 @@ Variables  ${ENV_FILE}
 
 Add PEP authz test policy
   ${user_dn}=  Get user dn
-  ${cmd}=  Set Variable  ${PAP_ADMIN} add-policy --resource "${TEST_RESOURCE}" --action "${TEST_ACTION}" --obligation "${TEST_OBLIGATION}" "${TEST_RULE}" subject="${user_dn}"
-  Execute and Check Success  ${cmd}
-
-Do PEP request
-  ${cmd}=  catenate
-  ...  ${PEPCLI} -p https://`hostname`:8154/authz --capath /etc/grid-security/certificates/ 
-  ...  --key ${USERKEYRSA} --cert ${USERCERT} -k ${USERCERT} 
-  ...  -r "${TEST_RESOURCE}" -a "${TEST_ACTION}" -f "/${VO}"
-  ${output}=  Execute and Check Success  ${cmd}
-  [Return]  ${output}
+  Add policy with obligation  ${TEST_RESOURCE}  ${TEST_ACTION}  ${TEST_OBLIGATION}  ${TEST_RULE}  ${user_dn}
 
 Init configuration  [Arguments]  ${pref_dn_for_login}  ${pref_dn_for_primary_group}  ${no_primary_group_is_error}
   ${file}=  Set Variable  ${T_PEP_CONF}/${T_PEP_INI}
@@ -52,20 +44,38 @@ Init pool accounts
   :FOR  ${idx}  IN RANGE  1  3
   \  Touch pool account  ${VO}00${idx}
 
-Prepare PEP environment  [Arguments]  ${vo_map}  ${dn_map}  ${grp_vo_map}  ${grp_vo_secondary_map}  ${grp_dn_map}  ${pref_dn_for_login}  ${pref_dn_for_primary_group}  ${no_primary_group_is_error}
+Perform PEP request  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}=None
+  ${cmd}=  Build PEPCLI command line  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}
+  ${output}=  Execute and Check Success  ${cmd}
+  [Return]  ${output}
+  
+Build PEPCLI command line  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}
+  ${cmd}=  catenate
+  ...  ${PEPCLI} -p https://`hostname`:8154/authz
+  ...  --capath /etc/grid-security/certificates/ 
+  ...  --key ${client_key} 
+  ...  --cert ${client_cert} 
+  ...  --keyinfo ${subject_keyinfo}
+  ...  -r "${resource}" 
+  ...  -a "${action}"
+  ${cmd}=  Run Keyword If  '${fqan}' != None  catenate  ${cmd}  -f "/${fqan}"
+  ...      ELSE  Set Variable  ${cmd}
+  [Return]  ${cmd}
+
+Prepare PEP environment  [Arguments]  &{dict}
   Create Directory  /etc/vomses
   Create File  /etc/vomses/${VO}  ${VOMSES_STRING}
   Create user proxy
   Remove all leases in gridmapdir
-  Init grid map file  ${vo_map}  ${dn_map}
-  Init grid group map file  ${grp_vo_map}  ${grp_vo_secondary_map}  ${grp_dn_map}
+  Init grid map file  ${dict.vo_map}  ${dict.dn_map}
+  Init grid group map file  ${dict.grp_vo_map}  ${dict.grp_vo_sec_map}  ${dict.grp_dn_map}
   Init pool accounts
   ${file}=  Set Variable  ${T_PEP_CONF}/${T_PEP_INI}
   Check string presence into file  ${file}  'org.glite.authz.pep.obligation.dfpmap.DFPMObligationHandlerConfigurationParser'
-  Init configuration  ${pref_dn_for_login}  ${pref_dn_for_primary_group}  ${no_primary_group_is_error}
+  Init configuration  ${dict.pref_dn_for_login}  ${dict.pref_dn_for_primary_grp}  ${dict.no_primary_grp_is_error}
   Restart PEP service
   Start PDP service
   Start PAP service
-  Clean policy repository
+  Remove all policies
   Add PEP authz test policy
-  Reload policies
+  Reload policy

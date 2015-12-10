@@ -21,6 +21,27 @@ Add policy from file with error
   Create policy file  ${policy}
   Execute and Check Failure  ${PAP_ADMIN} apf ${POLICY_FILE}
 
+DN containing slash (bug 66669)
+  Remove all policies
+  ${pol}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    action ".*" { \n
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name/testslash" } \n
+  ...    } \n
+  ...  } \n
+  Create policy file  ${pol}
+  Load policy file
+  Remove policy file
+  ${pol}=  catenate  SEPARATOR=
+  ...  resource "resource_1" { \n
+  ...    action ".*" { \n
+  ...      rule permit { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/slashtest/CN=user/CN=999999/CN=user name" } \n
+  ...    } \n
+  ...  } \n
+  Create policy file  ${pol}
+  Load policy file
+  Execute and Check Success  ${PAP_ADMIN} lp --resource ${TEST_RESOURCE}
+  
 
 *** Keywords ***
 Prepare

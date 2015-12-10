@@ -45,8 +45,7 @@ GRIDMAPDIR='gridmapdir'
 
 # Test specific configurations
 USERCERT='~/user_cert/test0.cert.pem'
-USERKEY='~/user_cert/test0.key.pem'
-USERKEYRSA='~/user_cert/test0.newkey.pem'
+USERKEY='~/user_cert/test0.newkey.pem'
 # in case of empty passphrase set this to /dev/null
 USERPWD_FILE='~/user_cert/password'
 

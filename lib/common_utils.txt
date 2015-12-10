@@ -2,6 +2,7 @@
 
 Library    OperatingSystem
 Library    Process
+Library    String
 Resource   variables.txt
 
 Resource   file_utils.txt
@@ -28,16 +29,24 @@ Check string presence into file  [Arguments]  ${file}  ${string}
 Comment parameter  [Arguments]  ${file}  ${parameter}
   Execute and Check Success  sed -i 's/${parameter}/#${parameter}/g' ${file}
 
+Escape char  [Arguments]  ${str}  ${char}
+  ${output}=  String.Replace String  ${str}  ${char}  \${char}
+  [Return]  ${output}
+
 Execute and Check Success  [Arguments]  ${cmd}
   ${rc}  ${output}=  Run and Return RC And Output  ${cmd}
   Should Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}  False
-  [Return]  ${output}  ${EMPTY}
+  [Return]  ${output}
 
 Execute and Check Failure  [Arguments]   ${cmd}
   ${rc}  ${output}=   Run and Return RC And Output  ${cmd}
   Should Not Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}
   [Return]  ${output}
-  
+
+Get match  [Arguments]  ${item}  ${regexp}
+  ${result}=  Get Regexp Matches  ${item}  ${regexp}  1
+  [Return]  ${result}[0]
+
 Get user id
   ${rc}  ${output}=  Run And Return Rc And Output  id -u
   [Return]  ${output}
@@ -55,6 +64,11 @@ Setup Argus suite
   Start PAP service
   Start PDP service
   Start PEP service
+
+Should Contain Ignore Case  [Arguments]  ${item1}  ${item2}  ${msg}=None
+  ${str1}=  Convert To Lowercase  ${item1}
+  ${str2}=  Convert To Lowercase  ${item2}
+  Should Contain  ${str1}  ${str2}  ${msg}
 
 Teardown Argus suite
   Restore configurations

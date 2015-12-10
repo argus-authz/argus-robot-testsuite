@@ -10,11 +10,22 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
-Clean policy repository
+Add policy with obligation  [Arguments]  ${resource}  ${action}  ${obligation}  ${rule}  ${subject}
+  ${cmd}=  Set Variable  ${PAP_ADMIN} add-policy --resource "${resource}" --action "${action}" --obligation "${obligation}" "${rule}" subject="${subject}"
+  Execute and Check Success  ${cmd}
+
+Add policy  [Arguments]  ${resource}  ${action}  ${rule}  ${subject}
+  ${cmd}=  Set Variable  ${PAP_ADMIN} add-policy --resource "${resource}" --action "${action}" "${rule}" subject="${subject}"
+  Execute and Check Success  ${cmd}
+
+Add obligation  [Arguments]  ${policy_id}  ${obligation}
+  Execute and Check Success  ${PAP_ADMIN} add-obligation ${policy_id} ${obligation}
+
+Remove all policies
   Execute And Check Success  ${PAP_ADMIN} rap
 
 Clean up
-  Clean policy repository
+  Remove all policies
   Remove policy file
 
 Create policy file  [Arguments]  ${policies}
@@ -22,11 +33,22 @@ Create policy file  [Arguments]  ${policies}
 
 Load policy file
   Execute and Check Success  ${PAP_ADMIN} apf ${POLICY_FILE}
+  
+List policy with resource and action ids
+  ${output}=  Execute and Check Success  ${PAP_ADMIN} lp -srai
+  [Return]  ${output}
+
+List policy with all ids
+  ${output}=  Execute and Check Success  ${PAP_ADMIN} lp -sai
+  [Return]  ${output}
 
 Prepare PAP environment  [Arguments]  ${policies}
   Create policyfile  ${policies}
-  Clean policy repository
+  Remove all policies
   Load policy file
+
+Remove obligation  [Arguments]  ${policy_id}  ${obligation}
+  Execute and Check Success  ${PAP_ADMIN} remove-obligation ${policy_id} ${obligation}
 
 Remove policy file
   Remove File  ${POLICY_FILE}

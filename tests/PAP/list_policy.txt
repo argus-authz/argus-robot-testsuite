@@ -1,5 +1,6 @@
 *** Settings ***
 Library    OperatingSystem
+Library    Process
 Resource   lib/utils.txt
 Resource   variables.txt
 
@@ -10,7 +11,7 @@ Test Setup  Start PAP service
 
 *** Test Cases ***
 List empty repository
-  Clean policy repository
+  Remove all policies
   Execute and Check Success  ${PAP_ADMIN} lp
 
 List policies
@@ -49,6 +50,26 @@ Calling pap-admin from a symlink (bug 63180)
   \  Remove policy file
   Execute and Check Success  ${tmp_bin}/pap-admin lp > /dev/null
   [Teardown]  Clean up
+
+List policy with obligation (bug 68595)
+  Start PDP service
+  Start PEP service
+  Remove all policies
+  ${user_dn}=  Get user dn
+  Add policy with obligation  ${TEST_RESOURCE}  ${TEST_ACTION}  ${TEST_OBLIGATION}  ${TEST_RULE}  ${user_dn}
+  ${output}=  List policy with resource and action ids
+  Should Contain  ${output}  obligation
+  Should Contain  ${output}  ${TEST_OBLIGATION}
+  ${id}=  Execute and Check Success  ${PAP_ADMIN} lp -srai | grep 'id=[^p][0-9a-f\-]*' | cut -d'=' -f2
+  Remove obligation  ${id}  ${TEST_OBLIGATION}
+  ${output}=  List policy with resource and action ids
+  Should Not Contain  ${output}  ${TEST_OBLIGATION}
+  Add obligation  ${id}  ${TEST_OBLIGATION}
+  ${output}=  List policy with all ids
+  Should Contain  ${output}  obligation
+  Should Contain  ${output}  ${TEST_OBLIGATION}
+  [Teardown]  Clean up
+  
 
 *** Keywords ***
 

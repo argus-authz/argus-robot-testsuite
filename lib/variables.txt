@@ -10,6 +10,9 @@ ${TEST_USER_DN}  "CN=Test0, O=IGI, C=IT"
 ${TEST_DN_UID}  glite
 ${TEST_DN_UID_GROUP}  testing
 
+${HOSTCERT}  /etc/grid-security/hostcert.pem
+${HOSTKEY}  /etc/grid-security/hostkey.pem
+
 ##### VOs ######
 
 ${TEST_VO}  test.vo

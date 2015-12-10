@@ -1,0 +1,41 @@
+*** Settings ***
+Library    OperatingSystem
+Resource   lib/utils.txt
+Resource   variables.txt
+
+Suite Setup     Make backup of the configuration
+Suite Teardown  Restore configurations
+
+
+*** Test Cases ***
+User mapping 1 (bug 69197)
+  &{dict}=  Create Dictionary
+  ...  vo_map=yes  dn_map=yes
+  ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=yes
+  ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
+  Prepare PEP environment  &{dict}
+  ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
+  Should Contain Ignore Case  ${output}  ${TEST_RULE}  Did not find expected rule: ${TEST_RULE}
+  ${username}=  Get match  ${output}  Username: (.*)
+  Should Not Be Empty  ${username}  No user account mapped.
+  Should Be Equal  ${username}  ${TEST_DN_UID}
+  ${group}=  Get match  ${output}  Group: (.*)
+  Should Not Be Empty  ${group}  No user group mapped.
+  Should Be Equal  ${group}  ${TEST_DN_UID_GROUP}
+  ${sec_group}=  Get match  ${output}  Secondary Groups: (.*)
+  Should Not Be Empty  ${sec_group}  No user secondary group mapped.
+  Should Be Equal  ${sec_group}  ${TEST_DN_UID_GROUP}
+  ${user_proxy}=  Get user proxy path
+  ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
+  Should Contain Ignore Case  ${output}  ${TEST_RULE}  Did not find expected rule: ${TEST_RULE}
+  ${username}=  Get match  ${output}  Username: (.*)
+  Should Not Be Empty  ${username}  No user account mapped.
+  Should Be Equal  ${username}  ${TEST_DN_UID}
+  ${group}=  Get match  ${output}  Group: (.*)
+  Should Not Be Empty  ${group}  No user group mapped.
+  Should Be Equal  ${group}  ${TEST_DN_UID_GROUP}
+  ${sec_group}=  Get match  ${output}  Secondary Groups: (.*)
+  Should Not Be Empty  ${sec_group}  No user secondary group mapped.
+  Should Be Equal  ${sec_group}  ${TEST_DN_UID_GROUP}
+  [Teardown]  Restore PEP configuration
+

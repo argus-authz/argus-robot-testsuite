@@ -11,3 +11,7 @@ PDP status
   Start PDP service
   ${cmd}=  Set Variable  ${T_PDP_CTRL} status | grep -q "Status: OK"
   Execute and Check Success  ${cmd}
+  
+Error exit codes (bug 65542)
+  Stop PDP service
+  Execute and Check Failure  ${T_PDP_CTRL} status

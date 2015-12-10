@@ -24,8 +24,16 @@ Create user proxy
   Should Be Equal As Integers  ${rc}  0
   [Teardown]  Remove temporary user key
 
+Get host DN
+  ${output}=  Get DN  ${HOSTCERT}
+  [Return]  ${output}
+
 Get user DN
-  ${cmd}=  Set Variable  openssl x509 -in ${USERCERT} -subject -noout | sed 's/subject= //'
+  ${output}=  Get DN  ${USERCERT}
+  [Return]  ${output}
+  
+Get DN  [Arguments]  ${cert_path}
+  ${cmd}=  Set Variable  openssl x509 -in ${cert_path} -subject -noout | sed 's/subject= //'
   ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
   [Return]  ${output}
 

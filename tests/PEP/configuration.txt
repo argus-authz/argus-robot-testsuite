@@ -31,8 +31,18 @@ PEP with no config file
   Execute and Check Failure  ${cmd}
   [Teardown]  Restore PEP configuration
 
+Error exit codes (bug 65542)
+  Stop PEP service
+  Execute and Check Failure  ${T_PEP_CTRL} status
+
+Works with non PIPs defined (bug 69263)
+  Stop PEP service
+  ${file}=  Join Path  ${T_PEP_CONF}  ${T_PEP_INI}
+  Comment parameter  ${file}  pips
+  Start PEP service
+  [Teardown]  Restore PEP configuration
 
 *** Keywords ***
 Start PEP
   Run Process  systemctl  start  argus-pepd
-  Sleep  15s
+  Sleep  15 sec

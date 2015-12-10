@@ -10,5 +10,5 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
-Reload policies
+Reload policy
   Execute and Check Success  ${T_PDP_CTRL} reloadPolicy

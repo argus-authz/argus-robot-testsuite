@@ -69,6 +69,7 @@ Perform PEP request  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyin
   [Return]  ${output}
   
 Build PEPCLI command line  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}
+  #${str}=  Escape char  ${fqan}  .
   ${cmd}=  catenate
   ...  ${PEPCLI} -p https://`hostname`:8154/authz
   ...  --capath /etc/grid-security/certificates/ 
@@ -77,8 +78,8 @@ Build PEPCLI command line  [Arguments]  ${client_key}  ${client_cert}  ${subject
   ...  --keyinfo ${subject_keyinfo}
   ...  -r "${resource}" 
   ...  -a "${action}"
-  ${cmd}=  Run Keyword If  ${fqan} != None  catenate  ${cmd}  -f "/${fqan}"
-  ...      ELSE  Set Variable  ${cmd}
+  ${cmd}=  Run Keyword If  '${fqan}' is 'None'  Set Variable  ${cmd}
+  ...      ELSE  catenate  ${cmd}  -f "/${fqan}"
   [Return]  ${cmd}
 
 Prepare PEP environment  [Arguments]  &{dict}

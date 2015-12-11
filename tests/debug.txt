@@ -16,6 +16,12 @@ Escape
   String.Replace String  ${str}  /  \/
   Should Be Equal  ${str}  \/hello\/world
   
+Escape dot
+  ${str}=  Set variable  hello.world
+  ${str}=  String.Replace String  ${str}  .  \\.
+  Log  ${str}
+  Should Be Equal  ${str}  hello\\.world
+
 Timestamp
   ${time}=  Get Time
   ${time}=  String.Replace String Using Regexp  ${time}  ${SPACE}  _

@@ -15,3 +15,9 @@ PDP status
 Error exit codes (bug 65542)
   Stop PDP service
   Execute and Check Failure  ${T_PDP_CTRL} status
+
+XACML SOAP handler error (bug 75860)
+  Start PDP service
+  ${cmd}=  Set Variable  echo "POST /authz" | openssl s_client -connect `hostname`:8152 -quiet
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  soap11:Fault

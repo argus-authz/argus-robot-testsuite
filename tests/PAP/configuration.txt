@@ -80,6 +80,15 @@ Status handler of PAP (bug 65802)
   ...  https://`hostname`:8150/status
   Execute and Check Failure  ${cmd}
 
+Port 8150 is listening on hostname (bug 75538)
+  Start PAP service
+  ${cmd}=  Set Variable  netstat -tl --numeric-ports -W  | grep `hostname`:8150 | grep LISTEN
+  Execute and Check Success  ${cmd}
+  
+Port 8151 is listening on localhost (bug 75538)
+  Start PAP service
+  ${cmd}=  Set Variable  netstat -tl --numeric-ports -W  | grep localhost:8150 | grep LISTEN
+  Execute and Check Success  ${cmd}
 
 *** Keywords ***
 Get content test 6

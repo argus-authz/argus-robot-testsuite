@@ -31,7 +31,7 @@ Comment parameter  [Arguments]  ${file}  ${parameter}
   Execute and Check Success  sed -i 's/${parameter}/#${parameter}/g' ${file}
 
 Escape char  [Arguments]  ${str}  ${char}
-  ${output}=  String.Replace String  ${str}  ${char}  \${char}
+  ${output}=  String.Replace String  ${str}  ${char}  \\${char}
   [Return]  ${output}
 
 Execute and Check Success  [Arguments]  ${cmd}

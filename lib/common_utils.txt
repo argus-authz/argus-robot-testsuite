@@ -3,6 +3,7 @@
 Library    OperatingSystem
 Library    Process
 Library    String
+Library    Collections
 Resource   variables.txt
 
 Resource   file_utils.txt
@@ -17,7 +18,7 @@ Add conf parameter  [Arguments]  ${file}  ${parameter}  ${value}
   ${cmd}=  Set Variable  sed -i '/^${parameter}.*/d' ${file}
   Execute and Check Success  ${cmd}
   ${row}=  Set Variable  ${parameter} = ${value}
-  Append To File  ${file}  ${row}
+  Append To File  ${file}  \n${row}
 
 Change parameter value  [Arguments]  ${file}  ${parameter}  ${value}
   Execute and Check Success  sed -i 's/${parameter}\ =.*/${parameter}\ =\ ${value}/' ${file}
@@ -45,7 +46,8 @@ Execute and Check Failure  [Arguments]   ${cmd}
 
 Get match  [Arguments]  ${item}  ${regexp}
   ${result}=  Get Regexp Matches  ${item}  ${regexp}  1
-  [Return]  ${result}[0]
+  ${elem}=  Get From List  ${result}  0
+  [Return]  ${elem}
 
 Get user id
   ${rc}  ${output}=  Run And Return Rc And Output  id -u

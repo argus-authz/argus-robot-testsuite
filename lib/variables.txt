@@ -28,6 +28,8 @@ ${DUMMY_PAP}  Dummy
 ${DEFAULT_PAP}  default
 
 ${TEST_RESOURCE}  resource_1
-${TEST_ACTION}  testwerfer
+${TEST_ACTION}  action_1
 ${TEST_RULE}  permit
 ${TEST_OBLIGATION}  http://glite.org/xacml/obligation/local-environment-map
+
+${RULE_INDETERMINATE}  Indeterminate

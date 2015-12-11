@@ -2,6 +2,7 @@
 
 Library    OperatingSystem
 Library    Process
+Library    String
 Resource   variables.txt
 
 Resource   common_utils.txt
@@ -12,8 +13,10 @@ Variables  ${ENV_FILE}
 *** Keywords ***
 
 Create working directory
-  ${secs}=  Get Time  epoch
-  ${workdir}=  Join Path  ${TMP_DIR}  argus-testsuite_${secs}
+  ${time}=  Get Time
+  ${time}=  Replace String Using Regexp  ${time}  ${SPACE}  _
+  ${time}=  Replace String Using Regexp  ${time}  :|-  ${EMPTY}
+  ${workdir}=  Join Path  ${TMP_DIR}  argus-testsuite_${time}
   Create Directory  ${workdir}
   [Return]  ${workdir}
   

@@ -1,6 +1,7 @@
 ** Settings ***
 
 Library    OperatingSystem
+Library    Collections
 Library    Process
 Resource   variables.txt
 
@@ -19,6 +20,24 @@ Add PEP authz test policy
   ${user_dn}=  Get user dn
   Add policy with obligation  ${TEST_RESOURCE}  ${TEST_ACTION}  ${TEST_OBLIGATION}  ${TEST_RULE}  ${user_dn}
 
+Check if username match  [Arguments]  ${output}  ${pattern_to_match}
+  ${username}=  Get match  ${output}  Username: (.*)
+  Should Not Be Empty  ${username}  No user account mapped.
+  Should Match Regexp  ${username}  ${pattern_to_match}
+  
+Check if group match  [Arguments]  ${output}  ${pattern_to_match}
+  ${group}=  Get match  ${output}  Group: (.*)
+  Should Not Be Empty  ${group}  No user group mapped.
+  Should Match Regexp  ${group}  ${pattern_to_match}
+  
+Check if secondary group match  [Arguments]  ${output}  ${pattern_to_match}
+  ${sec_group}=  Get match  ${output}  Secondary Groups: (.*)
+  Should Not Be Empty  ${sec_group}  No user secondary group mapped.
+  Should Match Regexp  ${sec_group}  ${pattern_to_match}
+  
+Check if rule match  [Arguments]  ${output}  ${rule}
+  Should Contain Ignore Case  ${output}  ${rule}  Did not find expected rule: ${rule}
+
 Init configuration  [Arguments]  ${pref_dn_for_login}  ${pref_dn_for_primary_group}  ${no_primary_group_is_error}
   ${file}=  Set Variable  ${T_PEP_CONF}/${T_PEP_INI}
   Add conf parameter  ${file}  preferDNForLoginName  ${pref_dn_for_login}
@@ -29,16 +48,16 @@ Init grid map file  [Arguments]  ${vo_map}  ${dn_map}
   ${file}=  Set Variable  ${GRIDDIR}/${GRIDMAPFILE}
   ${user_dn}=  Get user dn
   Empty file  ${file}
-  Run Keyword If  '${vo_map}' == 'yes'  Append To File  ${file}  "${VO_PRIMARY_GROUP}" ".${VO}"
-  Run Keyword If  '${dn_map}' == 'yes'  Append To File  ${file}  "${user_dn}" ${TEST_DN_UID}
+  Run Keyword If  '${vo_map}' == 'yes'  Append To File  ${file}  \n"${VO_PRIMARY_GROUP}" .${VO}
+  Run Keyword If  '${dn_map}' == 'yes'  Append To File  ${file}  \n"${user_dn}" ${TEST_DN_UID}
 
 Init grid group map file  [Arguments]  ${group_vo_map}  ${group_vo_secondary_map}  ${group_dn_map}
   ${file}=  Set Variable  ${GRIDDIR}/${GROUPMAPFILE}
   ${user_dn}=  Get user dn
   Empty file  ${file}
-  Run Keyword If  '${group_vo_map}' == 'yes'  Append To File  ${file}  "${VO_PRIMARY_GROUP}" ${VO}
-  Run Keyword If  '${group_vo_secondary_map}' == 'yes'  Append To File  ${file}  "${VO_SECONDARY_GROUP}" ${VO}-secondary
-  Run Keyword If  '${group_dn_map}' == 'yes'  Append To File  ${file}  "${user_dn}" ${TEST_DN_UID_GROUP}
+  Run Keyword If  '${group_vo_map}' == 'yes'  Append To File  ${file}  \n"${VO_PRIMARY_GROUP}" ${VO}
+  Run Keyword If  '${group_vo_secondary_map}' == 'yes'  Append To File  ${file}  \n"${VO_SECONDARY_GROUP}" ${VO}-secondary
+  Run Keyword If  '${group_dn_map}' == 'yes'  Append To File  ${file}  \n"${user_dn}" ${TEST_DN_UID_GROUP}
   
 Init pool accounts
   :FOR  ${idx}  IN RANGE  1  3
@@ -58,11 +77,12 @@ Build PEPCLI command line  [Arguments]  ${client_key}  ${client_cert}  ${subject
   ...  --keyinfo ${subject_keyinfo}
   ...  -r "${resource}" 
   ...  -a "${action}"
-  ${cmd}=  Run Keyword If  '${fqan}' != None  catenate  ${cmd}  -f "/${fqan}"
+  ${cmd}=  Run Keyword If  ${fqan} != None  catenate  ${cmd}  -f "/${fqan}"
   ...      ELSE  Set Variable  ${cmd}
   [Return]  ${cmd}
 
 Prepare PEP environment  [Arguments]  &{dict}
+  Log Dictionary  ${dict}
   Create Directory  /etc/vomses
   Create File  /etc/vomses/${VO}  ${VOMSES_STRING}
   Create user proxy

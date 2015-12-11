@@ -15,3 +15,9 @@ Escape
   ${str}=  Set variable  /hello/world
   String.Replace String  ${str}  /  \/
   Should Be Equal  ${str}  \/hello\/world
+  
+Timestamp
+  ${time}=  Get Time
+  ${time}=  String.Replace String Using Regexp  ${time}  ${SPACE}  _
+  ${time}=  String.Replace String Using Regexp  ${time}  :|-  ${EMPTY}
+  Log  ${time}

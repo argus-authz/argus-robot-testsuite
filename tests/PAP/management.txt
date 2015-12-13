@@ -1,7 +1,5 @@
 *** Settings ***
-Library    OperatingSystem
 Resource   lib/utils.txt
-Resource   variables.txt
 
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations
@@ -13,6 +11,7 @@ ${new_pap}  NewPAP
 
 ${std_poll_interval}  14400
 ${poll_interval}  100
+${FAKE_KERB_DN}  CN=host/argus.example.ch,C=CH
 
 
 *** Test Cases ***
@@ -135,6 +134,13 @@ List policies with anyone full power
   Start PAP service
   Execute and Check Success  ${PAP_ADMIN} list-policies >/dev/null 2>&1
   [Teardown]  Restore PAP configuration
+  
+Restart after a kerberized DN was added as acl (bug 82193)
+  Start PAP service
+  Execute and Check Success  ${PAP_ADMIN} add-ace ${FAKE_KERB_DN} ALL
+  Restart PAP service
+  Execute and Check Success  ${PAP_ADMIN} lp
+  Execute and Check Success  ${PAP_ADMIN} remove-ace ${FAKE_KERB_DN}
   
   
 *** Keywords ***

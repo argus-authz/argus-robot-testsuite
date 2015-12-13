@@ -1,7 +1,5 @@
 *** Settings ***
-Library    OperatingSystem
 Resource   lib/utils.txt
-Resource   variables.txt
 
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations

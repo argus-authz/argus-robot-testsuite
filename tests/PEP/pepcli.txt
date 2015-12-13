@@ -1,48 +1,25 @@
 *** Settings ***
-Library    OperatingSystem
 Resource   lib/utils.txt
-Resource   variables.txt
 
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations
 
 
 *** Test Cases ***
-PEP status
-  Start PEP service
-  ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
-  Execute and Check Success  ${cmd}
+Using thread-safe PEP client library (bug 77525)
+  ${output}=  Execute and Check Success  pepcli -V
+  Should Contain  ${output}  argus-pep-api-c/2
 
-PEP with SSL
-  Stop PEP service
-  ${file}=  Join Path  ${T_PEP_CONF}  ${T_PEP_INI}
-  Change parameter value  ${file}  enableSSL  true
-  Start PEP
-  ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
+Right RPM is installed
+  ${cmd}=  Set Variable  rpm -q argus-pep-api-c
   Execute and Check Success  ${cmd}
-  [Teardown]  Restore PEP configuration
   
-PEP with no config file
-  Stop PEP service
-  ${file}=  Join Path  ${T_PEP_CONF}  ${T_PEP_INI}
-  Remove File  ${file}
-  Start PEP
-  ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
-  Execute and Check Failure  ${cmd}
-  [Teardown]  Restore PEP configuration
-
-Error exit codes (bug 65542)
-  Stop PEP service
-  Execute and Check Failure  ${T_PEP_CTRL} status
-
-Works with non PIPs defined (bug 69263)
-  Stop PEP service
-  ${file}=  Join Path  ${T_PEP_CONF}  ${T_PEP_INI}
-  Comment parameter  ${file}  pips
-  Start PEP service
-  [Teardown]  Restore PEP configuration
-
-*** Keywords ***
-Start PEP
-  Run Process  systemctl  start  argus-pepd
-  Sleep  15 sec
+GSI dependency is set to the thread-save library (bug 77739)
+  ${cmd}=  Set Variable  yum deplist argus-gsi-pep-callout
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  dependency: libargus-pep.so.2
+  
+GSI provides is set to the thread-save library (bug 77739)
+  ${cmd}=  Set Variable  yum deplist argus-gsi-pep-callout
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  provider: argus-pep-api-c.x86_64 2

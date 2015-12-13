@@ -12,6 +12,14 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
+Check directory  [Arguments]  ${directory}
+  Directory Should Exist  ${directory}
+  Directory Should Not Be Empry  ${directory}
+
+Check file  [Arguments]  ${file}
+  File Should Exist  ${file}
+  File Should Not Be Empty  ${file}
+
 Create working directory
   ${time}=  Get Time
   ${time}=  Replace String Using Regexp  ${time}  ${SPACE}  _

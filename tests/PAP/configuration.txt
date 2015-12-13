@@ -1,7 +1,5 @@
 *** Settings ***
-Library    OperatingSystem
 Resource   lib/utils.txt
-Resource   variables.txt
 
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations
@@ -89,6 +87,22 @@ Port 8151 is listening on localhost (bug 75538)
   Start PAP service
   ${cmd}=  Set Variable  netstat -tl --numeric-ports -W  | grep localhost:8150 | grep LISTEN
   Execute and Check Success  ${cmd}
+
+The proposed file-structure for is given (bug 77532)
+  ${file}=  Set Variable  /usr/sbin/papctl
+  Check file  ${file}
+  ${dir}=  Set Variable  /etc/argus/pap
+  Check directory  ${dir}
+
+Check PID file (bug 80510)
+  ${file}=  Set Variable  /var/run/argus-pap.pid
+  Start PAP service
+  Check File  ${file}
+
+Config file is properly declared in the rpm (bug 81738)
+  ${output}=  Execute and Check Success  rpm -qlc argus-pap
+  Should Contain  ${output}  pap-admin.properties
+
 
 *** Keywords ***
 Get content test 6

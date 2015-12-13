@@ -29,6 +29,10 @@ Restore services
   Start PDP service
   Start PEP service
 
+Restart PAP service
+  Stop PAP service
+  Start PAP service
+
 Restart PEP service
   Stop PEP service
   Start PEP service

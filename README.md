@@ -13,7 +13,7 @@ This test suite provides a bunch of tests for validate the components of Argus:
 3. PEP tests
    * Authorization request
    * Different user mapping scenarios
-   * Configuratio parameters
+   * Configuration parameters
 
 ## Configuration
 The testsuite needs some Linux tools for run properly:

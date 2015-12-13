@@ -1,7 +1,5 @@
 *** Settings ***
-Library    OperatingSystem
 Resource   lib/utils.txt
-Resource   variables.txt
 
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations
@@ -21,3 +19,14 @@ XACML SOAP handler error (bug 75860)
   ${cmd}=  Set Variable  echo "POST /authz" | openssl s_client -connect `hostname`:8152 -quiet
   ${output}=  Execute and Check Success  ${cmd}
   Should Contain  ${output}  soap11:Fault
+
+The proposed file-structure for is given (bug 77532)
+  ${file}=  Set Variable  /usr/sbin/pdpctl
+  Check file  ${file}
+  ${dir}=  Set Variable  /etc/argus/pdp
+  Check directory  ${dir}
+  
+Check PID file (bug 80510)
+  ${file}=  Set Variable  /var/run/argus-pdp.pid
+  Start PDP service
+  Check File  ${file}

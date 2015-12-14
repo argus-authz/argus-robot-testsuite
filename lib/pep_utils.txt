@@ -2,7 +2,6 @@
 
 Library    OperatingSystem
 Library    Collections
-Library    Process
 Resource   variables.txt
 
 Resource   common_utils.txt

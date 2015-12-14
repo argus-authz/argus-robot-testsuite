@@ -71,52 +71,52 @@ List policy with obligation (bug 68595)
 *** Keywords ***
 
 Prepare
-  ${policies}=  catenate  SEPARATOR=
-  ...  resource "resource_1" { \n
-  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {} \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
-  ...  resource "resource_2" { \n
-  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {} \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
-  ...  resource "resource_3" { \n
-  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {} \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
+  ${policies}=  catenate  SEPARATOR=\n
+  ...  resource "resource_1" {
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {}
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
+  ...  resource "resource_2" {
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {}
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
+  ...  resource "resource_3" {
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {}
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
   Prepare PAP environment  ${policies}
   
 Get policy 1
-  ${policy}=  catenate  SEPARATOR=
-  ...  resource "resource_1" { \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
+  ${policy}=  catenate  SEPARATOR=\n
+  ...  resource "resource_1" {
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
   [Return]  ${policy}
 
 Get policy 2
-  ${policy}=  catenate  SEPARATOR=
-  ...  resource "resource_2" { \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name" } \n
-  ...    } \n
-  ...  } \n
+  ${policy}=  catenate  SEPARATOR=\n
+  ...  resource "resource_2" {
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name" }
+  ...    }
+  ...  }
   [Return]  ${policy}
   
 Get policy 3
-  ${policy}=  catenate  SEPARATOR=
-  ...  resource "resource_3" { \n
-  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {} \n
-  ...    action "execute" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999997/CN=user name" } \n
-  ...    } \n
+  ${policy}=  catenate  SEPARATOR=\n
+  ...  resource "resource_3" {
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {}
+  ...    action "execute" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999997/CN=user name" }
+  ...    }
   ...  }
   [Return]  ${policy}
   

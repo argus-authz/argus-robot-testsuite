@@ -1,7 +1,6 @@
 ** Settings ***
 
 Library    OperatingSystem
-Library    Process
 Resource   variables.txt
 
 Resource   common_utils.txt

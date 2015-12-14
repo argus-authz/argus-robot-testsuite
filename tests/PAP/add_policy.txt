@@ -43,24 +43,24 @@ DN containing slash (bug 66669)
 
 *** Keywords ***
 Prepare
-  ${policies}=  catenate  SEPARATOR=
-  ...  resource ".*" { \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
-  ...  resource ".*" { \n
-  ...    action ".*" { \n
-  ...      rule deny { fqan="/badvo" } \n
-  ...    } \n
-  ...  } \n
+  ${policies}=  catenate  SEPARATOR=\n
+  ...  resource ".*" {
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
+  ...  resource ".*" {
+  ...    action ".*" {
+  ...      rule deny { fqan="/badvo" }
+  ...    }
+  ...  }
   [Return]  ${policies}
 
 Prepare with error
-  ${policies}=  catenate  SEPARATOR=
-  ...  resource ".*" { \n
-  ...    action ".*" { \n
-  ...      rule deni { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
+  ${policies}=  catenate  SEPARATOR=\n
+  ...  resource ".*" {
+  ...    action ".*" {
+  ...      rule deni { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
   [Return]  ${policies}

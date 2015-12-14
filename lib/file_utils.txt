@@ -1,7 +1,6 @@
 ** Settings ***
 
 Library    OperatingSystem
-Library    Process
 Library    String
 Resource   variables.txt
 
@@ -14,7 +13,7 @@ Variables  ${ENV_FILE}
 
 Check directory  [Arguments]  ${directory}
   Directory Should Exist  ${directory}
-  Directory Should Not Be Empry  ${directory}
+  Directory Should Not Be Empty  ${directory}
 
 Check file  [Arguments]  ${file}
   File Should Exist  ${file}

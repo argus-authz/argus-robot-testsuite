@@ -36,26 +36,26 @@ Update from file with changing only an action
 *** Keywords ***
 
 Prepare
-  ${policy}=  catenate  SEPARATOR=
-  ...  resource "resource_1" { \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
+  ${policy}=  catenate  SEPARATOR=\n
+  ...  resource "resource_1" {
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
   Prepare PAP environment  ${policy}
 
 Prepare new policy file
-  ${policy}=  catenate  SEPARATOR=
-  ...  resource ".*" { \n
-  ...    action ".*" { \n
-  ...      rule permit { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
+  ${policy}=  catenate  SEPARATOR=\n
+  ...  resource ".*" {
+  ...    action ".*" {
+  ...      rule permit { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
   Create policy file  ${policy}
 
 Prepare new policy file with only an action
-  ${policy}=  catenate  SEPARATOR=
-  ...  action ".*" { \n
-  ...   rule permit { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...  } \n
+  ${policy}=  catenate  SEPARATOR=\n
+  ...  action ".*" {
+  ...   rule permit { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...  }
   Create policy file  ${policy}

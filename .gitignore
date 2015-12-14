@@ -4,3 +4,5 @@ log/*
 ._*
 .project
 .pydevproject
+robot-indices/*
+debug.txt

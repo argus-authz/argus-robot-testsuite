@@ -218,4 +218,59 @@ User mapping case 8a (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   [Teardown]  Restore PEP configuration
   
-  
+Renew timestamp of leases (bug 83281)
+  &{dict}=  Create Dictionary
+  ...  vo_map=yes  dn_map=no
+  ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
+  ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
+  Prepare PEP environment  &{dict}
+  ${user_proxy}=  Get user proxy path
+  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
+  ${file}=  Execute and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR} | grep %
+  ${lease_file}=  Join Path  ${GRIDDIR}/${GRIDMAPDIR}  ${file}
+  ${timestamp}=  Get Modified Time  ${lease_file}
+  Sleep  5
+  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
+  ${new_timestamp}=  Get Modified Time  ${lease_file}
+  Should Not Be Equal  ${timestamp}  ${new_timestamp}
+  [Teardown]  Restore PEP configuration
+
+PEPD write the secondary group into the lease (bug 83317)
+   &{dict}=  Create Dictionary
+  ...  vo_map=yes  dn_map=no
+  ...  grp_vo_map=yes  grp_vo_sec_map=yes  grp_dn_map=no
+  ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
+  Prepare PEP environment  &{dict}
+  ${file}=  Join Path  ${T_PEP_CONF}  ${T_PEP_INI}
+  Add conf parameter  ${file}  useSecondaryGroupNamesForMapping  true
+  Restart PEP service
+  ${user_proxy}=  Get user proxy path
+  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
+  Change parameter value  ${file}  useSecondaryGroupNamesForMapping  false
+  Restart PEP service
+  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
+  ${leases_num}=  Execute and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR}/%* | wc -l
+  Should Be Equal  ${leases_num}  2
+  [Teardown]  Restore PEP configuration
+
+Legacy LCAS/LCMAPS lease filename encoding (bug 83419)
+  &{dict}=  Create Dictionary
+  ...  vo_map=yes  dn_map=no
+  ...  grp_vo_map=yes  grp_vo_sec_map=yes  grp_dn_map=no
+  ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
+  Prepare PEP environment  &{dict}
+  ${user_proxy}=  Get user proxy path
+  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
+  Execute and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR}/%* | grep ${VO}
+  [Teardown]  Restore PEP configuration
+
+
+
+
+
+
+
+
+
+
+

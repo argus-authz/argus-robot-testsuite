@@ -62,55 +62,55 @@ Remove with empty repository
 *** Keywords ***
 
 Prepare
-  ${policies}=  catenate  SEPARATOR=
-  ...  resource "resource_1" { \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
-  ...  resource "resource_2" { \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
-  ...  resource "resource_3" { \n
-  ...    action ".*" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
+  ${policies}=  catenate  SEPARATOR=\n
+  ...  resource "resource_1" {
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
+  ...  resource "resource_2" {
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
+  ...  resource "resource_3" {
+  ...    action ".*" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
   Prepare PAP environment  ${policies}
 
 Prepare test 3
-  ${policies}=  catenate  SEPARATOR=
-  ...  resource "resource_1" { \n
-  ...    action "submit-job" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  \n
-  ...    action "get-status" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...    } \n
-  ...  } \n
+  ${policies}=  catenate  SEPARATOR=\n
+  ...  resource "resource_1" {
+  ...    action "submit-job" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ... 
+  ...    action "get-status" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...    }
+  ...  }
   Prepare PAP environment  ${policies}
 
 Prepare test 4
-  ${policies}=  catenate  SEPARATOR=
-  ...  resource "resource_1" { \n
-  ...    action "get-status" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" } \n
-  ...    } \n
-  ...  } \n
+  ${policies}=  catenate  SEPARATOR=\n
+  ...  resource "resource_1" {
+  ...    action "get-status" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" }
+  ...    }
+  ...  }
   Prepare PAP environment  ${policies}
 
 Prepare test 5
-  ${policies}=  catenate  SEPARATOR=
-  ...  resource "resource_1" { \n
-  ...    action "get-status" { \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" } \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" } \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999997/CN=user name 3" } \n
-  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" } \n
-  ...    } \n
-  ...  } \n
+  ${policies}=  catenate  SEPARATOR=\n
+  ...  resource "resource_1" {
+  ...    action "get-status" {
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name" }
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" }
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999997/CN=user name 3" }
+  ...      rule deny { subject="/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999998/CN=user name 2" }
+  ...    }
+  ...  }
   Prepare PAP environment  ${policies}

@@ -65,13 +65,14 @@ Argus syntax error: missing 'permission'
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 Error exit codes (bug 65542)
-  Execute and Check Failure  ${T_PAP_CTRL} status
+  ${output}=  Execute and Check Failure  ${T_PAP_CTRL} status
   
 Status handler of PAP (bug 65802)
   [Setup]  Start PAP service
-  Execute and Check Success  wget http://localhost:${T_PAP_ADMIN_PORT}/status
+  Execute and Check Success  wget -O /tmp/pap_status http://localhost:${T_PAP_ADMIN_PORT}/status
   ${cmd}=  catenate
-  ...  wget --certificate=/etc/grid-security/hostcert.pem
+  ...  wget -O /tmp/pap_status
+  ...  --certificate=/etc/grid-security/hostcert.pem
   ...  --private-key=/etc/grid-security/hostkey.pem
   ...  --ca-directory=/etc/grid-security/certificates
   ...  --no-check-certificate
@@ -80,13 +81,15 @@ Status handler of PAP (bug 65802)
 
 Port 8150 is listening on hostname (bug 75538)
   Start PAP service
-  ${cmd}=  Set Variable  netstat -tl --numeric-ports -W  | grep `hostname`:8150 | grep LISTEN
-  Execute and Check Success  ${cmd}
+  ${output}=  Execute and Check Success  netstat -tl --numeric-ports -W | grep 8150
+  ${hostname}=  Get hostname
+  ${ret}=  Should Match Regexp  ${output}  (\\[::\\]|0.0.0.0|${hostname}):8150
+  Log  ${ret}
   
 Port 8151 is listening on localhost (bug 75538)
   Start PAP service
-  ${cmd}=  Set Variable  netstat -tl --numeric-ports -W  | grep localhost:8150 | grep LISTEN
-  Execute and Check Success  ${cmd}
+  ${output}=  Execute and Check Success  netstat -tl --numeric-ports -W
+  Should Contain  ${output}  localhost:8151
 
 The proposed file-structure for is given (bug 77532)
   ${file}=  Set Variable  /usr/sbin/papctl
@@ -103,24 +106,34 @@ Config file is properly declared in the rpm (bug 81738)
   ${output}=  Execute and Check Success  rpm -qlc argus-pap
   Should Contain  ${output}  pap-admin.properties
 
+#Memory limit (bug 84844)
+#  Start PAP service
+#  ${output}=  Execute and Check Success  ps ax | grep pap
+#  Should Contain  ${output}  -Xmx256
+
+#Use correct VOMS Java API (bug 84848)
+#  @{list}=  Create List  bcprov.jar  trustmanager-axis.jar  trustmanager.jar  vomsjapi.jar
+#  :FOR  ${elem}  IN  @{list}
+#  \  ${jar}=  Join Path  ${T_PAP_HOME}/lib  ${elem}
+#  \  Should Exist  ${jar}
 
 *** Keywords ***
 Get content test 6
-  ${text}=  catenate  SEPARATOR=
-  ...  [dn]\n
-  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300"  ALL\n
-  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE\n
-  ...  \n
-  ...  [fqan]\n
+  ${text}=  catenate  SEPARATOR=\n
+  ...  [dn]
+  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300"  ALL
+  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE
+  ...  
+  ...  [fqan]
   [Return]  ${text}
   
 Get content test 7
-  ${text}=  catenate  SEPARATOR=
-  ...  [dn]\n
-  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300" \n
-  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE\n
-  ...  \n
-  ...  [fqan]\n
+  ${text}=  catenate  SEPARATOR=\n
+  ...  [dn]
+  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300"
+  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE
+  ...  
+  ...  [fqan]
   [Return]  ${text}
   
 Start PAP

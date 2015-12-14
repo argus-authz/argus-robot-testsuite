@@ -1,7 +1,6 @@
 ** Settings ***
 
 Library    OperatingSystem
-Library    Process
 Library    String
 Library    Collections
 Resource   variables.txt
@@ -42,6 +41,10 @@ Execute and Check Success  [Arguments]  ${cmd}
 Execute and Check Failure  [Arguments]   ${cmd}
   ${rc}  ${output}=   Run and Return RC And Output  ${cmd}
   Should Not Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}
+  [Return]  ${output}
+
+Get hostname
+  ${output}=  Execute and Check Success  hostname
   [Return]  ${output}
 
 Get match  [Arguments]  ${item}  ${regexp}

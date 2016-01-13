@@ -30,14 +30,6 @@ Required pool_interval
   Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
   
-#Syntax error: missing '='
-#  Stop PAP service
-#  ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
-#  Replace string  ${file}  entity_id\ =  entity_id\ \ 
-#  Start PAP service
-#  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-#  [Teardown]  Restore PAP configuration
-  
 Syntax error: missing ']'
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
   Replace string  ${file}  \\[paps:properties\\]  \\[paps:properties
@@ -106,16 +98,6 @@ Config file is properly declared in the rpm (bug 81738)
   ${output}=  Execute and Check Success  rpm -qlc argus-pap
   Should Contain  ${output}  pap-admin.properties
 
-#Memory limit (bug 84844)
-#  Start PAP service
-#  ${output}=  Execute and Check Success  ps ax | grep pap
-#  Should Contain  ${output}  -Xmx256
-
-#Use correct VOMS Java API (bug 84848)
-#  @{list}=  Create List  bcprov.jar  trustmanager-axis.jar  trustmanager.jar  vomsjapi.jar
-#  :FOR  ${elem}  IN  @{list}
-#  \  ${jar}=  Join Path  ${T_PAP_HOME}/lib  ${elem}
-#  \  Should Exist  ${jar}
 
 *** Keywords ***
 Get content test 6

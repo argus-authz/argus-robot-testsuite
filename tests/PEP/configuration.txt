@@ -50,17 +50,6 @@ Check PID file (bug 80510)
   ${file}=  Set Variable  /var/run/argus-pepd.pid
   Start PEP service
   Check File  ${file}
-  
-#Memory limit (bug 84844)
-#  Start PEP service
-#  ${output}=  Execute and Check Success  ps ax | grep PEPDaemon
-#  Should Contain  ${output}  -Xmx256
-
-#Use correct VOMS Java API (bug 84848)
-#  @{list}=  Create List  bcprov.jar  trustmanager.jar  vomsjapi.jar  argus-pdp-pep-common.jar  argus-pep-common.jar
-#  :FOR  ${elem}  IN  @{list}
-#  \  ${jar}=  Join Path  ${T_PEP_HOME}/lib  ${elem}
-#  \  Should Exist  ${jar}
 
 
 *** Keywords ***

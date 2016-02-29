@@ -54,15 +54,15 @@ Start PEP service
 
 Stop PAP service
   Run Process  systemctl  stop  argus-pap
-  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PAP_ADMIN_PORT},${T_PAP_PORT}
+  Wait Until Keyword Succeeds  2 min  2 sec  Port not reachable  ${T_PAP_ADMIN_PORT},${T_PAP_PORT}
   Log  PAP stopped
 
 Stop PDP service
   Run Process  systemctl  stop  argus-pdp
-  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PDP_ADMIN_PORT},${T_PDP_PORT}
+  Wait Until Keyword Succeeds  2 min  2 sec  Port not reachable  ${T_PDP_ADMIN_PORT},${T_PDP_PORT}
   Log  PDP stopped
 
 Stop PEP service
   Run Process  systemctl  stop  argus-pepd
-  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PEP_ADMIN_PORT},${T_PEP_PORT}
+  Wait Until Keyword Succeeds  2 min  2 sec  Port not reachable  ${T_PEP_ADMIN_PORT},${T_PEP_PORT}
   Log  PEP stopped

@@ -37,7 +37,7 @@ PEPCLI='/usr/bin/pepcli'
 PAP_ADMIN='/usr/bin/pap-admin'
 
 # Grid specific files
-GRIDDIR='/mnt/grid-security'
+GRIDDIR='/etc/grid-security'
 GRIDMAPFILE='grid-mapfile'
 GROUPMAPFILE='groupmapfile'
 VOMSGRIDMAPFILE='voms-grid-mapfile'
@@ -52,5 +52,5 @@ USERPWD_FILE='~/user_cert/password'
 VO="test.vo"
 VO_PRIMARY_GROUP="/test.vo"
 VO_SECONDARY_GROUP="/test.vo/G2"
-VOMSES_STRING='"test.vo" "vgrid02.cnaf.infn.it" "15004" "/C=IT/O=INFN/OU=Host/CN=vgrid02.cnaf.infn.it" "test.vo"'
+VOMSES_STRING='"test.vo" "vgrid02.cnaf.infn.it" "15000" "/C=IT/O=INFN/OU=Host/CN=vgrid02.cnaf.infn.it" "test.vo"'
 

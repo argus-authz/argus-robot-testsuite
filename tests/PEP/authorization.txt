@@ -33,9 +33,9 @@ DN group mapping (bug 68805)
   ${file}=  Set Variable  ${GRIDDIR}/${GROUPMAPFILE}
   Empty file  ${file}
   Append To File  ${file}  \n"${host_dn}" ${TEST_DN_UID_GROUP}
+  Ensure PAP running
+  Ensure PDP running
   Restart PEP service
-  Start PDP service
-  Start PAP service
   Remove all policies
   ${action}=  Set Variable  do_not_test
   Add policy with obligation  ${TEST_RESOURCE}  ${TEST_ACTION}  ${TEST_OBLIGATION}  ${TEST_RULE}  ${host_dn}

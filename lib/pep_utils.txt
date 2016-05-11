@@ -23,17 +23,17 @@ Check if username match  [Arguments]  ${output}  ${pattern_to_match}
   ${username}=  Get match  ${output}  Username: (.*)
   Should Not Be Empty  ${username}  No user account mapped.
   Should Match Regexp  ${username}  ${pattern_to_match}
-  
+
 Check if group match  [Arguments]  ${output}  ${pattern_to_match}
   ${group}=  Get match  ${output}  Group: (.*)
   Should Not Be Empty  ${group}  No user group mapped.
   Should Match Regexp  ${group}  ${pattern_to_match}
-  
+
 Check if secondary group match  [Arguments]  ${output}  ${pattern_to_match}
   ${sec_group}=  Get match  ${output}  Secondary Groups: (.*)
   Should Not Be Empty  ${sec_group}  No user secondary group mapped.
   Should Match Regexp  ${sec_group}  ${pattern_to_match}
-  
+
 Check if rule match  [Arguments]  ${output}  ${rule}
   Should Contain Ignore Case  ${output}  ${rule}  Did not find expected rule: ${rule}
 
@@ -57,7 +57,7 @@ Init grid group map file  [Arguments]  ${group_vo_map}  ${group_vo_secondary_map
   Run Keyword If  '${group_vo_map}' == 'yes'  Append To File  ${file}  \n"${VO_PRIMARY_GROUP}" ${VO}
   Run Keyword If  '${group_vo_secondary_map}' == 'yes'  Append To File  ${file}  \n"${VO_SECONDARY_GROUP}" ${VO}-secondary
   Run Keyword If  '${group_dn_map}' == 'yes'  Append To File  ${file}  \n"${user_dn}" ${TEST_DN_UID_GROUP}
-  
+
 Init pool accounts
   :FOR  ${idx}  IN RANGE  1  3
   \  Touch pool account  ${VO}00${idx}
@@ -66,16 +66,16 @@ Perform PEP request  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyin
   ${cmd}=  Build PEPCLI command line  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}
   ${output}=  Execute and Check Success  ${cmd}
   [Return]  ${output}
-  
+
 Build PEPCLI command line  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}
   #${str}=  Escape char  ${fqan}  .
   ${cmd}=  catenate
   ...  ${PEPCLI} -p https://`hostname`:8154/authz
-  ...  --capath /etc/grid-security/certificates/ 
-  ...  --key ${client_key} 
-  ...  --cert ${client_cert} 
+  ...  --capath /etc/grid-security/certificates/
+  ...  --key ${client_key}
+  ...  --cert ${client_cert}
   ...  --keyinfo ${subject_keyinfo}
-  ...  -r "${resource}" 
+  ...  -r "${resource}"
   ...  -a "${action}"
   ${cmd}=  Run Keyword If  '${fqan}' is 'None'  Set Variable  ${cmd}
   ...      ELSE  catenate  ${cmd}  -f "/${fqan}"
@@ -93,9 +93,9 @@ Prepare PEP environment  [Arguments]  &{dict}
   ${file}=  Set Variable  ${T_PEP_CONF}/${T_PEP_INI}
   Check string presence into file  ${file}  'org.glite.authz.pep.obligation.dfpmap.DFPMObligationHandlerConfigurationParser'
   Init configuration  ${dict.pref_dn_for_login}  ${dict.pref_dn_for_primary_grp}  ${dict.no_primary_grp_is_error}
+  Ensure PAP running
+  Ensure PDP running
   Restart PEP service
-  Start PDP service
-  Start PAP service
   Remove all policies
   Add PEP authz test policy
   Reload policy

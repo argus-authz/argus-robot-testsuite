@@ -17,13 +17,13 @@ This test suite provides a bunch of tests for validate the components of Argus:
 
 ## Configuration
 The testsuite needs some Linux tools for run properly:
- * Nmap
  * wget
+ * voms-clients
 
 For install them, in RedHat-based distribution, run:
 
 ```bash
-# yum install -y nmap wget
+# yum install -y wget voms-clients
 ```
 
 For run the testsuite, you need Robot Framework. Install it with:
@@ -41,7 +41,7 @@ Then execute the entire testsuite:
 # cd argus-robot-testsuite
 # pybot --pythonpath .:lib  -d /tmp/robot  tests/
 ```
-You can also run test for a single service, or a single test case, specifing the sub-directory or the single file as last argument in the comment above.
+You can also run test for a single service, or a single test case, specifying the sub-directory or the single file as last argument in the comment above.
 
 
 

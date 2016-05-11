@@ -17,7 +17,7 @@ List policies
   Should Be Equal As Integers  ${rc}  0
   Should Be Equal As Integers  ${output}  9
   [Teardown]  Clean up
-  
+
 List policies with wrong pap-alias
   Execute And Check Failure  ${PAP_ADMIN} lp -sai --pap "dummy_pap"
 
@@ -49,8 +49,8 @@ Calling pap-admin from a symlink (bug 63180)
   [Teardown]  Clean up
 
 List policy with obligation (bug 68595)
-  Start PDP service
-  Start PEP service
+  Ensure PDP running
+  Ensure PEP running
   Remove all policies
   ${user_dn}=  Get user dn
   Add policy with obligation  ${TEST_RESOURCE}  ${TEST_ACTION}  ${TEST_OBLIGATION}  ${TEST_RULE}  ${user_dn}
@@ -66,7 +66,7 @@ List policy with obligation (bug 68595)
   Should Contain  ${output}  obligation
   Should Contain  ${output}  ${TEST_OBLIGATION}
   [Teardown]  Clean up
-  
+
 
 *** Keywords ***
 
@@ -91,7 +91,7 @@ Prepare
   ...    }
   ...  }
   Prepare PAP environment  ${policies}
-  
+
 Get policy 1
   ${policy}=  catenate  SEPARATOR=\n
   ...  resource "resource_1" {
@@ -109,7 +109,7 @@ Get policy 2
   ...    }
   ...  }
   [Return]  ${policy}
-  
+
 Get policy 3
   ${policy}=  catenate  SEPARATOR=\n
   ...  resource "resource_3" {
@@ -119,7 +119,7 @@ Get policy 3
   ...    }
   ...  }
   [Return]  ${policy}
-  
+
 Get policy list
   ${pol1}=  Get policy 1
   ${pol2}=  Get policy 2

@@ -1,0 +1,102 @@
+*** Settings ***
+Resource   lib/utils.txt
+
+*** Test Cases ***
+
+Check PAP status endpoint
+  [Tags]  remote
+  ${cmd}=  Set variable  curl -sk --cert ${USERCERT} --key ${USERKEY} https://${T_PAP_HOST}:${T_PAP_PORT}/pap/status
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  Status: OK
+
+Check PDP status endpoint
+  [Tags]  remote
+  ${cmd}=  Set variable  curl -sk --cert ${USERCERT} --key ${USERKEY} https://${T_PDP_HOST}:${T_PDP_PORT}/status
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  Status: OK
+
+Check PEP status endpoint
+  [Tags]  remote
+  ${cmd}=  Set variable  curl -sk --cert ${USERCERT} --key ${USERKEY} https://${T_PEP_HOST}:${T_PEP_PORT}/status
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  Status: OK
+
+Load policy to PAP
+  [Tags]  remote
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Prepare policy file
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  ${output}=  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} lp -sai | egrep -c 'id='
+  Should Be Equal As Integers  ${output}  6
+
+Reload policy on PDP
+  [Tags]  remote
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Prepare policy file
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
+  ${cmd}=  Set Variable  curl -sGv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  HTTP/1.1 200 OK
+
+Reload policy on PDP with wrong password
+  [Tags]  remote
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Prepare policy file
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  ${cmd}=  Set Variable  curl -sGv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=wrong_password
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  HTTP/1.1 401 Unauthorized
+
+Test permit rule
+  [Tags]  remote
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Prepare policy file
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
+  ${cmd}=  Set Variable  curl -Gv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
+  ${output}=  Execute and Check Success  ${cmd}
+  ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  resource_1  ANY  host=${T_PEP_HOST}
+  Should Contain  ${output}  Decision: Permit
+
+Test deny rule
+  [Tags]  remote
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Prepare policy file
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
+  ${cmd}=  Set Variable  curl -Gv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
+  ${output}=  Execute and Check Success  ${cmd}
+  ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  resource_2  ANY  host=${T_PEP_HOST}
+  Should Contain  ${output}  Decision: Deny
+
+Test not applicable rule
+  [Tags]  remote
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Prepare policy file
+  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
+  ${cmd}=  Set Variable  curl -Gv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
+  ${output}=  Execute and Check Success  ${cmd}
+  ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  resource_3  ANY  host=${T_PEP_HOST}
+  Should Contain  ${output}  Decision: Not Applicable
+
+
+*** Keywords ***
+
+Prepare policy file
+  ${policy}=  catenate  SEPARATOR=\n
+  ...  resource "resource_1" {
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {}
+  ...    action "ANY" {
+  ...      rule permit { subject="CN=test0,O=IGI,C=IT" }
+  ...    }
+  ...  }
+  ...
+  ...  resource "resource_2" {
+  ...    obligation "http://glite.org/xacml/obligation/local-environment-map" {}
+  ...    action "ANY" {
+  ...      rule deny { subject="CN=test0,O=IGI,C=IT" }
+  ...    }
+  ...  }
+  Create policy file  ${policy}

@@ -64,7 +64,8 @@ For example:
 $ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e TESTSUITE_REPO=issue/issue-1 -e T_PDP_ADMIN_PASSWORD=pdpadmin_password -e PAP_HOST=argus-pap.cnaf.test -e PDP_HOST=argus-pdp.cnaf.test -e PEP_HOST=argus-pep.cnaf.test  italiangrid/argus-testsuite:latest
 ```
 
-**Warning**
+**Warnings**
+
 1. This Docker implementation runs only test cases with the _remote_ tag: these tests interact with Argus endpoints. Other tests, that require direct access to the Argus host and root privileges, are not executed.
 2. Ensure that PDP admin port (default 8153) is both open and reachable from the Docker container that run the testsuite. Usually admin port listens only on localhost: to change this behavior, set `adminHost=0.0.0.0` in `pdp.ini` configuration file.
 3. Expose admin ports outside localhost, is useful for test purposes, but dangerous for security: don't do this in production!

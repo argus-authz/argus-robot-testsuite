@@ -31,7 +31,7 @@ For run the testsuite, you need Robot Framework. Install it with:
 
 ```bash
 # yum install -y python-pip
-# pip install robotframework docutils
+# pip install robotframework
 ```
 
 ## Run manually
@@ -65,7 +65,7 @@ $ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e T
 ```
 
 **Warning**
-1. This Docker implementation runs only test cases with the _remote_ tag; other tests, that require direct access to the Argus host and root privileges, are not executed.
+1. This Docker implementation runs only test cases with the _remote_ tag: these tests interact with Argus endpoints. Other tests, that require direct access to the Argus host and root privileges, are not executed.
 2. Ensure that PDP admin port (default 8153) is both open and reachable from the Docker container that run the testsuite. Usually admin port listens only on localhost: to change this behavior, set `adminHost=0.0.0.0` in `pdp.ini` configuration file.
 3. Expose admin ports outside localhost, is useful for test purposes, but dangerous for security: don't do this in production!
 

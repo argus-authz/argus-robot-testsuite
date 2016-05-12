@@ -4,8 +4,13 @@ set -ex
 
 CERT_DIR="/usr/share/igi-test-ca"
 GLOBUS_DIR="/home/tester/.globus"
+
 TESTSUITE_REPO="${TESTSUITE_REPO:-https://github.com/marcocaberletti/argus-robot-testsuite.git}"
 TESTSUITE_BRANCH="${TESTSUITE_BRANCH:-master}"
+
+T_PDP_ADMIN_PASSWORD="${T_PDP_ADMIN_PASSWORD:-pdpadmin_password}"
+
+export T_PDP_ADMIN_PASSWORD
 
 ## Copy user certificates in default directory
 mkdir $GLOBUS_DIR
@@ -14,7 +19,7 @@ cp $CERT_DIR/test0.cert.pem $GLOBUS_DIR/usercert.pem
 chmod 644 $GLOBUS_DIR/usercert.pem
 
 echo pass > $GLOBUS_DIR/password
-openssl rsa -in /$CERT_DIR/test0.key.pem -out $GLOBUS_DIR/userkey.pem -passin file:$GLOBUS_DIR/password
+openssl rsa -in $CERT_DIR/test0.key.pem -out $GLOBUS_DIR/userkey.pem -passin file:$GLOBUS_DIR/password
 chmod 400 $GLOBUS_DIR/userkey.pem
 
 chown -R tester:tester $GLOBUS_DIR/
@@ -24,8 +29,9 @@ chown -R tester:tester $GLOBUS_DIR/
 echo "Clone argus-robot-testsuite repository ..."
 git clone $TESTSUITE_REPO
 
-echo "Switch branch ..."
 pushd /home/tester/argus-robot-testsuite
+
+echo "Switch branch ..."
 git checkout $TESTSUITE_BRANCH
 
 ## Edit configuration

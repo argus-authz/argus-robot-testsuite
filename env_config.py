@@ -21,9 +21,9 @@ T_PAP_AUTH_INI='pap_authorization.ini'
 T_PAP_CONF_INI='pap_configuration.ini'
 
 # Service hosts: used only in remote interaction
-T_PAP_HOST='cloud-vm148.cnaf.test'
-T_PDP_HOST='cloud-vm148.cnaf.test'
-T_PEP_HOST='cloud-vm148.cnaf.test'
+T_PAP_HOST='localhost'
+T_PDP_HOST='localhost'
+T_PEP_HOST='localhost'
 
 # Service ports
 T_PAP_PORT='8150'

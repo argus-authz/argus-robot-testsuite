@@ -24,7 +24,7 @@ PEP with no config file
   Ensure PEP stopped
   ${file}=  Join Path  ${T_PEP_CONF}  ${T_PEP_INI}
   Remove File  ${file}
-  Start PEP service
+  Execute and Check Failure  ${T_PEP_CONF} start
   ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
   Execute and Check Failure  ${cmd}
   [Teardown]  Restore PEP configuration

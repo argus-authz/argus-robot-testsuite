@@ -10,3 +10,9 @@ Variables  ${ENV_FILE}
 
 Reload policy
   Execute and Check Success  ${T_PDP_CTRL} reloadPolicy
+
+Reload policy with URL  [Arguments]  ${host}=localhost  ${port}=${T_PDP_ADMIN_PORT}
+  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
+  ${cmd}=  Set Variable  curl -Gv http://${host}:${port}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
+  ${output}=  Execute and Check Success  ${cmd}
+  Should Contain  ${output}  HTTP/1.1 200 OK

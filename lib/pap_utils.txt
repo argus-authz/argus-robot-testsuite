@@ -20,8 +20,8 @@ Add policy  [Arguments]  ${resource}  ${action}  ${rule}  ${subject}
 Add obligation  [Arguments]  ${policy_id}  ${obligation}
   Execute and Check Success  ${PAP_ADMIN} add-obligation ${policy_id} ${obligation}
 
-Remove all policies
-  Execute And Check Success  ${PAP_ADMIN} rap
+Remove all policies  [Arguments]  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
+  Execute And Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} rap
 
 Clean up
   Remove all policies
@@ -30,9 +30,9 @@ Clean up
 Create policy file  [Arguments]  ${policies}
   Create File  ${POLICY_FILE}  ${policies}
 
-Load policy file
-  Execute and Check Success  ${PAP_ADMIN} apf ${POLICY_FILE}
-  
+Load policy file  [Arguments]  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${file}=${POLICY_FILE}
+  Execute and Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} apf ${file}
+
 List policy with resource and action ids
   ${output}=  Execute and Check Success  ${PAP_ADMIN} lp -srai
   [Return]  ${output}

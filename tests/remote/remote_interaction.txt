@@ -23,17 +23,17 @@ Check PEP status endpoint
 
 Load policy to PAP
   [Tags]  remote
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  Load policy file  host=${T_PAP_HOST}
   ${output}=  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} lp -sai | egrep -c 'id='
   Should Be Equal As Integers  ${output}  6
 
 Reload policy on PDP
   [Tags]  remote
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  Load policy file  host=${T_PAP_HOST}
   Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
   ${cmd}=  Set Variable  curl -sGv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
   ${output}=  Execute and Check Success  ${cmd}
@@ -41,43 +41,37 @@ Reload policy on PDP
 
 Reload policy on PDP with wrong password
   [Tags]  remote
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
+  Load policy file  host=${T_PAP_HOST}
   ${cmd}=  Set Variable  curl -sGv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=wrong_password
   ${output}=  Execute and Check Success  ${cmd}
   Should Contain  ${output}  HTTP/1.1 401 Unauthorized
 
 Test permit rule
   [Tags]  remote
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
-  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
-  ${cmd}=  Set Variable  curl -Gv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
-  ${output}=  Execute and Check Success  ${cmd}
+  Load policy file  host=${T_PAP_HOST}
+  Reload policy with URL  host=${T_PDP_HOST}
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  resource_1  ANY  host=${T_PEP_HOST}
   Should Contain  ${output}  Decision: Permit
 
 Test deny rule
   [Tags]  remote
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
-  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
-  ${cmd}=  Set Variable  curl -Gv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
-  ${output}=  Execute and Check Success  ${cmd}
+  Load policy file  host=${T_PAP_HOST}
+  Reload policy with URL  host=${T_PDP_HOST}
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  resource_2  ANY  host=${T_PEP_HOST}
   Should Contain  ${output}  Decision: Deny
 
 Test not applicable rule
   [Tags]  remote
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} rap
+  Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
-  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} apf ${POLICY_FILE}
-  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
-  ${cmd}=  Set Variable  curl -Gv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
-  ${output}=  Execute and Check Success  ${cmd}
+  Load policy file  host=${T_PAP_HOST}
+  Reload policy with URL  host=${T_PDP_HOST}
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  resource_3  ANY  host=${T_PEP_HOST}
   Should Contain  ${output}  Decision: Not Applicable
 

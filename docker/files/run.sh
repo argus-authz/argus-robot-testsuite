@@ -7,6 +7,7 @@ GLOBUS_DIR="/home/tester/.globus"
 
 TESTSUITE_REPO="${TESTSUITE_REPO:-https://github.com/marcocaberletti/argus-robot-testsuite.git}"
 TESTSUITE_BRANCH="${TESTSUITE_BRANCH:-master}"
+OUTPUT_REPORTS="${OUTPUT_REPORTS:-reports}"
 
 T_PDP_ADMIN_PASSWORD="${T_PDP_ADMIN_PASSWORD:-pdpadmin_password}"
 
@@ -44,6 +45,6 @@ echo "T_PDP_HOST='$PDP_HOST'" >> env_config.py
 echo "T_PEP_HOST='$PEP_HOST'" >> env_config.py
 
 echo "Run ..."
-pybot --pythonpath .:lib  -d reports --include=remote tests/
+pybot --pythonpath .:lib  -d $OUTPUT_REPORTS --include=remote tests/
 
 echo "Done."

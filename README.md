@@ -76,7 +76,7 @@ $ docker run italiangrid/argus-testsuite:latest
 The last command launch a container that run the testsuite with default setup. For customize the execution, provide to Docker the proper environment variables with _-e_ option.
 For example:
 ```bash
-$ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e TESTSUITE_REPO=issue/issue-1 -e T_PDP_ADMIN_PASSWORD=pdpadmin_password -e PAP_HOST=argus-pap.cnaf.test -e PDP_HOST=argus-pdp.cnaf.test -e PEP_HOST=argus-pep.cnaf.test  italiangrid/argus-testsuite:latest
+$ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e TESTSUITE_REPO=issue/issue-1 -e T_PDP_ADMIN_PASSWORD=pdpadmin_password -e PAP_HOST=argus-pap.cnaf.test -e PDP_HOST=argus-pdp.cnaf.test -e PEP_HOST=argus-pep.cnaf.test italiangrid/argus-testsuite:latest
 ```
 
 **Warnings**
@@ -95,6 +95,7 @@ $ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e T
 | PAP_HOST             | argus-pap.cnaf.test                                          | Argus PAP service hostname |
 | PDP_HOST             | argus-pdp.cnaf.test                                          | Argus PDP service hostname |
 | PEP_HOST             | argus-pep.cnaf.test                                          | Argus PEP service hostname |
+| OUTPUT_REPORTS       | /home/tester/argus-robot-testsuite/reports                   | Directory where RobotFramework save execution report and tests outputs |
 
 
 

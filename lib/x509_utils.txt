@@ -18,7 +18,7 @@ Create user proxy
   ${user}=  Get user name
   ${owner}=  Get key owner
   ${key}=  Set Variable If  '${user}' == '${owner}'  ${USERKEY}  Get temporary user key
-  ${cmd}=  Set Variable  voms-proxy-init -voms ${VO} -cert ${USERCERT} -key ${key} -pwstdin < ${USERPWD_FILE}
+  ${cmd}=  Set Variable  voms-proxy-init --voms ${VO} --cert ${USERCERT} --key ${key} --pwstdin < ${USERPWD_FILE}
   Execute and Check Success  ${cmd}
   [Teardown]  Remove temporary user key
 

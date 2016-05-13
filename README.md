@@ -15,6 +15,13 @@ This test suite provides a bunch of tests for validate the components of Argus:
    * Different user mapping scenarios
    * Configuration parameters
 
+Test cases are classified in two type:
+
+  * local: must be executed on the same host where Argus services run and they require root privileges to run.
+  * remote: can be run from external host, because they interact with Argus endpoints.
+
+
+
 ## Configuration
 The testsuite needs some Linux tools for run properly:
  * EPEL repo
@@ -24,7 +31,8 @@ The testsuite needs some Linux tools for run properly:
 For install them, in RedHat-based distribution, run:
 
 ```bash
-# yum install -y epel-release wget voms-clients
+# yum install -y epel-release
+# yum install -y wget voms-clients
 ```
 
 For run the testsuite, you need Robot Framework. Install it with:
@@ -43,6 +51,13 @@ Then execute the entire testsuite:
 # pybot --pythonpath .:lib  -d /tmp/robot  tests/
 ```
 You can also run test for a single service, or a single test case, specifying the sub-directory or the single file as last argument in the comment above.
+Some useful option are:
+```
+  --exclude=<tag>      : execute all test except those tagged with "tag"
+  --include=<tag>      : execute only tests tagged with "tag"
+  -d /path/to/some/dir : specify directory where write final output, log and report
+  -t "Test name"       : execute only the test named with "Test name"
+```
 
 
 
@@ -67,7 +82,7 @@ $ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e T
 **Warnings**
 
 1. This Docker implementation runs only test cases with the _remote_ tag: these tests interact with Argus endpoints. Other tests, that require direct access to the Argus host and root privileges, are not executed.
-2. Ensure that PDP admin port (default 8153) is both open and reachable from the Docker container that run the testsuite. Usually admin port listens only on localhost: to change this behavior, set `adminHost=0.0.0.0` in `pdp.ini` configuration file.
+2. Ensure that PDP admin port (default 8153) is both open and reachable from the Docker container that run the testsuite. Usually admin port listens only on `localhost`: to change this behavior, set `adminHost=0.0.0.0` in `pdp.ini` configuration file.
 3. Expose admin ports outside localhost, is useful for test purposes, but dangerous for security: don't do this in production!
 
 ##### Available environment variables
@@ -76,7 +91,7 @@ $ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e T
 | -------------------- | ------------------------------------------------------------ | ------- |
 | TESTSUITE_REPO       | https://github.com/marcocaberletti/argus-robot-testsuite.git | Repository hosting testsuite code |
 | TESTSUITE_BRANCH     | master                                                       | Git branch to checkout |
-| T_PDP_ADMIN_PASSWORD | pdpadmin_password                                            | Password use to communiicate to PDP admin service |
+| T_PDP_ADMIN_PASSWORD | pdpadmin_password                                            | Password use to communicate to PDP admin service |
 | PAP_HOST             | argus-pap.cnaf.test                                          | Argus PAP service hostname |
 | PDP_HOST             | argus-pdp.cnaf.test                                          | Argus PDP service hostname |
 | PEP_HOST             | argus-pep.cnaf.test                                          | Argus PEP service hostname |

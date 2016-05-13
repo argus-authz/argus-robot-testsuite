@@ -23,9 +23,21 @@ Add obligation  [Arguments]  ${policy_id}  ${obligation}
 Remove all policies  [Arguments]  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
   Execute And Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} rap
 
-Clean up
-  Remove all policies
-  Remove policy file
+Ban by subject  [Arguments]  ${subject}  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
+  Execute And Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} ban subject ${subject}
+
+Un-ban by subject  [Arguments]  ${subject}  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
+  Execute And Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} un-ban subject ${subject}
+
+Ban by FQAN  [Arguments]  ${fqan}  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
+  Execute And Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} ban fqan ${fqan}
+
+Un-ban by FQAN  [Arguments]  ${fqan}  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
+  Execute And Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} un-ban fqan ${fqan}
+
+Clean up  [Arguments]  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${file}=${POLICY_FILE}
+  Remove all policies  ${host}  ${port}  ${cert}  ${key}
+  Remove policy file  ${file}
 
 Create policy file  [Arguments]  ${policies}
   Create File  ${POLICY_FILE}  ${policies}
@@ -49,5 +61,5 @@ Prepare PAP environment  [Arguments]  ${policies}
 Remove obligation  [Arguments]  ${policy_id}  ${obligation}
   Execute and Check Success  ${PAP_ADMIN} remove-obligation ${policy_id} ${obligation}
 
-Remove policy file
-  Remove File  ${POLICY_FILE}
+Remove policy file  [Arguments]  ${file}=${POLICY_FILE}
+  Remove File  ${file}

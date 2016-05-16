@@ -8,11 +8,16 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
-Reload policy
-  Execute and Check Success  ${T_PDP_CTRL} reloadPolicy
-
-Reload policy with URL  [Arguments]  ${host}=localhost  ${port}=${T_PDP_ADMIN_PORT}
-  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
+Reload policy  [Arguments]  ${host}=localhost  ${port}=${T_PDP_ADMIN_PORT}
+  ${passwd}=  Resolve PDP admin password
   ${cmd}=  Set Variable  curl -Gv http://${host}:${port}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
   ${output}=  Execute and Check Success  ${cmd}
   Should Contain  ${output}  HTTP/1.1 200 OK
+
+Resolve PDP admin password
+  ${file}=  Set Variable  ${T_PDP_CONF}/${T_PDP_INI}
+  ${var}=  Get Environment Variable  T_PDP_ADMIN_PASSWORD  None
+  Run Keyword If  '${var}' is not 'None'  Should Exist  ${file}  msg=Neither Environment Variable T_PDP_ADMIN_PASSWORD nor conf file found.
+  ${value}=  Read parameter from INI file  ${file}  adminPassword
+  ${password}=  Get Environment Variable  T_PDP_ADMIN_PASSWORD  ${value}
+  [Return]  ${password}

@@ -62,17 +62,15 @@ Init pool accounts
   :FOR  ${idx}  IN RANGE  1  3
   \  Touch pool account  ${VO}00${idx}
 
-Perform PEP request  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}=None  ${host}=None  ${port}=${T_PEP_PORT}
+Perform PEP request  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}=None  ${host}=%{HOSTNAME}  ${port}=${T_PEP_PORT}
   ${cmd}=  Build PEPCLI command line  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}  ${host}  ${port}
   ${output}=  Execute and Check Success  ${cmd}
   [Return]  ${output}
 
 Build PEPCLI command line  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}  ${host}  ${port}
   #${str}=  Escape char  ${fqan}  .
-  ${hostname}=  Run Keyword If  '${host}' is 'None'  Get Hostname
-  ...           ELSE  Set Variable  ${host}
   ${cmd}=  catenate
-  ...  ${PEPCLI} -p https://${hostname}:${port}/authz
+  ...  ${PEPCLI} -p https://${host}:${port}/authz
   ...  --capath /etc/grid-security/certificates/
   ...  --key ${client_key}
   ...  --cert ${client_cert}

@@ -16,8 +16,8 @@ Reload policy on PDP
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
-  Environment Variable Should Be Set  T_PDP_ADMIN_PASSWORD
-  ${cmd}=  Set Variable  curl -sGv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=%{T_PDP_ADMIN_PASSWORD}
+  ${password}=  Resolve PDP admin password
+  ${cmd}=  Set Variable  curl -sGv http://${T_PDP_HOST}:${T_PDP_ADMIN_PORT}/reloadPolicy?password=${password}
   ${output}=  Execute and Check Success  ${cmd}
   Should Contain  ${output}  HTTP/1.1 200 OK
 

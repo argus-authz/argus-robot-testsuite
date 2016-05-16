@@ -53,11 +53,11 @@ Get match  [Arguments]  ${item}  ${regexp}
   [Return]  ${elem}
 
 Get user id
-  ${rc}  ${output}=  Run And Return Rc And Output  id -u
+  ${output}=  Execute and Check Success  id -u
   [Return]  ${output}
 
 Get user name
-  ${rc}  ${output}=  Run And Return Rc And Output  id -nu
+  ${output}=  Execute and Check Success  id -nu
   [Return]  ${output}
 
 Replace string  [Arguments]  ${file}  ${old_string}  ${new_string}
@@ -65,7 +65,7 @@ Replace string  [Arguments]  ${file}  ${old_string}  ${new_string}
   Execute and Check Success  ${cmd}
 
 Read parameter from INI file  [Arguments]  ${file}  ${parameter}
-  ${cmd}=  Set Variable  awk -F "=" '/${paramater}/ {print $2}' ${file} | xargs
+  ${cmd}=  Set Variable  awk -F "=" '/${parameter}/ {print $2}' ${file} | xargs
   ${output}=  Execute and Check Success  ${cmd}
   [Return]  ${output}
 

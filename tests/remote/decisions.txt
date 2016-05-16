@@ -10,7 +10,7 @@ Test permit rule
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
-  Reload policy with URL  host=${T_PDP_HOST}
+  Reload policy  host=${T_PDP_HOST}
   Create user proxy
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_1  ANY  host=${T_PEP_HOST}
@@ -21,7 +21,7 @@ Test deny rule
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
-  Reload policy with URL  host=${T_PDP_HOST}
+  Reload policy  host=${T_PDP_HOST}
   Create user proxy
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_2  ANY  host=${T_PEP_HOST}
@@ -32,7 +32,7 @@ Test not applicable rule
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
-  Reload policy with URL  host=${T_PDP_HOST}
+  Reload policy  host=${T_PDP_HOST}
   Create user proxy
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_3  ANY  host=${T_PEP_HOST}
@@ -44,7 +44,7 @@ Test ban/unban user by subject
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
   Ban by subject  ${TEST_USER_DN}  host=${T_PAP_HOST}
-  Reload policy with URL  host=${T_PDP_HOST}
+  Reload policy  host=${T_PDP_HOST}
   Create user proxy
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_1  ANY  host=${T_PEP_HOST}
@@ -54,7 +54,7 @@ Test ban/unban user by subject
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_3  ANY  host=${T_PEP_HOST}
   Should Contain  ${output}  Decision: Deny
   Un-ban by subject  ${TEST_USER_DN}  host=${T_PAP_HOST}
-  Reload policy with URL  host=${T_PDP_HOST}
+  Reload policy  host=${T_PDP_HOST}
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_1  ANY  host=${T_PEP_HOST}
   Should Contain  ${output}  Decision: Permit
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_2  ANY  host=${T_PEP_HOST}
@@ -68,7 +68,7 @@ Test ban/unban user by FQAN
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
   Ban by FQAN  ${TEST_FQAN}  host=${T_PAP_HOST}
-  Reload policy with URL  host=${T_PDP_HOST}
+  Reload policy  host=${T_PDP_HOST}
   Create user proxy
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_1  ANY  host=${T_PEP_HOST}
@@ -78,7 +78,7 @@ Test ban/unban user by FQAN
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_3  ANY  host=${T_PEP_HOST}
   Should Contain  ${output}  Decision: Deny
   Un-ban by FQAN  ${TEST_FQAN}  host=${T_PAP_HOST}
-  Reload policy with URL  host=${T_PDP_HOST}
+  Reload policy  host=${T_PDP_HOST}
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_1  ANY  host=${T_PEP_HOST}
   Should Contain  ${output}  Decision: Permit
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  resource_2  ANY  host=${T_PEP_HOST}

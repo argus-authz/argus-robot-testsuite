@@ -32,11 +32,11 @@ Get user DN
 
 Get DN  [Arguments]  ${cert_path}
   ${cmd}=  Set Variable  openssl x509 -in ${cert_path} -subject -noout | sed 's/subject= //'
-  ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
+  ${output}=  Execute and Check Success  ${cmd}
   [Return]  ${output}
 
 Get key owner
-  ${rc}  ${output}=  Run And Return Rc And Output  stat -c '%U' ${USERKEY}
+  ${output}=  Execute and Check Success  stat -c '%U' ${USERKEY}
   [Return]  ${output}
 
 Get user proxy path

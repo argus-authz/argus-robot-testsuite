@@ -74,6 +74,7 @@ echo "T_PDP_HOST='$PDP_HOST'" >> env_config.py
 echo "T_PEP_HOST='$PEP_HOST'" >> env_config.py
 
 ## Wait for services
+set +e
 echo "Wait for PAP"
 wait_for_service $PAP_HOST $PAP_PORT 300
 echo "PAP is ready. Wait for PDP"
@@ -81,7 +82,7 @@ wait_for_service $PDP_HOST $PDP_PORT 300
 echo "PDP is ready. Wait for PEP"
 wait_for_service $PEP_HOST $PEP_PORT 300
 echo "PEP is ready."
-
+set -e
 
 ## Run
 echo "Run ..."

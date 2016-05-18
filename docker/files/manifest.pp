@@ -1,24 +1,22 @@
 
-$packages = ['curl', 'git', 'wget', 'voms-clients-cpp', 'myproxy', 'voms-test-ca']
+$packages = ['curl', 'voms-clients-cpp', 'myproxy', 'voms-test-ca', 'argus-pap', 'argus-pepcli']
 
 $voms_str = "/C=IT/O=INFN/OU=Host/L=CNAF/CN=vgrid02.cnaf.infn.it
              /C=IT/O=INFN/CN=INFN Certification Authority"
 
-
-class{'puppet-infn-ca':}->
-
-class{'puppet-test-ca':}->
-
-class{'puppet-robot-framework':}->
-
-package { $packages: ensure => installed, }->
-
+class { 'puppet-infn-ca': } ->
+class { 'puppet-test-ca': } ->
+class { 'puppet-robot-framework': } ->
+exec { 'argus-repo':
+  path    => "/bin:/sbin:/usr/bin:/usr/sbin",
+  command => "wget --no-clobber -O /etc/yum.repos.d/argus_el7.repo https://github.com/argus-authz/repo/raw/gh-pages/yum/argus-beta-el7.repo"
+} ->
+package { $packages: ensure => latest, } ->
 user { 'tester':
   name       => 'tester',
   ensure     => present,
   managehome => true
-}->
-
+} ->
 file {
   '/etc/vomses':
     ensure => directory;
@@ -42,3 +40,4 @@ file {
     content => "$voms_str",
     require => File['/etc/grid-security/vomsdir/test.vo'];
 }
+

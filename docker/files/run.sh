@@ -1,11 +1,11 @@
 #!/bin/bash
 
 function wait_for_service() {
-	start_ts=$(date +%s)
-	host=$1
-	port=$2
-	timeout=$3
-	sleeped=0
+	local start_ts=$(date +%s)
+	local host=$1
+	local port=$2
+	local timeout=$3
+	local sleeped=0
 	while true; do
 	    (echo > /dev/tcp/$host/$port) >/dev/null 2>&1
 	    result=$?
@@ -18,7 +18,7 @@ function wait_for_service() {
 	    sleep 5
 	
 	    sleeped=$((sleeped+5))
-	    if [ $sleeped -ge $timeout  ]; then
+	    if [ $sleeped -ge $timeout ]; then
 	    	echo "Timeout!"
 	    	exit 1
 		fi
@@ -37,6 +37,7 @@ OUTPUT_REPORTS="${OUTPUT_REPORTS:-reports}"
 PAP_PORT="${PAP_PORT:-8150}"
 PDP_PORT="${PDP_PORT:-8152}"
 PEP_PORT="${PEP_PORT:-8154}"
+TIMEOUT="${TIMEOUT:-300}"
 
 T_PDP_ADMIN_PASSWORD="${T_PDP_ADMIN_PASSWORD:-pdpadmin_password}"
 
@@ -76,11 +77,11 @@ echo "T_PEP_HOST='$PEP_HOST'" >> env_config.py
 ## Wait for services
 set +e
 echo "Wait for PAP"
-wait_for_service $PAP_HOST $PAP_PORT 300
+wait_for_service $PAP_HOST $PAP_PORT $TIMEOUT
 echo "PAP is ready. Wait for PDP"
-wait_for_service $PDP_HOST $PDP_PORT 300
+wait_for_service $PDP_HOST $PDP_PORT $TIMEOUT
 echo "PDP is ready. Wait for PEP"
-wait_for_service $PEP_HOST $PEP_PORT 300
+wait_for_service $PEP_HOST $PEP_PORT $TIMEOUT
 echo "PEP is ready."
 set -e
 

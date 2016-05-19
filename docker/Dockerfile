@@ -12,11 +12,12 @@ RUN useradd -ms /bin/bash tester
 COPY files/run.sh /home/tester/
 RUN chown tester:tester /home/tester/run.sh
 
-RUN git clone git://github.com/cnaf/ci-puppet-modules.git /opt/ci-puppet-modules
+RUN git clone git://github.com/cnaf/ci-puppet-modules.git /opt/ci-puppet-modules && \
+    git clone https://github.com/marcocaberletti/puppet.git /opt/puppet
 
 COPY files/manifest.pp /
 
-RUN puppet apply --modulepath=/opt/ci-puppet-modules/modules:/etc/puppet/modules /manifest.pp
+RUN puppet apply --modulepath=/opt/ci-puppet-modules/modules:/opt/puppet/modules:/etc/puppet/modules /manifest.pp
 
 WORKDIR /home/tester
 USER tester

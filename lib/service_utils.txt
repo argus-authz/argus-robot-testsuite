@@ -10,15 +10,51 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
-Check port  [Arguments]  ${port}
-  ${cmd}=  Set Variable  nmap -Pn -p ${port} `hostname` | grep -q " open"
-  ${rc}=  Run And Return Rc  ${cmd}
+Check port  [Arguments]  ${hostname}  ${port}
+  ${cmd}=  Set Variable  (echo > /dev/tcp/${hostname}/${port}) &>/dev/null
+  ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
   Should Be Equal As Integers  ${rc}  0
 
-Port not reachable  [Arguments]  ${port}
-  ${cmd}=  Set Variable  nmap -Pn -p ${port} `hostname` | grep -q " open"
-  ${rc}=  Run And Return Rc  ${cmd}
+Port not reachable  [Arguments]  ${hostname}  ${port}
+  ${cmd}=  Set Variable  (echo > /dev/tcp/${hostname}/${port}) &>/dev/null
+  ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
   Should Be Equal As Integers  ${rc}  1
+
+Ensure PAP running
+  ${status}=  Get PAP status
+  Run Keyword If  ${status}!=0  Start PAP service
+
+Ensure PDP running
+  ${status}=  Get PDP status
+  Run Keyword If  ${status}!=0  Start PDP service
+
+Ensure PEP running
+  ${status}=  Get PEP status
+  Run Keyword If  ${status}!=0  Start PEP service
+
+Ensure PAP stopped
+  ${status}=  Get PAP status
+  Run Keyword If  ${status}==0  Stop PAP service
+
+Ensure PDP stopped
+  ${status}=  Get PDP status
+  Run Keyword If  ${status}==0  Stop PDP service
+
+Ensure PEP stopped
+  ${status}=  Get PEP status
+  Run Keyword If  ${status}==0  Stop PEP service
+
+Get PAP status
+  ${rc}  ${output}=  Run And Return Rc And Output  papctl status
+  [Return]  ${rc}
+
+Get PDP status
+  ${rc}  ${output}=  Run And Return Rc And Output  pdpctl status
+  [Return]  ${rc}
+
+Get PEP status
+  ${rc}  ${output}=  Run And Return Rc And Output  pepdctl status
+  [Return]  ${rc}
 
 Restore services
   Stop PAP service
@@ -30,39 +66,51 @@ Restore services
   Start PEP service
 
 Restart PAP service
-  Stop PAP service
-  Start PAP service
+  Ensure PAP stopped
+  Ensure PAP running
+
+Restart PDP service
+  Ensure PDP stopped
+  Ensure PDP running
 
 Restart PEP service
-  Stop PEP service
-  Start PEP service
+  Ensure PEP stopped
+  Ensure PEP running
 
 Start PAP service
-  Run Process  systemctl  start  argus-pap
-  Wait Until Keyword Succeeds  2 min  2 sec  Check port  ${T_PAP_PORT}
+  Start process  papctl  start
+  ${hostname}=  Get hostname
+  Wait Until Keyword Succeeds  2 min  2 sec  Check port  ${hostname}  ${T_PAP_PORT}
   Log  PAP started
-  
+
 Start PDP service
-  Run Process  systemctl  start  argus-pdp
-  Wait Until Keyword Succeeds  2 min  2 sec  Check port  ${T_PDP_PORT}
+  Start process  pdpctl  start
+  ${hostname}=  Get hostname
+  Wait Until Keyword Succeeds  2 min  2 sec  Check port  ${hostname}  ${T_PDP_PORT}
   Log  PDP started
 
 Start PEP service
-  Run Process  systemctl  start  argus-pepd
-  Wait Until Keyword Succeeds  2 min  2 sec  Check port  ${T_PEP_PORT}
+  Start process  pepdctl  start
+  ${hostname}=  Get hostname
+  Wait Until Keyword Succeeds  2 min  2 sec  Check port  ${hostname}  ${T_PEP_PORT}
   Log  PEP started
 
 Stop PAP service
-  Run Process  systemctl  stop  argus-pap
-  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PAP_ADMIN_PORT},${T_PAP_PORT}
+  Start process  papctl  stop
+  ${hostname}=  Get hostname
+  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
   Log  PAP stopped
 
 Stop PDP service
-  Run Process  systemctl  stop  argus-pdp
-  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PDP_ADMIN_PORT},${T_PDP_PORT}
+  Start process  pdpctl  stop
+  ${hostname}=  Get hostname
+  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
   Log  PDP stopped
 
 Stop PEP service
-  Run Process  systemctl  stop  argus-pepd
-  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${T_PEP_ADMIN_PORT},${T_PEP_PORT}
+  Start process  pepdctl  stop
+  ${hostname}=  Get hostname
+  Wait Until Keyword Succeeds  1 min  2 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
   Log  PEP stopped
+
+

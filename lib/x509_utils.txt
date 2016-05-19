@@ -18,9 +18,8 @@ Create user proxy
   ${user}=  Get user name
   ${owner}=  Get key owner
   ${key}=  Set Variable If  '${user}' == '${owner}'  ${USERKEY}  Get temporary user key
-  ${cmd}=  Set Variable  voms-proxy-init -voms ${VO} -cert ${USERCERT} -key ${key} -pwstdin < ${USERPWD_FILE}
-  ${rc}=  Run And Return Rc  ${cmd}
-  Should Be Equal As Integers  ${rc}  0
+  ${cmd}=  Set Variable  voms-proxy-init --voms ${VO} --cert ${USERCERT} --key ${key} --pwstdin < ${USERPWD_FILE}
+  Execute and Check Success  ${cmd}
   [Teardown]  Remove temporary user key
 
 Get host DN
@@ -30,20 +29,20 @@ Get host DN
 Get user DN
   ${output}=  Get DN  ${USERCERT}
   [Return]  ${output}
-  
+
 Get DN  [Arguments]  ${cert_path}
   ${cmd}=  Set Variable  openssl x509 -in ${cert_path} -subject -noout | sed 's/subject= //'
-  ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
+  ${output}=  Execute and Check Success  ${cmd}
   [Return]  ${output}
 
 Get key owner
-  ${rc}  ${output}=  Run And Return Rc And Output  stat -c '%U' ${USERKEY}
+  ${output}=  Execute and Check Success  stat -c '%U' ${USERKEY}
   [Return]  ${output}
 
 Get user proxy path
   ${uid}=  Get user id
   [Return]  /tmp/x509up_u${uid}
-  
+
 Get temporary user key
   Copy File  ${USERKEY}  ${tmp_userkey}
   [Return]  ${tmp_userkey}

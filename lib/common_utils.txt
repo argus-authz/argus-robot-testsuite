@@ -53,16 +53,21 @@ Get match  [Arguments]  ${item}  ${regexp}
   [Return]  ${elem}
 
 Get user id
-  ${rc}  ${output}=  Run And Return Rc And Output  id -u
+  ${output}=  Execute and Check Success  id -u
   [Return]  ${output}
-  
+
 Get user name
-  ${rc}  ${output}=  Run And Return Rc And Output  id -nu
+  ${output}=  Execute and Check Success  id -nu
   [Return]  ${output}
 
 Replace string  [Arguments]  ${file}  ${old_string}  ${new_string}
   ${cmd}=  Set Variable  sed -i 's/${old_string}/${new_string}/g' ${file}
   Execute and Check Success  ${cmd}
+
+Read parameter from INI file  [Arguments]  ${file}  ${parameter}
+  ${cmd}=  Set Variable  awk -F "=" '/${parameter}/ {print $2}' ${file} | xargs
+  ${output}=  Execute and Check Success  ${cmd}
+  [Return]  ${output}
 
 Setup Argus suite
   Make backup of the configuration

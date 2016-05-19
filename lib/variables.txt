@@ -6,6 +6,7 @@ ${ENV_FILE}  ${CURDIR}${/}..${/}env_config.py
 
 ${TEST_USER}  test0
 ${TEST_USER_DN}  "CN=Test0, O=IGI, C=IT"
+${TEST_FQAN}  /test.vo
 
 ${TEST_DN_UID}  glite
 ${TEST_DN_UID_GROUP}  testing

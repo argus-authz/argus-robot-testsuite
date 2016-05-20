@@ -6,7 +6,6 @@ $voms_str = "/C=IT/O=INFN/OU=Host/L=CNAF/CN=vgrid02.cnaf.infn.it
 
 class { 'puppet-infn-ca': } ->
 class { 'puppet-test-ca': } ->
-class { 'puppet-egi-trust-anchors': } ->
 class { 'puppet-robot-framework': } ->
 class { 'argus::clients': } ->
 package { $packages: ensure => latest, } ->

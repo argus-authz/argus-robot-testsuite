@@ -26,6 +26,7 @@ Test cases are classified in two type:
 The testsuite needs some Linux tools for run properly:
  * EPEL repo
  * wget
+ * curl
  * voms-clients
 
 For install them, in RedHat-based distribution, run:

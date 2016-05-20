@@ -1,7 +1,7 @@
 FROM docker.io/centos:latest
 
 # Layer: base
-RUN rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm && \
+RUN yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm && \
     yum update -y && \
     yum install -y puppet git wget epel-release redhat-lsb && \
     puppet module install --force puppetlabs-stdlib && \

@@ -37,7 +37,7 @@ Works with non PIPs defined (bug 69263)
   Ensure PEP stopped
   ${file}=  Join Path  ${T_PEP_CONF}  ${T_PEP_INI}
   Comment parameter  ${file}  pips
-  Start PEP service
+  Ensure PEP running
   [Teardown]  Restore PEP configuration
 
 The proposed file-structure for is given (bug 77532)
@@ -48,5 +48,5 @@ The proposed file-structure for is given (bug 77532)
 
 Check PID file (bug 80510)
   ${file}=  Set Variable  /var/run/argus-pepd.pid
-  Start PEP service
+  Ensure PEP running
   Check File  ${file}

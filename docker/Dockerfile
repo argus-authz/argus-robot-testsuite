@@ -3,7 +3,7 @@ FROM docker.io/centos:latest
 # Layer: base
 RUN yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm && \
     yum update -y && \
-    yum install -y puppet git wget epel-release redhat-lsb && \
+    yum install -y puppet git wget epel-release redhat-lsb iproute && \
     puppet module install --force puppetlabs-stdlib && \
     puppet module install --force maestrodev-wget
 

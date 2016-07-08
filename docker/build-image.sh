@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t italiangrid/argus-testsuite .
+docker build --no-cache -t italiangrid/argus-testsuite .

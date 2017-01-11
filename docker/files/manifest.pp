@@ -1,13 +1,13 @@
 
 $packages = ['curl', 'voms-clients-cpp', 'myproxy', 'voms-test-ca']
 
-$voms_str = "/C=IT/O=INFN/OU=Host/L=CNAF/CN=vgrid02.cnaf.infn.it
-             /C=IT/O=INFN/CN=INFN Certification Authority"
+$voms_str = '/C=IT/O=INFN/OU=Host/L=CNAF/CN=vgrid02.cnaf.infn.it
+             /C=IT/O=INFN/CN=INFN Certification Authority'
 
-class { 'puppet-infn-ca': } ->
-class { 'puppet-test-ca': } ->
-class { 'puppet-robot-framework': } ->
-class { 'argus::clients': } ->
+class { 'mwdevel_infn_ca': } ->
+class { 'mwdevel_test_ca': } ->
+class { 'mwdevel_robot_framework': } ->
+class { 'mwdevel_argus::clients': } ->
 package { $packages: ensure => latest, } ->
 user { 'tester':
   name       => 'tester',
@@ -34,7 +34,7 @@ file {
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => "$voms_str",
+    content => $voms_str,
     require => File['/etc/grid-security/vomsdir/test.vo'];
 }
 

@@ -1,7 +1,5 @@
-*.class
 *.pyc
 log/*
-._*
 .project
 .pydevproject
 robot-indices/*

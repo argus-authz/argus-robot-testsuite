@@ -3,4 +3,5 @@ log/*
 .project
 .pydevproject
 robot-indices/*
-debug.txt
+debug.robot
+*.md.html

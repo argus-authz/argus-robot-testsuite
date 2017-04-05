@@ -3,11 +3,11 @@
 Library    OperatingSystem
 Library    String
 Library    Collections
-Resource   variables.txt
+Resource   variables.robot
 
-Resource   file_utils.txt
-Resource   service_utils.txt
-Resource   x509_utils.txt
+Resource   file_utils.robot
+Resource   service_utils.robot
+Resource   x509_utils.robot
 
 Variables  ${ENV_FILE}
 

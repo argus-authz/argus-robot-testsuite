@@ -1,5 +1,5 @@
 *** Settings ***
-Resource   lib/utils.txt
+Resource   lib/utils.robot
 
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations

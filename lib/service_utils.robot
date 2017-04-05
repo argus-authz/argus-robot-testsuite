@@ -2,9 +2,9 @@
 
 Library    OperatingSystem
 Library    Process
-Resource   variables.txt
+Resource   variables.robot
 
-Resource   common_utils.txt
+Resource   common_utils.robot
 
 Variables  ${ENV_FILE}
 
@@ -112,5 +112,3 @@ Stop PEP service
   ${hostname}=  Get hostname
   Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
   Log  PEP stopped
-
-

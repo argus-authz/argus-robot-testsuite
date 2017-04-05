@@ -1,8 +1,11 @@
 *** Settings ***
-Resource   lib/utils.txt
+Resource   lib/utils.robot
 
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations
+
+Test Setup  Mapping tests setup
+Test Teardown  Restore PEP configuration
 
 
 *** Test Cases ***
@@ -23,7 +26,6 @@ User mapping case 1 (bug 69197)
   Check if username match  ${output}  ${TEST_DN_UID}
   Check if group match  ${output}  ${TEST_DN_UID_GROUP}
   Check if secondary group match  ${output}  ${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
 
 User mapping case 2 (bug 69197)
   &{dict}=  Create Dictionary
@@ -42,7 +44,6 @@ User mapping case 2 (bug 69197)
   Check if username match  ${output}  ${VO}\\d+
   Check if group match  ${output}  ${TEST_DN_UID_GROUP}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 3 (bug 69197)
   &{dict}=  Create Dictionary
@@ -61,7 +62,6 @@ User mapping case 3 (bug 69197)
   Check if username match  ${output}  ${TEST_DN_UID}
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 4 (bug 69197)
   &{dict}=  Create Dictionary
@@ -80,7 +80,6 @@ User mapping case 4 (bug 69197)
   Check if username match  ${output}  ${VO}\\d+
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 5 (bug 69197)
   &{dict}=  Create Dictionary
@@ -97,7 +96,6 @@ User mapping case 5 (bug 69197)
   Check if username match  ${output}  ${TEST_DN_UID}
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 5a (bug 69197)
   &{dict}=  Create Dictionary
@@ -114,7 +112,6 @@ User mapping case 5a (bug 69197)
   Check if username match  ${output}  ${TEST_DN_UID}
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 6 (bug 69197)
   &{dict}=  Create Dictionary
@@ -131,7 +128,6 @@ User mapping case 6 (bug 69197)
   Check if username match  ${output}  ${VO}\\d+
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 6a (bug 69197)
   &{dict}=  Create Dictionary
@@ -148,7 +144,6 @@ User mapping case 6a (bug 69197)
   Check if username match  ${output}  ${VO}\\d+
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 7 (bug 69197)
   &{dict}=  Create Dictionary
@@ -165,7 +160,6 @@ User mapping case 7 (bug 69197)
   Check if username match  ${output}  ${TEST_DN_UID}
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 7a (bug 69197)
   &{dict}=  Create Dictionary
@@ -182,7 +176,6 @@ User mapping case 7a (bug 69197)
   Check if username match  ${output}  ${TEST_DN_UID}
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 8 (bug 69197)
   &{dict}=  Create Dictionary
@@ -199,7 +192,6 @@ User mapping case 8 (bug 69197)
   Check if username match  ${output}  ${VO}\\d+
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 User mapping case 8a (bug 69197)
   &{dict}=  Create Dictionary
@@ -216,7 +208,6 @@ User mapping case 8a (bug 69197)
   Check if username match  ${output}  ${VO}\\d+
   Check if group match  ${output}  ${VO}
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
-  [Teardown]  Restore PEP configuration
   
 Renew timestamp of leases (bug 83281)
   &{dict}=  Create Dictionary
@@ -233,7 +224,6 @@ Renew timestamp of leases (bug 83281)
   Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   ${new_timestamp}=  Get Modified Time  ${lease_file}
   Should Not Be Equal  ${timestamp}  ${new_timestamp}
-  [Teardown]  Restore PEP configuration
 
 PEPD write the secondary group into the lease (bug 83317)
    &{dict}=  Create Dictionary
@@ -251,7 +241,6 @@ PEPD write the secondary group into the lease (bug 83317)
   Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   ${leases_num}=  Execute and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR}/%* | wc -l
   Should Be Equal  ${leases_num}  2
-  [Teardown]  Restore PEP configuration
 
 Legacy LCAS/LCMAPS lease filename encoding (bug 83419)
   &{dict}=  Create Dictionary
@@ -262,15 +251,3 @@ Legacy LCAS/LCMAPS lease filename encoding (bug 83419)
   ${user_proxy}=  Get user proxy path
   Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Execute and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR}/%* | grep ${VO}
-  [Teardown]  Restore PEP configuration
-
-
-
-
-
-
-
-
-
-
-

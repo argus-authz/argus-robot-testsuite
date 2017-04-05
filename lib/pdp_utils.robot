@@ -1,8 +1,8 @@
 ** Settings ***
 
-Resource   variables.txt
+Resource   variables.robot
 
-Resource   common_utils.txt
+Resource   common_utils.robot
 
 Variables  ${ENV_FILE}
 

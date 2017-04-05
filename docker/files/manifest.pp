@@ -10,8 +10,8 @@ class { 'mwdevel_robot_framework': } ->
 class { 'mwdevel_argus::clients': } ->
 package { $packages: ensure => latest, } ->
 user { 'tester':
-  name       => 'tester',
   ensure     => present,
+  name       => 'tester',
   managehome => true
 } ->
 file {

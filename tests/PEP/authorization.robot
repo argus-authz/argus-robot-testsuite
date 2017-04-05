@@ -1,5 +1,5 @@
 *** Settings ***
-Resource   lib/utils.txt
+Resource   lib/utils.robot
 
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations
@@ -11,6 +11,8 @@ User group mapping (bug 64340)
   ...  grp_vo_map=no  grp_vo_sec_map=no  grp_dn_map=yes
   ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
   Prepare PEP environment  &{dict}
+  Create user proxy
+  Mapping tests setup
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}  ${VO}
   Should Contain  ${output}  ${TEST_RESOURCE}  Did not find expected resource: ${TEST_RESOURCE}
   Should Contain Ignore Case  ${output}  ${TEST_RULE}  Did not find expected rule: ${TEST_RULE}
@@ -39,7 +41,7 @@ DN group mapping (bug 68805)
   Remove all policies
   ${action}=  Set Variable  do_not_test
   Add policy with obligation  ${TEST_RESOURCE}  ${TEST_ACTION}  ${TEST_OBLIGATION}  ${TEST_RULE}  ${host_dn}
-  Add policy  ${TEST_RESOURCE}  ${action}  ${TEST_RULE}  ${host_dn}
+  Add policy  ${TEST_RESOURCE}  ${action}  ${TEST_RULE}  subject="${host_dn}"
   Reload policy
   ${output}=  Perform PEP request  ${HOSTKEY}  ${HOSTCERT}  ${HOSTCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}  None
   Should Contain  ${output}  ${TEST_RESOURCE}

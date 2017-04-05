@@ -44,26 +44,32 @@ T_PDP_ADMIN_PASSWORD="${T_PDP_ADMIN_PASSWORD:-pdpadmin_password}"
 export T_PDP_ADMIN_PASSWORD
 
 ## Copy user certificates in default directory
-mkdir $GLOBUS_DIR
+mkdir ${GLOBUS_DIR}
 
-cp $CERT_DIR/test0.cert.pem $GLOBUS_DIR/usercert.pem
-chmod 644 $GLOBUS_DIR/usercert.pem
+echo pass > ${GLOBUS_DIR}/password
 
-echo pass > $GLOBUS_DIR/password
-openssl rsa -in $CERT_DIR/test0.key.pem -out $GLOBUS_DIR/userkey.pem -passin file:$GLOBUS_DIR/password
-chmod 400 $GLOBUS_DIR/userkey.pem
+cp ${CERT_DIR}/test0.cert.pem ${GLOBUS_DIR}/usercert.pem
+chmod 644 ${GLOBUS_DIR}/usercert.pem
+openssl rsa -in ${CERT_DIR}/test0.key.pem -out ${GLOBUS_DIR}/userkey.pem -passin file:${GLOBUS_DIR}/password
+chmod 400 ${GLOBUS_DIR}/userkey.pem
 
-chown -R tester:tester $GLOBUS_DIR/
+cp /usr/share/igi-test-ca-2/test0.cert.pem ${GLOBUS_DIR}/iota_usercert.pem
+cp /usr/share/igi-test-ca-2/test0.key.pem ${GLOBUS_DIR}/iota_userkey.pem
+openssl rsa -in ${GLOBUS_DIR}/iota_userkey.pem -out ${GLOBUS_DIR}/iota_userkey.rsa.pem -passin file:${GLOBUS_DIR}/password
+mv ${GLOBUS_DIR}/iota_userkey.rsa.pem ${GLOBUS_DIR}/iota_userkey.pem
+chmod 0644 ${GLOBUS_DIR}/iota_usercert.pem
+chmod 0400 ${GLOBUS_DIR}/iota_userkey.pem
+
+chown -R tester:tester ${GLOBUS_DIR}/
 
 
 ## Clone testsuite code
-echo "Clone argus-robot-testsuite repository ..."
-git clone $TESTSUITE_REPO
+if [ ! -d argus-robot-testsuite ]; then
+	echo "Clone argus-robot-testsuite repository ..." 
+	git clone ${TESTSUITE_REPO} --branch ${TESTSUITE_BRANCH}
+fi
 
-pushd /home/tester/argus-robot-testsuite
-
-echo "Switch branch ..."
-git checkout $TESTSUITE_BRANCH
+cd /home/tester/argus-robot-testsuite
 
 ## Edit configuration
 sed -i '/^T_PAP_HOST.*/d' env_config.py

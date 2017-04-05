@@ -1,9 +1,9 @@
 ** Settings ***
 
 Library    OperatingSystem
-Resource   variables.txt
+Resource   variables.robot
 
-Resource   common_utils.txt
+Resource   common_utils.robot
 
 Variables  ${ENV_FILE}
 
@@ -13,10 +13,10 @@ Add policy with obligation  [Arguments]  ${resource}  ${action}  ${obligation}  
   ${cmd}=  Set Variable  ${PAP_ADMIN} add-policy --resource "${resource}" --action "${action}" --obligation "${obligation}" "${rule}" subject="${subject}"
   Execute and Check Success  ${cmd}
 
-Add policy  [Arguments]  ${resource}  ${action}  ${rule}  ${subject}
-  ${cmd}=  Set Variable  ${PAP_ADMIN} add-policy --resource "${resource}" --action "${action}" "${rule}" subject="${subject}"
+Add policy  [Arguments]  ${resource}  ${action}  ${rule}  ${attributes}
+  ${cmd}=  Set Variable  ${PAP_ADMIN} add-policy --resource "${resource}" --action "${action}" "${rule}" ${attributes}
   Execute and Check Success  ${cmd}
-
+  
 Add obligation  [Arguments]  ${policy_id}  ${obligation}
   Execute and Check Success  ${PAP_ADMIN} add-obligation ${policy_id} ${obligation}
 

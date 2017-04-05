@@ -4,8 +4,9 @@ FROM docker.io/centos:latest
 RUN yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm && \
     yum update -y && \
     yum install -y puppet git wget epel-release redhat-lsb iproute && \
-    yum clean all && \
-    puppet module install --force puppetlabs-stdlib && \
+    yum clean all
+
+RUN puppet module install --force puppetlabs-stdlib && \
     puppet module install --force maestrodev-wget
 
 # Layer: Argus

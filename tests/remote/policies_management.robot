@@ -1,5 +1,5 @@
 *** Settings ***
-Resource   lib/utils.txt
+Resource   lib/utils.robot
 
 *** Test Cases ***
 

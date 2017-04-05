@@ -2,9 +2,9 @@
 
 Library    OperatingSystem
 Library    String
-Resource   variables.txt
+Resource   variables.robot
 
-Resource   common_utils.txt
+Resource   common_utils.robot
 
 Variables  ${ENV_FILE}
 
@@ -43,6 +43,7 @@ Make backup of the configuration
   Copy File  ${GRIDDIR}/${GRIDMAPFILE}  ${bck_conf_dir}
   Copy File  ${GRIDDIR}/${GROUPMAPFILE}  ${bck_conf_dir}
   Copy File  ${GRIDDIR}/${VOMSGRIDMAPFILE}  ${bck_conf_dir}
+  Copy File  ${GRIDDIR}/${AUTHN_PROFILE_FILE}  ${bck_conf_dir}
   Copy Directory  ${GRIDDIR}/${GRIDMAPDIR}    ${bck_conf_dir}
 
 Remove all leases in gridmapdir
@@ -53,6 +54,7 @@ Restore grid files
   Copy File  ${bck_conf_dir}/${GRIDMAPFILE}  ${GRIDDIR}/${GRIDMAPFILE}
   Copy File  ${bck_conf_dir}/${GROUPMAPFILE}  ${GRIDDIR}/${GROUPMAPFILE}
   Copy File  ${bck_conf_dir}/${VOMSGRIDMAPFILE}  ${GRIDDIR}/${VOMSGRIDMAPFILE}
+  Copy File  ${bck_conf_dir}/${AUTHN_PROFILE_FILE}  ${GRIDDIR}/${AUTHN_PROFILE_FILE}
 
 Restore PAP configuration
   ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup

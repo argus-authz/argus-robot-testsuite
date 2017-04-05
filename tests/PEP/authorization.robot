@@ -26,6 +26,8 @@ User group mapping (bug 64340)
   [Teardown]  Restore PEP configuration
 
 DN group mapping (bug 68805)
+  Init authentication profile file
+  Init test CAs policy files
   ${host_dn}=  Get host dn
   ${str}=  Escape char  ${host_dn}  /
   Replace string  ${GRIDDIR}/${VOMSGRIDMAPFILE}  "${str}"  \# Ignore

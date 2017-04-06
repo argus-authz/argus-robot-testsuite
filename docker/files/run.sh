@@ -31,7 +31,7 @@ set -ex
 CERT_DIR="/usr/share/igi-test-ca"
 GLOBUS_DIR="/home/tester/.globus"
 
-TESTSUITE_REPO="${TESTSUITE_REPO:-https://github.com/marcocaberletti/argus-robot-testsuite.git}"
+TESTSUITE_REPO="${TESTSUITE_REPO:-https://github.com/argus-authz/argus-robot-testsuite.git}"
 TESTSUITE_BRANCH="${TESTSUITE_BRANCH:-master}"
 OUTPUT_REPORTS="${OUTPUT_REPORTS:-reports}"
 PAP_PORT="${PAP_PORT:-8150}"

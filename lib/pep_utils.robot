@@ -64,6 +64,15 @@ Init authentication profile file
   ...  /test.vo${SPACE}${SPACE}file:policy-test-classic.info, file:policy-test-iota.info
   ...  /*${SPACE}${SPACE}file:policy-test-classic.info
   ...  "-"${SPACE}${SPACE}file:policy-test-classic.info  
+  ...  ${SPACE}
+  Create File  ${file}  ${content}
+  
+Init fallback authentication profile file
+  ${file}=  Set Variable  ${T_PEP_CONF}/vo-ca-ap-file
+  ${content}=  catenate  SEPARATOR=\n
+  ...  /*${SPACE}${SPACE}file:policy-test-classic.info
+  ...  "-"${SPACE}${SPACE}file:policy-test-classic.info
+  ...  ${SPACE} 
   Create File  ${file}  ${content}
   
 Init test CAs policy files
@@ -72,13 +81,13 @@ Init test CAs policy files
   ...  alias = policy-test-classic
   ...  subjectdn = "/C=IT/O=INFN/CN=INFN Certification Authority", \\
   ...    "/C=IT/O=IGI/CN=Test CA"
-  ...    
+  ...  ${SPACE}
   Create File  ${classic}  ${content}
   ${iota}=  Set Variable  ${GRIDDIR}/certificates/policy-test-iota.info
   ${content}=  catenate  SEPARATOR=\n
   ...  alias = policy-test-iota
   ...  subjectdn = "/C=IT/O=IGI/CN=Test CA 2"
-  ...    
+  ...  ${SPACE}
   Create File  ${iota}  ${content}
 
 Init pool accounts

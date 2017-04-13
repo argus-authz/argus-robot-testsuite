@@ -5,3 +5,4 @@ log/*
 robot-indices/*
 debug.robot
 *.md.html
+reports/

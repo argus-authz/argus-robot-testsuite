@@ -27,3 +27,6 @@ ${TEST_RULE}           permit
 ${TEST_OBLIGATION}     http://glite.org/xacml/obligation/local-environment-map
 
 ${RULE_INDETERMINATE}  Indeterminate
+
+${IOTA_USERKEY}        ~/.globus/iota_userkey.pem
+${IOTA_USERCERT}       ~/.globus/iota_usercert.pem

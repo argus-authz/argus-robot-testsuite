@@ -37,6 +37,7 @@ Make backup of the configuration
   Create Directory  ${bck_conf_dir}
   Copy File  ${T_PDP_CONF}/${T_PDP_INI}  ${bck_conf_dir}
   Copy File  ${T_PEP_CONF}/${T_PEP_INI}  ${bck_conf_dir}
+  Copy File  ${T_PEP_CONF}/vo-ca-ap-file  ${bck_conf_dir}
   Copy File  ${T_PAP_CONF}/${T_PAP_ADMIN_INI}  ${bck_conf_dir} 
   Copy File  ${T_PAP_CONF}/${T_PAP_AUTH_INI}  ${bck_conf_dir}
   Copy File  ${T_PAP_CONF}/${T_PAP_CONF_INI}  ${bck_conf_dir}
@@ -69,6 +70,7 @@ Restore PDP configuration
 Restore PEP configuration
   ${bck_conf_dir}=  Join Path  %{WORKDIR}  conf_backup
   Copy File  ${bck_conf_dir}/${T_PEP_INI}  ${T_PEP_CONF}/${T_PEP_INI}
+  Copy File  ${bck_conf_dir}/vo-ca-ap-file  ${T_PEP_CONF}/vo-ca-ap-file
   Restore grid files
   
 Restore configurations

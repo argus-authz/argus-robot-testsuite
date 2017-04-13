@@ -4,11 +4,7 @@ Resource   lib/utils.robot
 Suite Setup     Make backup of the configuration
 Suite Teardown  Restore configurations
 
-
-*** Variables ***
-${IOTA_USERKEY}  ~/.globus/iota_userkey.pem
-${IOTA_USERCERT}  ~/.globus/iota_usercert.pem
-
+Test Teardown  Restore PEP configuration
 
 *** Keywords ***
 Setup IOTA profile policies
@@ -32,18 +28,12 @@ Setup PEP
 
 
 *** Test Cases ***
-
-Check AUTHN_PROFILE_PIP is enabled
-  ${pips}=  Read parameter from INI file  ${T_PEP_CONF}/${T_PEP_INI}  pips
-  Should Contain  ${pips}  AUTHN_PROFILE_PIP
-
 Perform request with plain certificate in supported profile
   Setup PEP
   Mapping tests setup
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Check if rule match  ${output}  ${TEST_RULE}
   Check if username match  ${output}  ${TEST_DN_UID}
-  [Teardown]  Restore PEP configuration
     
 Perform request with VOMS extension in supported profile
   Setup PEP
@@ -53,14 +43,12 @@ Perform request with VOMS extension in supported profile
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Check if rule match  ${output}  ${TEST_RULE}
   Check if username match  ${output}  ${TEST_DN_UID}
-  [Teardown]  Restore PEP configuration
     
 Perform request with IOTA plain certificate in not-supported profile
   Setup PEP
   Mapping tests setup
   ${output}=  Perform PEP request  ${IOTA_USERKEY}  ${IOTA_USERCERT}  ${IOTA_USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Should Contain  ${output}  Not Applicable
-  [Teardown]  Restore PEP configuration
     
 Perform request with IOTA and VOMS extension in supported profile
   Setup PEP
@@ -70,7 +58,6 @@ Perform request with IOTA and VOMS extension in supported profile
   ${output}=  Perform PEP request  ${IOTA_USERKEY}  ${IOTA_USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Check if rule match  ${output}  ${TEST_RULE}
   Check if username match  ${output}  ${TEST_DN_UID}
-  [Teardown]  Restore PEP configuration
 
 Request resource with classic profile
   Setup PEP
@@ -79,7 +66,6 @@ Request resource with classic profile
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Check if rule match  ${output}  Permit
-  [Teardown]  Restore PEP configuration
   
 Request resource with IOTA profile
   Setup PEP
@@ -88,7 +74,6 @@ Request resource with IOTA profile
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${IOTA_USERKEY}  ${IOTA_USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Check if rule match  ${output}  Deny
-  [Teardown]  Restore PEP configuration
   
 Request resource with classic CA issuer
   Setup PEP
@@ -97,7 +82,6 @@ Request resource with classic CA issuer
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Check if rule match  ${output}  Permit
-  [Teardown]  Restore PEP configuration
   
 Request resource with IOTA CA issuer
   Setup PEP
@@ -106,4 +90,3 @@ Request resource with IOTA CA issuer
   ${user_proxy}=  Get user proxy path
   ${output}=  Perform PEP request  ${IOTA_USERKEY}  ${IOTA_USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Check if rule match  ${output}  Deny
-  [Teardown]  Restore PEP configuration

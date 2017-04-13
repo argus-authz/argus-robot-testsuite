@@ -11,19 +11,17 @@ T_PDP_HOME = '/usr/share/argus/pdp'
 T_PEP_HOME = '/usr/share/argus/pepd'
 
 # Configuration scripts and locations
-T_PDP_CONF = T_PDP_HOME + '/conf'
-T_PEP_CONF = T_PEP_HOME + '/conf'
-T_PAP_CONF = T_PAP_HOME + '/conf'
-T_PDP_INI = 'pdp.ini'
-T_PEP_INI = 'pepd.ini'
+T_CONF_DIR = '/etc/argus'
+T_PAP_CONF = T_CONF_DIR + '/pap'
+T_PDP_CONF = T_CONF_DIR + '/pdp'
+T_PEP_CONF = T_CONF_DIR + '/pepd'
 T_PAP_ADMIN_INI = 'pap-admin.properties'
 T_PAP_AUTH_INI = 'pap_authorization.ini'
 T_PAP_CONF_INI = 'pap_configuration.ini'
+T_PDP_INI = 'pdp.ini'
+T_PEP_INI = 'pepd.ini'
 
 # Service hosts: used only in remote interaction
-T_PAP_HOST = 'cloud-vm148.cnaf.test'
-T_PDP_HOST = 'cloud-vm148.cnaf.test'
-T_PEP_HOST = 'cloud-vm148.cnaf.test'
 
 # Service ports
 T_PAP_PORT = '8150'
@@ -39,8 +37,8 @@ T_PDP_CTRL = 'pdpctl'
 T_PEP_CTRL = 'pepdctl'
 
 # CLI's
-PEPCLI = '/usr/bin/pepcli'
 PAP_ADMIN = '/usr/bin/pap-admin'
+PEPCLI = '/usr/bin/pepcli'
 
 # Grid specific files
 GRIDDIR = '/etc/grid-security'
@@ -61,3 +59,6 @@ VO_PRIMARY_GROUP = "/test.vo"
 VO_SECONDARY_GROUP = "/test.vo/G2"
 VOMSES_STRING = '"test.vo" "vgrid02.cnaf.infn.it" "15000" "/C=IT/O=INFN/OU=Host/CN=vgrid02.cnaf.infn.it" "test.vo"'
 
+T_PAP_HOST='argus-centos7.cnaf.test'
+T_PDP_HOST='argus-centos7.cnaf.test'
+T_PEP_HOST='argus-centos7.cnaf.test'

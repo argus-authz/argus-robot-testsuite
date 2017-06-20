@@ -1,5 +1,5 @@
 pipeline {
-  agent { label: 'docker' }
+  agent { label 'docker' }
 
   options {
     timeout(time: 1, unit: 'HOURS')

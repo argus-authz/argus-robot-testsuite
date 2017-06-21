@@ -36,26 +36,6 @@ Syntax error: missing ']'
   Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
-Argus syntax error: missing ']'
-  ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
-  Replace string  ${file}  \\[dn\\]  \\[dn
-  Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-
-Argus syntax error: missing ':'
-  ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
-  ${content}=  Get content test 6
-  Create File  ${file}  ${content}
-  Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-
-Argus syntax error: missing 'permission'
-  ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
-  ${content}=  Get content test 7
-  Create File  ${file}  ${content}
-  Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-
 Error exit codes (bug 65542)
   ${output}=  Execute and Check Failure  ${T_PAP_CTRL} status
 
@@ -75,7 +55,7 @@ Port 8150 is listening on hostname (bug 75538)
   Start PAP service
   ${output}=  Execute and Check Success  ss -tlnr | grep 8150
   ${hostname}=  Get hostname
-  ${ret}=  Should Match Regexp  ${output}  (::|0.0.0.0|${hostname}):8150
+  ${ret}=  Should Match Regexp  ${output}  (\\*|::|0.0.0.0|${hostname}):8150
   Log  ${ret}
 
 Port 8151 is listening on localhost (bug 75538)
@@ -97,27 +77,3 @@ Check PID file (bug 80510)
 Config file is properly declared in the rpm (bug 81738)
   ${output}=  Execute and Check Success  rpm -qlc argus-pap
   Should Contain  ${output}  pap-admin.properties
-
-
-*** Keywords ***
-Get content test 6
-  ${text}=  catenate  SEPARATOR=\n
-  ...  [dn]
-  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300"  ALL
-  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE
-  ...
-  ...  [fqan]
-  [Return]  ${text}
-
-Get content test 7
-  ${text}=  catenate  SEPARATOR=\n
-  ...  [dn]
-  ...  "/C=CH/O=CERN/OU=GD/CN=Test user 300"
-  ...  "/DC=ch/DC=cern/OU=computers/CN=vtb-generic-54.cern.ch" : POLICY_READ_LOCAL|POLICY_READ_REMOTE
-  ...
-  ...  [fqan]
-  [Return]  ${text}
-
-Start PAP
-  Run Process  papctl  start
-  Sleep  15s

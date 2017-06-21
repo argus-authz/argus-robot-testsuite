@@ -63,3 +63,7 @@ Remove obligation  [Arguments]  ${policy_id}  ${obligation}
 
 Remove policy file  [Arguments]  ${file}=${POLICY_FILE}
   Remove File  ${file}
+
+Start PAP
+  Run Process  papctl  start
+  Sleep  15s

@@ -37,4 +37,3 @@ file {
     content => $voms_str,
     require => File['/etc/grid-security/vomsdir/test.vo'];
 }
-

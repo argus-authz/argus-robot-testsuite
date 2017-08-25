@@ -1,13 +1,12 @@
 FROM docker.io/centos:latest
 
 # Layer: base
-RUN yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm && \
-    yum update -y && \
+RUN yum install -y https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm && \
     yum install -y puppet git wget epel-release redhat-lsb iproute && \
     yum clean all
 
-RUN puppet module install --force puppetlabs-stdlib && \
-    puppet module install --force maestrodev-wget
+RUN /opt/puppetlabs/bin/puppet module install --force puppetlabs-stdlib && \
+    /opt/puppetlabs/bin/puppet module install --force maestrodev-wget
 
 # Layer: Argus
 RUN useradd -ms /bin/bash tester
@@ -19,7 +18,8 @@ RUN git clone git://github.com/cnaf/ci-puppet-modules.git /opt/ci-puppet-modules
 
 COPY files/manifest.pp /
 
-RUN puppet apply --modulepath=/opt/ci-puppet-modules/modules:/opt/argus-mw-devel:/etc/puppet/modules /manifest.pp
+RUN /opt/puppetlabs/bin/puppet apply --modulepath=/opt/ci-puppet-modules/modules:/opt/argus-mw-devel:/etc/puppetlabs/code/environments/production/modules /manifest.pp && \
+	grep -q 'failure: 0' /opt/puppetlabs/puppet/cache/state/last_run_summary.yaml
 
 WORKDIR /home/tester
 USER tester

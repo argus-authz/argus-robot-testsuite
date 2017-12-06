@@ -5,22 +5,28 @@ pipeline {
     timeout(time: 3, unit: 'HOURS')
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
+  
+  environment {
+    DOCKER_REGISTRY_HOST = "${env.DOCKER_REGISTRY_HOST}"
+  }
 
   stages {
-    stage('prepare'){
-      steps {
-        cleanWs notFailBuild: true
-        checkout scm
-      }
-    }
-
     stage('build image'){
       steps {
-        script {
-          dir('docker'){
-            sh './build-image.sh'
-            sh './push-image.sh'
+        container('docker-runner'){
+          script {
+            dir('docker'){
+              sh './build-image.sh'
+              sh './push-image.sh'
+            }
           }
+        }
+      }
+    }
+    
+    stage('result'){
+      steps {
+        script {
           currentBuild.result = 'SUCCESS'
         }
       }

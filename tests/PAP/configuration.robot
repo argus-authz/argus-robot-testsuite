@@ -53,14 +53,14 @@ Status handler of PAP (bug 65802)
 
 Port 8150 is listening on hostname (bug 75538)
   Start PAP service
-  ${output}=  Execute and Check Success  ss -tlnr | grep 8150
+  ${output}=  Execute and Check Success  ss -tlnr sport eq 8150
   ${hostname}=  Get hostname
   ${ret}=  Should Match Regexp  ${output}  (\\*|::|0.0.0.0|${hostname}):8150
   Log  ${ret}
 
 Port 8151 is listening on localhost (bug 75538)
   Start PAP service
-  ${output}=  Execute and Check Success  ss -tlnr
+  ${output}=  Execute and Check Success  ss -tlnr sport eq 8151
   Should Contain  ${output}  localhost:8151
 
 The proposed file-structure for is given (bug 77532)

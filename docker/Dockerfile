@@ -6,7 +6,8 @@ RUN yum install -y https://yum.puppet.com/puppet5/puppet5-release-el-7.noarch.rp
     yum clean all
 
 RUN /opt/puppetlabs/bin/puppet module install --force puppetlabs-stdlib && \
-    /opt/puppetlabs/bin/puppet module install --force maestrodev-wget
+    /opt/puppetlabs/bin/puppet module install --force maestrodev-wget && \
+    /opt/puppetlabs/bin/puppet module install --force stahnma-epel
 
 # Layer: Argus
 RUN useradd -ms /bin/bash tester

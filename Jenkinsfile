@@ -1,5 +1,16 @@
+@Library('sd')_
+def kubeLabel = getKubeLabel()
+
 pipeline {
-  agent { label 'docker' }
+
+  agent {
+    kubernetes {
+      label "${kubeLabel}"
+      cloud 'Kube mwdevel'
+      defaultContainer 'runner'
+      inheritFrom 'ci-template'
+    }
+  }
 
   options {
     timeout(time: 3, unit: 'HOURS')
@@ -13,18 +24,16 @@ pipeline {
   stages {
     stage('build image'){
       steps {
-        container('docker-runner'){
-          script {
-            dir('docker'){
-              sh './build-image.sh'
-              sh './push-image.sh'
-            }
+        script {
+          dir('docker'){
+            sh './build-image.sh'
+            sh './push-image.sh'
           }
         }
       }
     }
     
-    stage('result'){
+    stage('result') {
       steps {
         script {
           currentBuild.result = 'SUCCESS'
@@ -39,8 +48,8 @@ pipeline {
     }
 
     changed {
-      script{
-        if('SUCCESS'.equals(currentBuild.result)) {
+      script {
+        if ('SUCCESS'.equals(currentBuild.result)) {
           slackSend color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Back to normal (<${env.BUILD_URL}|Open>)"
         }
       }

@@ -1,5 +1,11 @@
 FROM docker.io/centos:latest
 
+RUN \
+  rpm --import http://mirror.centos.org/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-7 && \
+  rpm --import http://mirror.centos.org/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-Testing-7 && \
+  rpm --import http://repository.egi.eu/sw/production/umd/UMD-RPM-PGP-KEY && \
+  rpm -Uvh http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
+
 # Layer: base
 RUN yum install -y https://yum.puppet.com/puppet5/puppet5-release-el-7.noarch.rpm && \
     yum install -y puppet git wget epel-release redhat-lsb iproute && \

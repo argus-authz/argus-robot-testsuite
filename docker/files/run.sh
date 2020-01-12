@@ -93,6 +93,6 @@ set -e
 
 ## Run
 echo "Run ..."
-pybot --pythonpath .:lib  -d $OUTPUT_REPORTS --include=remote tests/
+robot --pythonpath .:lib  -d $OUTPUT_REPORTS --include=remote tests/
 
 echo "Done."

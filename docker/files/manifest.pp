@@ -4,12 +4,6 @@ include testvos
 include testca
 
 $packages = [
-  'openldap-clients',
-  'globus-gass-copy-progs',
-  'gfal2-util',
-  'gfal2-all',
-  'dcache-srmclient',
-  'davix',
   'voms-clients-java',
   'voms-test-ca'
 ]
@@ -18,11 +12,6 @@ include 'mwdevel_argus::clients'
 
 package { $packages:
   ensure => 'latest',
-}
-
-package { 'voms-clients':
-  ensure => 'installed',
-  source => 'https://ci.cloud.cnaf.infn.it/view/voms/job/pkg.voms/job/release_sep_19/lastSuccessfulBuild/artifact/repo/centos6/voms-clients3-3.3.1-0.el6.centos.noarch.rpm',
 }
 
 include python
@@ -56,8 +45,6 @@ Class['epel']
 -> Class['java']
 -> Class['testvos']
 -> Class['testca']
--> Class['storm::repo']
 -> Package[$packages]
--> Package['voms-clients']
 -> Package['robotframework']
 -> User['tester']

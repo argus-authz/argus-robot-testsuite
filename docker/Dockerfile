@@ -6,7 +6,7 @@ RUN \
   yum clean all && \
   yum --enablerepo=centosplus install -y deltarpm epel-release redhat-lsb
 
-ENV PATH="/opt/puppetlabs/bin:/opt/argus-mw-devel:${PATH}"
+ENV PATH="/opt/puppetlabs/bin:${PATH}"
 
 # Install utils
 RUN yum install -y wget git 
@@ -29,14 +29,23 @@ RUN puppet module install puppet-epel && \
     puppet module install cnafsd-testca && \
     puppet module install cnafsd-umd4 
 
-# Layer: Argus
-RUN useradd -ms /bin/bash tester
+RUN git clone https://github.com/argus-authz/argus-mw-devel /opt/argus-mw-devel
 
+COPY files/setup.sh /files/
+COPY files/manifest.pp /files/
+
+RUN sh /files/setup.sh
+
+# Layer: Argus
 COPY files/run.sh /home/tester/
 
 RUN chown tester:tester /home/tester/run.sh
 
-RUN git clone https://github.com/argus-authz/argus-mw-devel /opt/argus-mw-devel
+USER tester
+
+WORKDIR /home/tester
+
+VOLUME /assets
 
 CMD /home/tester/run.sh
 

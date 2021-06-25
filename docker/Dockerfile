@@ -1,20 +1,43 @@
-FROM italiangrid/storm-testsuite:nightly
+FROM centos:7
 
-# RUN yum install -y iproute && \
-#    yum clean all
+RUN \
+  rpm --import http://mirror.centos.org/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-7 && \
+  rpm --import http://mirror.centos.org/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-Testing-7 && \
+  yum clean all && \
+  yum --enablerepo=centosplus install -y deltarpm epel-release redhat-lsb
+
+ENV PATH="/opt/puppetlabs/bin:/opt/argus-mw-devel:${PATH}"
+
+# Install utils
+RUN yum install -y wget git 
+
+# Install Puppet
+RUN rpm -Uvh https://yum.puppetlabs.com/puppet5/el/7/x86_64/puppet5-release-5.0.0-6.el7.noarch.rpm && \
+  yum install -y puppet
+
+RUN puppet --version
+
+# Install specific version of puppetlabs-stdlib because latest v7 is not support by lots of modules
+RUN puppet module install --force puppetlabs-stdlib --version 6.6.0
+
+# Install Puppet modules
+RUN puppet module install puppet-epel && \
+    puppet module install puppet-fetchcrl && \
+    puppet module install puppet-python && \
+    puppet module install puppetlabs-java && \
+    puppet module install cnafsd-testvos && \
+    puppet module install cnafsd-testca && \
+    puppet module install cnafsd-umd4 
+
+# Layer: Argus
+RUN useradd -ms /bin/bash tester
 
 COPY files/run.sh /home/tester/
-#RUN chown tester:tester /home/tester/run.sh
+
+RUN chown tester:tester /home/tester/run.sh
 
 RUN git clone https://github.com/argus-authz/argus-mw-devel /opt/argus-mw-devel
 
-COPY files/manifest.pp /
-
-RUN /opt/puppetlabs/bin/puppet apply --modulepath=/opt/argus-mw-devel:/etc/puppetlabs/code/environments/production/modules /manifest.pp && \
-	grep -q 'failure: 0' /opt/puppetlabs/puppet/cache/state/last_run_summary.yaml
-
-#WORKDIR /home/tester
-#USER tester
-
 CMD /home/tester/run.sh
+
 

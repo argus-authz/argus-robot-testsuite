@@ -1,14 +1,14 @@
 include epel
 include umd4
-include testvos
 include testca
+
+include voms::testvo
+include mwdevel_argus::clients
 
 $packages = [
   'voms-clients-java',
-  'voms-test-ca'
+  'voms-test-ca',
 ]
-
-include 'mwdevel_argus::clients'
 
 package { $packages:
   ensure => 'latest',
@@ -41,10 +41,11 @@ user { 'tester':
 
 Class['epel']
 -> Class['umd4']
+-> Class['testca']
+-> Class['voms::testvo']
+-> Class['mwdevel_argus::clients']
 -> Class['python']
 -> Class['java']
--> Class['testvos']
--> Class['testca']
 -> Package[$packages]
 -> Package['robotframework']
 -> User['tester']

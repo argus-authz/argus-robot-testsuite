@@ -25,7 +25,7 @@ RUN puppet module install puppet-epel && \
     puppet module install puppet-fetchcrl && \
     puppet module install puppet-python && \
     puppet module install puppetlabs-java && \
-    puppet module install cnafsd-testvos && \
+    puppet module install cnafsd-voms && \
     puppet module install cnafsd-testca && \
     puppet module install cnafsd-umd4 
 
@@ -37,13 +37,11 @@ COPY files/manifest.pp /files/
 RUN sh /files/setup.sh
 
 # Layer: Argus
-COPY files/run.sh /home/tester/
-
-RUN chown tester:tester /home/tester/run.sh
+WORKDIR /home/tester
 
 USER tester
 
-WORKDIR /home/tester
+COPY files/run.sh /home/tester/
 
 VOLUME /assets
 

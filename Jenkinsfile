@@ -6,18 +6,16 @@ pipeline {
     timeout(time: 3, unit: 'HOURS')
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
-  
-  environment {
-    DOCKER_REGISTRY_HOST = "${env.DOCKER_REGISTRY_HOST}"
-  }
 
   stages {
     stage('build image') {
       steps {
         script {
-          dir('docker') {
-            sh './build-image.sh'
-            sh './push-image.sh'
+          withDockerRegistry([ credentialsId: "dockerhub-enrico", url: "" ]) {
+            dir('docker') {
+              sh './build-image.sh'
+              sh './push-image.sh'
+            }
           }
         }
       }

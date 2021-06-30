@@ -11,4 +11,7 @@ else
   echo "Puppet apply exited with $?"
 fi
 
+# Add tester user
+adduser -d /home/tester tester
+
 exit 0

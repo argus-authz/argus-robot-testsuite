@@ -11,7 +11,8 @@ $packages = [
 ]
 
 package { $packages:
-  ensure => 'latest',
+  ensure => 'present',
+  install_options => ['--nogpgcheck'],
 }
 
 include python

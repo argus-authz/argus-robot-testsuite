@@ -16,8 +16,9 @@ pipeline {
           }
         }
       }
+    }
 
-      stage('push-dockerhub') {
+    stage('push-dockerhub') {
       steps {
         script {
           withDockerRegistry([ credentialsId: "dockerhub-enrico", url: "" ]) {

@@ -11,9 +11,17 @@ pipeline {
     stage('build image') {
       steps {
         script {
+          dir('docker') {
+            sh './build-image.sh'           
+          }
+        }
+      }
+
+      stage('push-dockerhub') {
+      steps {
+        script {
           withDockerRegistry([ credentialsId: "dockerhub-enrico", url: "" ]) {
             dir('docker') {
-              sh './build-image.sh'
               sh './push-image.sh'
             }
           }

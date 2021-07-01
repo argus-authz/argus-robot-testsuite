@@ -1,50 +1,28 @@
 FROM centos:7
 
-RUN \
-  rpm --import http://mirror.centos.org/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-7 && \
-  rpm --import http://mirror.centos.org/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-Testing-7 && \
-  yum clean all && \
-  yum --enablerepo=centosplus install -y deltarpm epel-release redhat-lsb
+ARG TEST_USER=test
+ARG TEST_USER_UID=501
 
-ENV PATH="/opt/puppetlabs/bin:${PATH}"
+ENV TEST_USER $TEST_USER
+ENV TEST_USER_UID $TEST_USER_UID
 
-# Install utils
-RUN yum install -y wget git 
+COPY files/*.sh /tmp/scripts/
 
-# Install Puppet
-RUN rpm -Uvh https://yum.puppetlabs.com/puppet5/el/7/x86_64/puppet5-release-5.0.0-6.el7.noarch.rpm && \
-  yum install -y puppet
+RUN    yum install -y wget epel-release curl\
+    && wget https://ci.cloud.cnaf.infn.it/view/repos/job/repo_test_ca/lastSuccessfulBuild/artifact/test-ca.repo -O /etc/yum.repos.d/test-ca.repo \
+    && yum -y install sudo\
+       igi-test-ca voms-clients-java myproxy \
+       python36 python36-devel python36-setuptools \
+    && rm -rf /var/cache/yum \
+    && adduser --uid ${TEST_USER_UID} ${TEST_USER} \
+    && echo ${TEST_USER} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${TEST_USER} \
+    && chmod 0440 /etc/sudoers.d/${TEST_USER} \
+    && mkdir /home/${TEST_USER}/.config /home/${TEST_USER}/.globus \
+    && cp /usr/share/igi-test-ca/test0.p12 /home/${TEST_USER}/.globus/usercred.p12 \
+    && chmod 600 /home/${TEST_USER}/.globus/usercred.p12 \
+    && chown -R ${TEST_USER}:${TEST_USER} /home/${TEST_USER} \
+    && bash /tmp/scripts/provide_robotframework.sh \
+    && rm -rf /tmp/scripts
 
-RUN puppet --version
-
-# Install specific version of puppetlabs-stdlib because latest v7 is not support by lots of modules
-RUN puppet module install --force puppetlabs-stdlib --version 6.6.0
-
-# Install Puppet modules
-RUN puppet module install puppet-epel && \
-    puppet module install puppet-fetchcrl && \
-    puppet module install puppet-python && \
-    puppet module install puppetlabs-java && \
-    puppet module install cnafsd-voms && \
-    puppet module install cnafsd-testca && \
-    puppet module install cnafsd-umd4 
-
-RUN git clone https://github.com/argus-authz/argus-mw-devel /opt/argus-mw-devel
-
-COPY files/setup.sh /files/
-COPY files/manifest.pp /files/
-
-RUN sh /files/setup.sh
-
-# Layer: Argus
-WORKDIR /home/tester
-
-USER tester
-
-COPY files/run.sh /home/tester/
-
-VOLUME /assets
-
-CMD /home/tester/run.sh
-
-
+USER ${TEST_USER}
+WORKDIR /home/${TEST_USER}

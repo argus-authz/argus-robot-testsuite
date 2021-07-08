@@ -1,0 +1,35 @@
+version: '3.7'
+
+volumes:
+  trustanchors:
+  cabundle:
+
+services:
+  trust:
+    image: indigoiam/egi-trustanchors
+
+    volumes:
+      - trustanchors:/tmp/certificates
+      - cabundle:/tmp/pki
+
+    environment:
+      FORCE_TRUST_ANCHORS_UPDATE: 1
+      TRUST_ANCHORS_TARGET: /tmp/certificates
+      CA_BUNDLE_TARGET: /tmp/pki
+
+  testsuite:
+    image: ${TS_IMAGE}
+    container_name: ${COMPOSE_PROJECT_NAME}
+    init: true
+
+    environment:
+      - TZ=Europe/Rome
+      - X509_USER_PROXY=/tmp/x509up_u501
+      - ROBOT_ARGS
+
+    volumes:
+      - trustanchors:/etc/grid-security/certificates
+      - ./assets:/scripts
+      - ..:/home/test/argus-testsuite:cached
+
+    command: ["sleep", "infinity"]

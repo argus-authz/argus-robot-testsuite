@@ -25,6 +25,7 @@ pipeline {
         script {
           sh returnStatus: true, script: '''#!/bin/bash 
           set -ex
+          cd compose
           docker-compose up trust
           docker-compose up --detach testsuite
           docker-compose exec -T testsuite bash /scripts/ci-run-testsuite.sh

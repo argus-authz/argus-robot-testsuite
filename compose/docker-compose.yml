@@ -18,7 +18,7 @@ services:
       CA_BUNDLE_TARGET: /tmp/pki
 
   testsuite:
-    image: ${TS_IMAGE}
+    image: ${TS_IMAGE}:${TS_IMAGE_BRANCH}
     container_name: ${COMPOSE_PROJECT_NAME}
     init: true
 

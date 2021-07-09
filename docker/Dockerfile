@@ -28,7 +28,7 @@ RUN    yum install -y wget epel-release \
     && chown -R ${TEST_USER}:${TEST_USER} /home/${TEST_USER} \
     && openssl pkcs12 -passin pass:pass -in /home/${TEST_USER}/.globus/usercred.p12 -clcerts -nokeys -out /home/${TEST_USER}/.globus/usercert.pem \
     && openssl pkcs12 -passin pass:pass -passout pass:pass -in /home/${TEST_USER}/.globus/usercred.p12 -nocerts -out /home/${TEST_USER}/.globus/userkey.pem \
-    && openssl rsa -in userkey.pem -out userkey.pem -passin pass:pass \
+    && openssl rsa -in /home/${TEST_USER}/.globus/userkey.pem -out /home/${TEST_USER}/.globus/userkey.pem -passin pass:pass \
     && chmod 400 /home/${TEST_USER}/.globus/userkey.pem \
     && chmod 644 /home/${TEST_USER}/.globus/usercert.pem \
     && bash /tmp/scripts/provide_robotframework.sh \

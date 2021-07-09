@@ -12,8 +12,7 @@ pipeline {
   }
 
   parameters {
-    string(defaultValue: "--variable T_PAP_HOST:omii001.cnaf.infn.it --variable T_PDP_HOST:omii001.cnaf.infn.it
-      --variable T_PEP_HOST:omii001.cnaf.infn.it", description: 'Robot arguments', name: 'ROBOT_ARGS')
+    string(defaultValue: "--variable T_PAP_HOST:omii001.cnaf.infn.it --variable T_PDP_HOST:omii001.cnaf.infn.it --variable T_PEP_HOST:omii001.cnaf.infn.it", description: 'Robot arguments', name: 'ROBOT_ARGS')
   }
 
   environment {

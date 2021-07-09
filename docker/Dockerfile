@@ -31,6 +31,7 @@ RUN    yum install -y wget epel-release \
     && openssl rsa -in /home/${TEST_USER}/.globus/userkey.pem -out /home/${TEST_USER}/.globus/userkey.pem -passin pass:pass \
     && chmod 400 /home/${TEST_USER}/.globus/userkey.pem \
     && chmod 644 /home/${TEST_USER}/.globus/usercert.pem \
+    && chown ${TEST_USER}:${TEST_USER} /home/${TEST_USER}/.globus/* \
     && bash /tmp/scripts/provide_robotframework.sh \
     && rm -rf /tmp/scripts
 

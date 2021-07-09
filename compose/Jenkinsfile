@@ -35,7 +35,7 @@ pipeline {
 
     stage('report'){
       steps {
-        sh "docker cp argus-testsuite_testsuite_1:/tmp/reports ."
+        sh "docker cp argus-testsuite:/tmp/reports ."
         archive 'reports/**'
 
         step([$class: 'RobotPublisher',

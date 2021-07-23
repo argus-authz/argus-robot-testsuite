@@ -27,8 +27,6 @@ function wait_for_service() {
 
 set -xe
 
-TEST_CA_REPO_URL=${TEST_CA_REPO_URL:-https://ci.cloud.cnaf.infn.it/view/repos/job/repo_test_ca/lastSuccessfulBuild/artifact/test-ca.repo}
-
 PAP_PORT=${PAP_PORT:-8150}
 PDP_PORT=${PDP_PORT:-8152}
 PEP_PORT=${PEP_PORT:-8154}
@@ -37,12 +35,6 @@ TIMEOUT=${TIMEOUT:-300}
 T_PDP_ADMIN_PASSWORD=${T_PDP_ADMIN_PASSWORD:-pdpadmin_password}
 
 export T_PDP_ADMIN_PASSWORD
-
-# install igi-test-ca 
-wget ${WGET_OPTIONS} ${TEST_CA_REPO_URL} -O /etc/yum.repos.d/igi-test-ca.repo
-
-yum clean all
-yum -y install igi-test-ca
 
 # Setup host certificate
 cp /certs/__cnaf_test.cert.pem /etc/grid-security/hostcert.pem

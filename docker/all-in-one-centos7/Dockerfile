@@ -8,7 +8,8 @@ ARG UMD_RELEASE_PACKAGE_URL=http://repository.egi.eu/sw/production/umd/4/centos7
 
 RUN echo "include_only=.garr.it,.cern.ch" >> /etc/yum/pluginconf.d/fastestmirror.conf && \
   yum install -y wget sudo epel-release ${UMD_RELEASE_PACKAGE_URL} && \
-  yum install -y argus-authz && \
+  wget https://ci.cloud.cnaf.infn.it/view/repos/job/repo_test_ca/lastSuccessfulBuild/artifact/test-ca.repo -O /etc/yum.repos.d/test-ca.repo && \
+  yum install -y argus-authz igi-test-ca && \
   yum update -y && \
   yum clean all && \
   rm -rf /var/cache/yum && \

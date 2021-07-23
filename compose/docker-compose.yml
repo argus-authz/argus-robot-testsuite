@@ -36,9 +36,8 @@ services:
 
   argus:
     image: ${ARGUS_IMAGE}
-  
-    environment:
-      ARGUS_HOSTNAME: argus-centos7.cnaf.test
+    hostname: argus-centos7.cnaf.test
+
   
     volumes:
       - ./assets/scripts:/scripts
@@ -48,6 +47,8 @@ services:
       - "8150:8150"
       - "8152:8152"
       - "8154:8154"
+
+    command: ["sleep", "infinity"]
   
     privileged: true
   

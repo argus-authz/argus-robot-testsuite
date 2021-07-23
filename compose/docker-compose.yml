@@ -29,7 +29,29 @@ services:
 
     volumes:
       - trustanchors:/etc/grid-security/certificates
-      - ./assets:/scripts
+      - ./assets/scripts:/scripts
       - ..:/home/test/argus-testsuite:cached
 
     command: ["sleep", "infinity"]
+
+  argus:
+    image: ${ARGUS_IMAGE}
+  
+    environment:
+      ARGUS_HOSTNAME: argus-centos7.cnaf.test
+  
+    volumes:
+      - ./assets/scripts:/scripts
+      - ./assets/certs/:/certs
+  
+    ports:
+      - "8150:8150"
+      - "8152:8152"
+      - "8154:8154"
+  
+    privileged: true
+  
+    networks:
+      default:
+        aliases:
+          - argus-centos7.cnaf.test

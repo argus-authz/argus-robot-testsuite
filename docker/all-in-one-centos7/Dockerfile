@@ -10,7 +10,7 @@ RUN echo "include_only=.garr.it,.cern.ch" >> /etc/yum/pluginconf.d/fastestmirror
   yum install -y wget sudo epel-release ${UMD_RELEASE_PACKAGE_URL} && \
   wget https://ci.cloud.cnaf.infn.it/view/repos/job/repo_test_ca/lastSuccessfulBuild/artifact/test-ca.repo -O /etc/yum.repos.d/test-ca.repo && \
   yum install -y argus-authz igi-test-ca && \
-  yum update -y && \
+  #yum downgrade -y java-1.8.0-openjdk java-1.8.0-openjdk-headless && \
   yum clean all && \
   rm -rf /var/cache/yum && \
   adduser --uid ${TEST_USER_UID} ${TEST_USER} && \

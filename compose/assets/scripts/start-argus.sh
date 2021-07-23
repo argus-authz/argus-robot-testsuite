@@ -36,14 +36,7 @@ T_PDP_ADMIN_PASSWORD=${T_PDP_ADMIN_PASSWORD:-pdpadmin_password}
 
 export T_PDP_ADMIN_PASSWORD
 
-# Setup host certificate
-cp /certs/__cnaf_test.cert.pem /etc/grid-security/hostcert.pem
-cp /certs/__cnaf_test.key.pem /etc/grid-security/hostkey.pem
-chmod 644 /etc/grid-security/hostcert.pem
-chmod 400 /etc/grid-security/hostkey.pem
-
-
-## Wait for services and run
+# Wait for services and run
 papctl start
 echo "Wait for PAP"
 set +e

@@ -7,13 +7,14 @@ ARG TEST_USER_UID=501
 ARG UMD_RELEASE_PACKAGE_URL=http://repository.egi.eu/sw/production/umd/4/centos7/x86_64/updates/umd-release-4.1.3-1.el7.centos.noarch.rpm
 
 RUN echo "include_only=.garr.it,.cern.ch" >> /etc/yum/pluginconf.d/fastestmirror.conf && \
-  yum install -y wget sudo epel-release ${UMD_RELEASE_PACKAGE_URL} argus-authz && \
+  yum install -y wget sudo epel-release ${UMD_RELEASE_PACKAGE_URL} && \
+  yum install -y argus-authz && \
   yum update -y && \
   yum clean all && \
   rm -rf /var/cache/yum && \
   adduser --uid ${TEST_USER_UID} ${TEST_USER} && \
   echo ${TEST_USER} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${TEST_USER} && \
-  chmod 0440 /etc/sudoers.d/${TEST_USER} && \
+  chmod 0440 /etc/sudoers.d/${TEST_USER} 
 
 ENV container=docker
 

@@ -14,6 +14,9 @@ pipeline {
           dir('docker/testsuite') {
             sh './build-image.sh'           
           }
+          dir('docker/all-in-one-centos7') {
+            sh './build-image.sh'           
+          }
         }
       }
     }
@@ -23,6 +26,9 @@ pipeline {
         script {
           withDockerRegistry([ credentialsId: "dockerhub-enrico", url: "" ]) {
             dir('docker/testsuite') {
+              sh './push-image.sh'
+            }
+            dir('docker/all-in-one-centos7') {
               sh './push-image.sh'
             }
           }

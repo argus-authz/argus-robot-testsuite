@@ -47,8 +47,6 @@ services:
       - "8150:8150"
       - "8152:8152"
       - "8154:8154"
-
-    command: ["sleep", "infinity"]
   
     privileged: true
   

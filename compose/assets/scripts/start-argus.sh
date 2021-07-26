@@ -34,10 +34,10 @@ TIMEOUT=${TIMEOUT:-300}
 
 T_PDP_ADMIN_PASSWORD=${T_PDP_ADMIN_PASSWORD:-pdpadmin_password}
 
-export T_PDP_ADMIN_PASSWORD
+export T_PDP_ADMIN_PASSWORD 
 
 # Wait for services and run
-papctl start
+systemctl start argus-pap
 echo "Wait for PAP"
 set +e
 wait_for_service ${HOSTNAME} ${PAP_PORT} ${TIMEOUT}
@@ -45,15 +45,14 @@ wait_for_service ${HOSTNAME} ${PAP_PORT} ${TIMEOUT}
 set -e
 echo "PAP is ready. Start PDP"
 
-
-pdpctl start
+systemctl start argus-pdp
 echo "Wait for PDP"
 set +e
 wait_for_service ${HOSTNAME} ${PDP_PORT} ${TIMEOUT}
 set -e
 echo "PDP is ready. Start for PEP"
 
-pepdctl start
+systemctl start argus-pepd
 echo "Wait for PEP"
 set +e
 wait_for_service ${HOSTNAME} ${PEP_PORT} ${TIMEOUT}

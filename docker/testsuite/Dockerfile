@@ -15,6 +15,7 @@ RUN    yum install -y wget sudo epel-release \
        argus-pap argus-pdp argus-pep-server argus-pepcli \
        python36 python36-devel python36-setuptools \
     && rm -rf /var/cache/yum \
+    && cat /etc/grid-security/certificates/igi-test-ca.pem >> /etc/pki/tls/certs/ca-bundle.crt \
     && mkdir -p /etc/grid-security/vomsdir/test.vo/ /etc/vomses/ \
     && wget https://raw.githubusercontent.com/italiangrid/voms-testsuite/master/compose/assets/vomsdir/test.vo/vgrid02.cnaf.infn.it.lsc -O /etc/grid-security/vomsdir/test.vo/vgrid02.cnaf.infn.it.lsc \
     && wget https://raw.githubusercontent.com/italiangrid/voms-testsuite/master/compose/assets/vomses/test.vo.vomses -O /etc/vomses/test.vo.vomses \

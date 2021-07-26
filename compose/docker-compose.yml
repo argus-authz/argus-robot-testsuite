@@ -37,7 +37,6 @@ services:
   argus:
     image: ${ARGUS_IMAGE}
     hostname: argus-centos7.cnaf.test
-
   
     volumes:
       - ./assets/scripts:/scripts

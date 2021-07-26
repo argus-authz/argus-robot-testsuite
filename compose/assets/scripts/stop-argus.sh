@@ -33,7 +33,7 @@ PEP_PORT="${PEP_PORT:-8154}"
 TIMEOUT="${TIMEOUT:-300}"
 
 ## Wait for services and stop
-pepdctl stop
+systemctl stop argus-pepd
 echo "Wait for PEP"
 set +e
 #wait_for_service ${HOSTNAME} ${PEP_PORT} ${TIMEOUT}
@@ -41,14 +41,14 @@ set -e
 echo "PEP is down. Stop PDP"
 
 
-pdpctl stop
+systemctl stop argus-pdp
 echo "Wait for PDP"
 set +e
 wait_for_service ${HOSTNAME} ${PDP_PORT} ${TIMEOUT}
 set -e
 echo "PDP is down. Stop PEP"
 
-papctl stop
+systemctl stop argus-pap
 echo "Wait for PAP"
 set +e
 wait_for_service ${HOSTNAME} ${PAP_PORT} ${TIMEOUT}

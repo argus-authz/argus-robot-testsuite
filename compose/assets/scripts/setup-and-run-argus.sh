@@ -39,8 +39,8 @@ wget ${VGRID02_LSC} -O /etc/grid-security/vomsdir/test.vo/vgrid02.cnaf.infn.it.l
 wget ${TESTVO_VOMSES} -O /etc/vomses/test.vo.vomses
 touch /etc/grid-security/voms-grid-mapfile
 
+cp /files/groupmapfile /etc/grid-security/groupmapfile
 touch /etc/grid-security/grid-mapfile
-touch /etc/grid-security/groupmapfile
 mkdir -p /etc/grid-security/gridmapdir
 
 sh /scripts/start-argus.sh

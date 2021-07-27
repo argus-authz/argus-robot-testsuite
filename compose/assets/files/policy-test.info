@@ -1,0 +1,4 @@
+# @(#)policy-igtf-classic.info - IGTF classic authorities
+# Generated Tuesday, 04 May, 2021
+alias = policy-test
+subjectdn = "/C=IT/O=IGI/CN=Test CA"

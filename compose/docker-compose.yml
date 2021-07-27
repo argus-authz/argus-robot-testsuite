@@ -41,6 +41,7 @@ services:
     volumes:
       - ./assets/scripts:/scripts
       - ./assets/certs/:/certs
+      - ./assets/files:/files
   
     ports:
       - "8150:8150"

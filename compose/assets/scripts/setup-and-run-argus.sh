@@ -31,6 +31,9 @@ sed -i -e "s#argus-pap.example.org#${HOSTNAME}#g" /etc/argus/pdp/pdp.ini
 
 sed -i -e "s#argus.example.org#${HOSTNAME}#g" /etc/argus/pepd/pepd.ini
 
+cp /files/policy-test.info /etc/grid-security/certificates/policy-test.info
+echo -e '\n/test.vo file:policy-test.info' >> /etc/argus/pepd/vo-ca-ap-file
+
 mkdir -p /etc/grid-security/vomsdir/test.vo/ /etc/vomses/
 wget ${VGRID02_LSC} -O /etc/grid-security/vomsdir/test.vo/vgrid02.cnaf.infn.it.lsc
 wget ${TESTVO_VOMSES} -O /etc/vomses/test.vo.vomses

@@ -18,7 +18,7 @@
 set -ex
 
 ROBOT_ARGS=${ROBOT_ARGS:-}
-DEFAULT_EXCLUDES=${DEFAULT_EXCLUDES:-"--include remote"}
+DEFAULT_EXCLUDES=${DEFAULT_EXCLUDES:-}
 REPORTS_DIR=${REPORTS_DIR:-"reports"}
 DEFAULT_ARGS="--pythonpath .:lib  -d ${REPORTS_DIR}"
 

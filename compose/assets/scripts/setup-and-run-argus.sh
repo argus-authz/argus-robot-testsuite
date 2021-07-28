@@ -40,7 +40,7 @@ wget ${TESTVO_VOMSES} -O /etc/vomses/test.vo.vomses
 touch /etc/grid-security/voms-grid-mapfile
 
 cp /files/groupmapfile /etc/grid-security/groupmapfile
-touch /etc/grid-security/grid-mapfile
+cp /files/grid-mapfile /etc/grid-security/grid-mapfile
 mkdir -p /etc/grid-security/gridmapdir
 
 sh /scripts/start-argus.sh

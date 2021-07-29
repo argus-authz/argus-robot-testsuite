@@ -5,7 +5,13 @@ set -ex
 # the /etc/grid-security/certificates volume overwrites the contents
 # of that directory
 sudo yum -y reinstall igi-test-ca
-#sudo update-ca-trust
+
+mkdir -p $HOME/.ssh 
+cp /files/id_rsa* $HOME/.ssh
+chown test:test $HOME/.ssh/id_rsa*
+chmod 700 $HOME/.ssh/; chmod 400 $HOME/.ssh/id_rsa
+
+#ssh -o 'StrictHostKeyChecking=no' root@argus-centos7.cnaf.test echo -e 'Hello from argus server: `pwd`'
 
 export T_PDP_ADMIN_PASSWORD=${T_PDP_ADMIN_PASSWORD:-"pdpadmin_password"}
 

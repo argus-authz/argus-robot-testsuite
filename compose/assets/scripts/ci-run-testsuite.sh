@@ -7,7 +7,7 @@ set -ex
 sudo yum -y reinstall igi-test-ca
 
 mkdir -p $HOME/.ssh 
-cp /files/id_rsa* $HOME/.ssh
+cp /certs/id_rsa* $HOME/.ssh
 chown test:test $HOME/.ssh/id_rsa*
 chmod 700 $HOME/.ssh/; chmod 400 $HOME/.ssh/id_rsa
 

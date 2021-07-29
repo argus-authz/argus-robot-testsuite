@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 CERT_DIR="/usr/share/igi-test-ca"
 TEST_USER="test"
 GLOBUS_DIR="/home/${TEST_USER}/.globus"

@@ -9,7 +9,7 @@ ENV TEST_USER_UID $TEST_USER_UID
 COPY files/*.sh /tmp/scripts/
 COPY files/argus_el7.repo /etc/yum.repos.d/
 
-RUN    yum install -y wget sudo epel-release \
+RUN    yum install -y wget sudo openssh-clients epel-release \
     && wget https://ci.cloud.cnaf.infn.it/view/repos/job/repo_test_ca/lastSuccessfulBuild/artifact/test-ca.repo -O /etc/yum.repos.d/test-ca.repo \
     && yum -y install igi-test-ca voms-clients-java myproxy \
        argus-pap argus-pdp argus-pep-server argus-pepcli \

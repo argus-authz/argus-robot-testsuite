@@ -61,7 +61,7 @@ pipeline {
       set -ex
       cd compose
       docker-compose down -v
-      rm -rfv reports
+      rm -rfv ../reports*
       '''
     }
 

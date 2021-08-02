@@ -7,6 +7,7 @@ pipeline {
   options {
     timeout(time: 1, unit: 'HOURS')
     buildDiscarder(logRotator(numToKeepStr: '5'))
+    disableConcurrentBuilds()
     ansiColor('xterm')
     timestamps()
   }
@@ -39,7 +40,7 @@ pipeline {
       steps {
         sh "docker cp argus-testsuite:/tmp/reports ."
         sh "docker cp argus-testsuite_argus_1:/tmp/reports ."
-        archive 'reports/**'
+        archiveArtifacts 'reports/**'
 
         step([$class: 'RobotPublisher',
           disableArchiveOutput: false,

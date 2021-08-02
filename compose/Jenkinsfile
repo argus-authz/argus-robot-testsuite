@@ -44,12 +44,12 @@ pipeline {
 
         step([$class: 'RobotPublisher',
           disableArchiveOutput: false,
-          logFileName: 'log.html',
+          logFileName: 'log-local.html',
           otherFiles: '*.png',
-          outputFileName: 'output.xml',
+          outputFileName: 'output-local.xml',
           outputPath: "reports",
           passThreshold: 100,
-          reportFileName: 'report.html',
+          reportFileName: 'report-local.html',
           unstableThreshold: 90])
       }
     }

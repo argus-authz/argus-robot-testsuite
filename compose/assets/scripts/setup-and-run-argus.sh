@@ -3,10 +3,6 @@
 set -xe
 
 #yum downgrade -y java-1.8.0-openjdk java-1.8.0-openjdk-headless 
-systemctl start sshd
-mkdir -p /root/.ssh 
-cat /certs/id_rsa.pub > /root/.ssh/authorized_keys
-chmod 700 /root/.ssh/; chmod 600 /root/.ssh/authorized_keys
 
 TEST_CA_REPO_URL=${TEST_CA_REPO_URL:-https://ci.cloud.cnaf.infn.it/view/repos/job/repo_test_ca/lastSuccessfulBuild/artifact/test-ca.repo}
 EGI_TRUSTANCHORS_REPO_URL=${EGI_TRUSTANCHORS_REPO_URL:-http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo}
@@ -48,3 +44,11 @@ cp /files/grid-mapfile /etc/grid-security/grid-mapfile
 mkdir -p /etc/grid-security/gridmapdir
 
 sh /scripts/start-argus.sh
+
+# Setup SSHD to support local tests
+systemctl start sshd
+
+# Setup ssh authorized keys for root user
+mkdir -p /root/.ssh 
+cat /certs/id_rsa.pub > /root/.ssh/authorized_keys
+chmod 700 /root/.ssh/; chmod 600 /root/.ssh/authorized_keys

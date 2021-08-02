@@ -20,7 +20,10 @@ set -ex
 ROBOT_ARGS=${ROBOT_ARGS:-}
 DEFAULT_EXCLUDES=${DEFAULT_EXCLUDES:-}
 REPORTS_DIR=${REPORTS_DIR:-"reports"}
-DEFAULT_ARGS="--pythonpath .:lib  -d ${REPORTS_DIR}"
+OUT_FILE=${OUT_FILE:-"output.xml"}
+LOG_FILE=${LOG_FILE:-"log.html"}
+REPORT_FILE=${REPORT_FILE:-"report.html"}
+DEFAULT_ARGS="--pythonpath .:lib  -d ${REPORTS_DIR} -o ${OUT_FILE} -l ${LOG_FILE} -r ${REPORT_FILE}"
 
 read -a ARGS <<< "${DEFAULT_ARGS} ${DEFAULT_EXCLUDES} ${ROBOT_ARGS}"
 ARGS+=("$@")

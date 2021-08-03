@@ -42,7 +42,7 @@ Clean up  [Arguments]  ${host}=${T_PAP_HOST}  ${port}=${T_PAP_PORT}  ${cert}=${U
 Create policy file  [Arguments]  ${policies}
   Create File  ${POLICY_FILE}  ${policies}
 
-Load policy file  [Arguments]  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${file}=${POLICY_FILE}
+Load policy file  [Arguments]  ${host}=${T_PAP_HOST}  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${file}=${POLICY_FILE}
   Execute and Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} apf ${file}
 
 List policy with resource and action ids

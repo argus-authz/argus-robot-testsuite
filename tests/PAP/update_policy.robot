@@ -6,13 +6,13 @@ Test Teardown  Clean up
 *** Test Cases ***
 
 Attempt policy update from a non-existing file
-  [Tags]   remote
+  [Tags]   remote  cli
   ${out}   Execute and Check Failure  ${PAP_ADMIN} upf ${DUMMY_ID} ${DUMMY_FILE}
   Should contain   ${out}   does not exists.
   
 
 Update from file with non-existing resource id
-  [Tags]   remote
+  [Tags]   remote  cli
   [Setup]  Prepare
   Remove policy file
   Prepare new policy file
@@ -20,7 +20,7 @@ Update from file with non-existing resource id
   Should contain  ${output}  does not exists.
 
 Update from file with correct resource id
-  [Tags]   remote
+  [Tags]   remote  cli
   [Setup]  Prepare
   Remove policy file
   Prepare new policy file
@@ -28,7 +28,7 @@ Update from file with correct resource id
   Execute and Check Success  ${PAP_ADMIN} upf ${output} ${POLICY_FILE}
 
 Update from file with changing only an action
-  [Tags]   remote
+  [Tags]   remote  cli
   [Setup]  Prepare
   Remove policy file
   Prepare new policy file with only an action

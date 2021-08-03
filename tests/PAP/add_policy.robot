@@ -6,19 +6,20 @@ Test Teardown  Clean up
 
 *** Test Cases ***
 Add policy from file
-  [Tags]  remote
+  [Tags]  remote  cli
   ${policy}=  Prepare
   Create policy file  ${policy}
   Load policy file
 
-Add policy from file with error
-  [Tags]  remote
+Add policy from file with syntax error
+  [Tags]  remote  cli
   ${policy}=  Prepare with error
   Create policy file  ${policy}
-  Execute and Check Failure  ${PAP_ADMIN} apf ${POLICY_FILE}
+  ${output}=  Execute and Check Failure  ${PAP_ADMIN} apf ${POLICY_FILE}
+  Should Contain  ${output}  Syntax error
 
 DN containing slash (bug 66669)
-  [Tags]  remote
+  [Tags]  remote  cli
   Remove all policies
   ${pol}=  catenate  SEPARATOR=\n
   ...  resource "resource_1" {

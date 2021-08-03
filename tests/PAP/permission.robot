@@ -8,19 +8,17 @@ Test Setup     Ensure PAP stopped
 Test Teardown  Restore PAP configuration
 
 
-*** Variables ***
-${PRINCIPAL_WITH_COLON}  CN=Robot:argo-egi@cro-ngi.hr, O=SRCE, O=Robots, C=HR, DC=EGI, DC=EU
-${PERMISSIONS}           POLICY_READ_LOCAL|POLICY_READ_REMOTE|CONFIGURATION_READ
-
 
 *** Test Cases ***
 Argus syntax error: missing ']'
+  [Tags]  local
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   Replace string  ${file}  \\[dn\\]  \\[dn
   Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 Argus syntax error: missing ':'
+  [Tags]  local
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   ${content}=  Get content test 6
   Create File  ${file}  ${content}
@@ -28,17 +26,12 @@ Argus syntax error: missing ':'
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 Argus syntax error: missing 'permission'
+  [Tags]  local
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   ${content}=  Get content test 7
   Create File  ${file}  ${content}
   Start PAP
   Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
-
-Add permission with colon into principal
-  Ensure PAP running
-  Execute and Check Success  pap-admin add-ace "${PRINCIPAL_WITH_COLON}" '${PERMISSIONS}'
-  ${output}=  Execute and Check Success  pap-admin list-acl
-  Restart PAP service
 
 
 *** Keywords ***

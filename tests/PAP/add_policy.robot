@@ -1,25 +1,24 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
-
-Test Setup     Start PAP service
 Test Teardown  Clean up
 
 
 *** Test Cases ***
 Add policy from file
+  [Tags]  remote
   ${policy}=  Prepare
   Create policy file  ${policy}
   Load policy file
 
 Add policy from file with error
+  [Tags]  remote
   ${policy}=  Prepare with error
   Create policy file  ${policy}
   Execute and Check Failure  ${PAP_ADMIN} apf ${POLICY_FILE}
 
 DN containing slash (bug 66669)
+  [Tags]  remote
   Remove all policies
   ${pol}=  catenate  SEPARATOR=\n
   ...  resource "resource_1" {

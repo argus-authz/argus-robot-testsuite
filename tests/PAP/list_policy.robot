@@ -1,17 +1,20 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
+#Suite Setup     Make backup of the configuration
+#Suite Teardown  Restore configurations
 
-Test Setup  Start PAP service
+#Test Setup  Start PAP service
 
 *** Test Cases ***
 List empty repository
+  [Tags]  remote
   Remove all policies
-  Execute and Check Success  ${PAP_ADMIN} lp
+  ${output}=  Execute and Check Success  ${PAP_ADMIN} lp
+  Should Contain  ${output}  No policies has been found.
 
 List policies
+  [Tags]  remote
   Prepare
   ${rc}  ${output}=  Run And Return Rc And Output  ${PAP_ADMIN} lp -sai | egrep -c 'id='
   Should Be Equal As Integers  ${rc}  0
@@ -19,14 +22,18 @@ List policies
   [Teardown]  Clean up
 
 List policies with wrong pap-alias
-  Execute And Check Failure  ${PAP_ADMIN} lp -sai --pap "dummy_pap"
+  [Tags]  remote
+  ${output}=  Execute And Check Failure  ${PAP_ADMIN} lp -sai --pap "dummy_pap"
+  Should Contain  ${output}  Not found
 
 List by resource or action with incremental loading (bug 60044)
+  [Tags]  remote
   @{list}=  Get policy list
-  :FOR  ${pol}  IN  @{list}
-  \  Create policy file  ${pol}
-  \  Load policy file
-  \  Remove policy file
+  FOR  ${pol}  IN  @{list}
+    Create policy file  ${pol}
+    Load policy file
+    Remove policy file
+  END
   ${cmd}=  Set Variable  ${PAP_ADMIN} lp --resource "resource_2" | grep -q "999998"
   Execute and Check Success  ${cmd}
   ${cmd}=  Set Variable  ${PAP_ADMIN} lp --action "execute" | grep -q "999997"
@@ -36,15 +43,17 @@ List by resource or action with incremental loading (bug 60044)
   [Teardown]  Clean up
 
 Calling pap-admin from a symlink (bug 63180)
+  [Tags]  remote
   ${tmp_bin}=  Set Variable  /tmp/bin
   Create Directory  ${tmp_bin}
   Execute and Check Success  ln -fs ${T_PAP_HOME}/bin/pap-admin ${tmp_bin}/pap-admin
   Execute and Check Success  ${tmp_bin}/pap-admin remove-all-policies
   @{list}=  Get policy list
-  :FOR  ${pol}  IN  @{list}
-  \  Create policy file  ${pol}
-  \  Execute and Check Success  ${tmp_bin}/pap-admin add-policies-from-file ${POLICY_FILE}
-  \  Remove policy file
+  FOR  ${pol}  IN  @{list}
+    Create policy file  ${pol}
+    Execute and Check Success  ${tmp_bin}/pap-admin add-policies-from-file ${POLICY_FILE}
+    Remove policy file
+  END
   Execute and Check Success  ${tmp_bin}/pap-admin lp > /dev/null
   [Teardown]  Clean up
 

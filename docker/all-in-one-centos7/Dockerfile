@@ -14,8 +14,7 @@ RUN echo "include_only=.garr.it,.cern.ch" >> /etc/yum/pluginconf.d/fastestmirror
   rm -rf /var/cache/yum && \
   adduser --uid ${TEST_USER_UID} ${TEST_USER} && \
   echo ${TEST_USER} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${TEST_USER} && \
-  chmod 0440 /etc/sudoers.d/${TEST_USER} && \
-  rm -rf /tmp/scripts
+  chmod 0440 /etc/sudoers.d/${TEST_USER}
 
 ENV container=docker
 

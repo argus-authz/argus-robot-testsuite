@@ -17,10 +17,4 @@ export T_PDP_ADMIN_PASSWORD=${T_PDP_ADMIN_PASSWORD:-"pdpadmin_password"}
 
 mkdir -p /tmp/reports
 cd /home/test/argus-testsuite
-REPORTS_DIR="/tmp/reports" OUT_FILE="output-remote.xml" LOG_FILE="log-remote.html" REPORT_FILE="report-remote.html" \
-   DEFAULT_EXCLUDES="--include remote" ./run-testsuite.sh "$@"
-
-ssh -o 'StrictHostKeyChecking=no' root@argus-centos7.cnaf.test \
-    'cd /root/argus-testsuite; \
-     REPORTS_DIR="/tmp/reports" OUT_FILE="output-local.xml" LOG_FILE="log-local.html" REPORT_FILE="report-local.html" \
-     DEFAULT_EXCLUDES="--exclude remote" ./run-testsuite.sh "$@"'
+REPORTS_DIR="/tmp/reports" ./run-testsuite.sh "$@"

@@ -39,17 +39,16 @@ pipeline {
     stage('report'){
       steps {
         sh "docker cp argus-testsuite:/tmp/reports ."
-        sh "docker cp argus-testsuite_argus_1:/tmp/reports ."
         archiveArtifacts 'reports/**'
 
         step([$class: 'RobotPublisher',
           disableArchiveOutput: false,
-          logFileName: 'log-local.html',
+          logFileName: 'log.html',
           otherFiles: '*.png',
-          outputFileName: 'output-local.xml',
+          outputFileName: 'output.xml',
           outputPath: "reports",
           passThreshold: 100,
-          reportFileName: 'report-local.html',
+          reportFileName: 'report.html',
           unstableThreshold: 90])
       }
     }

@@ -3,6 +3,7 @@
 Library    OperatingSystem
 Library    String
 Library    Collections
+Library    SSHLibrary
 Resource   variables.robot
 
 Resource   file_utils.robot
@@ -83,3 +84,7 @@ Should Contain Ignore Case  [Arguments]  ${item1}  ${item2}  ${msg}=None
 Teardown Argus suite
   Restore configurations
   Restore services
+
+Open Connection And Log In  [Arguments]  ${SSH_HOST}=${T_PAP_HOST}
+   Open Connection     ${SSH_HOST}
+   Login With Public Key  ${SSH_USER}  ${SSH_KEYFILE}

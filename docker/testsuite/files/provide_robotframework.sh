@@ -8,3 +8,4 @@ pip3 install --upgrade robotframework-httplibrary
 pip3 install --upgrade requests
 pip3 install --upgrade pyyaml
 pip3 install --upgrade shyaml
+pip3 install --upgrade robotframework-sshlibrary

@@ -54,6 +54,10 @@ USERKEY = '~/.globus/userkey.pem'
 # in case of empty passphrase set this to /dev/null
 USERPWD_FILE = '~/.globus/password'
 
+# SSH config
+SSH_USER = 'root'
+SSH_KEYFILE = '/home/test/.ssh/id_rsa'
+
 VO = "test.vo"
 VO_PRIMARY_GROUP = "/test.vo"
 VO_SECONDARY_GROUP = "/test.vo/G2"

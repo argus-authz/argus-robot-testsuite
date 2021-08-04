@@ -31,7 +31,6 @@ services:
       - trustanchors:/etc/grid-security/certificates
       - ./assets/scripts:/scripts
       - ./assets/certs/:/certs
-      - ./assets/files:/files
       - ..:/home/test/argus-testsuite:cached
 
     command: ["sleep", "infinity"]
@@ -44,7 +43,6 @@ services:
       - ./assets/scripts:/scripts
       - ./assets/certs/:/certs
       - ./assets/files:/files
-      - ..:/root/argus-testsuite:cached
   
     ports:
       - "8150:8150"

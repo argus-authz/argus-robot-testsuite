@@ -7,6 +7,7 @@ Suite Teardown  Restore configurations
 
 *** Test Cases ***
 User group mapping (bug 64340)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary  vo_map=no  dn_map=yes
   ...  grp_vo_map=no  grp_vo_sec_map=no  grp_dn_map=yes
   ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
@@ -26,6 +27,7 @@ User group mapping (bug 64340)
   [Teardown]  Restore PEP configuration
 
 DN group mapping (bug 68805)
+  [Tags]  local  cli
   Init authentication profile file
   Init test CAs policy files
   ${host_dn}=  Get host dn

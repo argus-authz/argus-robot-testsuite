@@ -63,7 +63,7 @@ Test ban/unban user by subject
   Should Contain  ${output}  Decision: Not Applicable
 
 Test ban/unban user by FQAN
-  [Tags]  remote  pepcli
+  [Tags]  remote  cli
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}

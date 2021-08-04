@@ -31,10 +31,12 @@ Setup PEP
 
 *** Test Cases ***
 Check AUTHN_PROFILE_PIP is enabled
+  [Tags]  local
   ${pips}=  Read parameter from INI file  ${T_PEP_CONF}/${T_PEP_INI}  pips
   Should Contain  ${pips}  AUTHN_PROFILE_PIP
   
 Start PEP with missing auth profile policy file
+  [Tags]  local
   Ensure PEP stopped
   ${value}=  Escape char  ${GRIDDIR}/${AUTHN_PROFILE_FILE}  /
   Change parameter value  ${T_PEP_CONF}/${T_PEP_INI}  authenticationProfilePolicyFile  ${value}
@@ -47,6 +49,7 @@ Start PEP with missing auth profile policy file
   [Teardown]  Restore PEP configuration
     
 Classis CA is accepted with fallback authentication profile file
+  [Tags]  local  cli
   Setup PEP
   Mapping tests setup
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
@@ -55,6 +58,7 @@ Classis CA is accepted with fallback authentication profile file
   [Teardown]  Restore PEP configuration
 
 Classis CA with VOMS extension is accepted with fallback authentication profile file
+  [Tags]  local  cli
   Setup PEP
   Create user proxy
   Mapping tests setup
@@ -65,6 +69,7 @@ Classis CA with VOMS extension is accepted with fallback authentication profile 
   [Teardown]  Restore PEP configuration  
   
 IOTA CA is rejected with fallback authentication profile file
+  [Tags]  local  cli
   Setup PEP
   Mapping tests setup
   ${output}=  Perform PEP request  ${IOTA_USERKEY}  ${IOTA_USERCERT}  ${IOTA_USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
@@ -72,6 +77,7 @@ IOTA CA is rejected with fallback authentication profile file
   [Teardown]  Restore PEP configuration 
 
 IOTA CA with VOMS extensions is rejected with fallback authentication profile file
+  [Tags]  local  cli
   Setup PEP
   Mapping tests setup
   Create user proxy  ${IOTA_USERCERT}  ${IOTA_USERKEY}

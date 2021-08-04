@@ -10,6 +10,7 @@ Test Teardown  Restore PEP configuration
 
 *** Test Cases ***
 User mapping case 1 (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=yes
@@ -28,6 +29,7 @@ User mapping case 1 (bug 69197)
   Check if secondary group match  ${output}  ${TEST_DN_UID_GROUP}
 
 User mapping case 2 (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=yes
@@ -46,6 +48,7 @@ User mapping case 2 (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 3 (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=yes
@@ -64,6 +67,7 @@ User mapping case 3 (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 4 (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=yes
@@ -82,6 +86,7 @@ User mapping case 4 (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 5 (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -98,6 +103,7 @@ User mapping case 5 (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 5a (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -114,6 +120,7 @@ User mapping case 5a (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 6 (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -130,6 +137,7 @@ User mapping case 6 (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 6a (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -146,6 +154,7 @@ User mapping case 6a (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 7 (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -162,6 +171,7 @@ User mapping case 7 (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 7a (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -178,6 +188,7 @@ User mapping case 7a (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 8 (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -194,6 +205,7 @@ User mapping case 8 (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 User mapping case 8a (bug 69197)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=yes
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -210,6 +222,7 @@ User mapping case 8a (bug 69197)
   Check if secondary group match  ${output}  ${VO}|${TEST_DN_UID_GROUP}
   
 Renew timestamp of leases (bug 83281)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=no
   ...  grp_vo_map=yes  grp_vo_sec_map=no  grp_dn_map=no
@@ -226,7 +239,8 @@ Renew timestamp of leases (bug 83281)
   Should Not Be Equal  ${timestamp}  ${new_timestamp}
 
 PEPD write the secondary group into the lease (bug 83317)
-   &{dict}=  Create Dictionary
+  [Tags]  local  cli
+  &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=no
   ...  grp_vo_map=yes  grp_vo_sec_map=yes  grp_dn_map=no
   ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
@@ -243,6 +257,7 @@ PEPD write the secondary group into the lease (bug 83317)
   Should Be Equal  ${leases_num}  2
 
 Legacy LCAS/LCMAPS lease filename encoding (bug 83419)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary
   ...  vo_map=yes  dn_map=no
   ...  grp_vo_map=yes  grp_vo_sec_map=yes  grp_dn_map=no

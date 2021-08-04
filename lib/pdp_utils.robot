@@ -8,7 +8,7 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
-Reload policy  [Arguments]  ${host}=localhost  ${port}=${T_PDP_ADMIN_PORT}
+Reload policy  [Arguments]  ${host}=${T_PDP_HOST}  ${port}=${T_PDP_ADMIN_PORT}
   ${passwd}=  Resolve PDP admin password
   ${cmd}=  Set Variable  curl -Gv http://${host}:${port}/reloadPolicy?password=${passwd}
   ${output}=  Execute and Check Success  ${cmd}

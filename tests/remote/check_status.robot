@@ -1,9 +1,6 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup            Open Connection And Log In
-Suite Teardown         Close All Connections
-
 *** Test Cases ***
 
 Check PAP status endpoint

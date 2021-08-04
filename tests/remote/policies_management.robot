@@ -1,13 +1,10 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup  Open Connection And Log In
-Suite Teardown  Close All Connections
-
 *** Test Cases ***
 
 Load policy to PAP
-  [Tags]  remote
+  [Tags]  remote  cli
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}

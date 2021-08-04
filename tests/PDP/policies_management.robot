@@ -3,13 +3,6 @@ Resource   lib/utils.robot
 
 *** Test Cases ***
 
-Load policy to PAP
-  [Tags]  remote  cli
-  Remove all policies  host=${T_PAP_HOST}
-  Prepare policy file
-  Load policy file  host=${T_PAP_HOST}
-  ${output}=  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} lp -sai | egrep -c 'id='
-  Should Be Equal As Integers  ${output}  6
 
 Reload policy on PDP
   [Tags]  remote

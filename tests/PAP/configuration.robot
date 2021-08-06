@@ -1,11 +1,14 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
+Suite Setup  Open Connection And Log In
+Suite Teardown  Close All Connections
+
+#Suite Setup     Make backup of the configuration
+#Suite Teardown  Restore configurations
 
 Test Setup     Ensure PAP stopped
-Test Teardown  Restore PAP configuration
+#Test Teardown  Restore PAP configuration
 
 *** Test Cases ***
 
@@ -42,12 +45,12 @@ Syntax error: missing ']'
 
 Error exit codes (bug 65542)
   [Tags]  local
-  ${output}=  Execute and Check Failure  ${T_PAP_CTRL} status
+  Execute Command and Check Failure  ${T_PAP_CTRL} status
 
 Status handler of PAP (bug 65802)
   [Tags]  local
   [Setup]  Ensure PAP running
-  Execute and Check Success  wget -O /tmp/pap_status http://localhost:${T_PAP_ADMIN_PORT}/status
+  Execute Command and Check Success  wget -O /tmp/pap_status http://localhost:${T_PAP_ADMIN_PORT}/status
   ${cmd}=  catenate
   ...  wget -O /tmp/pap_status
   ...  --certificate=/etc/grid-security/hostcert.pem
@@ -55,12 +58,12 @@ Status handler of PAP (bug 65802)
   ...  --ca-directory=/etc/grid-security/certificates
   ...  --no-check-certificate
   ...  https://`hostname`:8150/status
-  Execute and Check Failure  ${cmd}
+  Execute Command and Check Failure  ${cmd}
 
 Port 8150 is listening on hostname (bug 75538)
   [Tags]  local
   Start PAP service
-  ${output}=  Execute and Check Success  ss -tlnr sport eq 8150
+  ${output}=  Execute Command and Check Success  ss -tlnr sport eq 8150
   ${hostname}=  Get hostname
   ${ret}=  Should Match Regexp  ${output}  (\\*|::|0.0.0.0|${hostname}):8150
   Log  ${ret}
@@ -68,7 +71,7 @@ Port 8150 is listening on hostname (bug 75538)
 Port 8151 is listening on localhost (bug 75538)
   [Tags]  local
   Start PAP service
-  ${output}=  Execute and Check Success  ss -tlnr sport eq 8151
+  ${output}=  Execute Command and Check Success  ss -tlnr sport eq 8151
   Should Contain  ${output}  localhost:8151
 
 The proposed file-structure for is given (bug 77532)

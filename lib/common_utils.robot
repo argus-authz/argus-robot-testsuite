@@ -44,8 +44,18 @@ Execute and Check Failure  [Arguments]   ${cmd}
   Should Not Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}
   [Return]  ${output}
 
+Execute Command and Check Success  [Arguments]  ${cmd}
+  ${output}  ${rc}=  Execute Command  ${cmd}  return_rc=True
+  Should Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}  False
+  [Return]  ${output}
+
+Execute Command and Check Failure  [Arguments]   ${cmd}
+  ${output}  ${rc}=   Execute Command  ${cmd}  return_rc=True
+  Should Not Be Equal As Integers  ${rc}  0  ${cmd} failed with ${output}
+  [Return]  ${output}
+
 Get hostname
-  ${output}=  Execute and Check Success  hostname
+  ${output}=  Execute Command  hostname
   [Return]  ${output}
 
 Get match  [Arguments]  ${item}  ${regexp}
@@ -85,6 +95,6 @@ Teardown Argus suite
   Restore configurations
   Restore services
 
-Open Connection And Log In  [Arguments]  ${SSH_HOST}=${T_PAP_HOST}
-   Open Connection     ${SSH_HOST}
+Open Connection And Log In  [Arguments]  ${hostname}=${SSH_HOST}
+   Open Connection     ${hostname}
    Login With Public Key  ${SSH_USER}  ${SSH_KEYFILE}

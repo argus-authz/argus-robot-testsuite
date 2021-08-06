@@ -55,6 +55,7 @@ USERKEY = '~/.globus/userkey.pem'
 USERPWD_FILE = '~/.globus/password'
 
 # SSH config
+SSH_HOST = 'argus-centos7.cnaf.test'
 SSH_USER = 'root'
 SSH_KEYFILE = '/home/test/.ssh/id_rsa'
 

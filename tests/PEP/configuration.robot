@@ -1,8 +1,11 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
+Suite Setup  Open Connection And Log In
+Suite Teardown  Close All Connections
+
+#Suite Setup     Make backup of the configuration
+#Suite Teardown  Restore configurations
 
 
 *** Test Cases ***
@@ -10,7 +13,7 @@ PEP status
   [Tags]  local
   Ensure PEP running
   ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
-  Execute and Check Success  ${cmd}
+  Execute Command and Check Success  ${cmd}
 
 PEP with SSL
   [Tags]  local
@@ -35,7 +38,7 @@ PEP with no config file
 Error exit codes (bug 65542)
   [Tags]  local
   Ensure PEP stopped
-  Execute and Check Failure  ${T_PEP_CTRL} status
+  Execute Command and Check Failure  ${T_PEP_CTRL} status
 
 Works with non PIPs defined (bug 69263)
   [Tags]  local

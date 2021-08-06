@@ -12,19 +12,19 @@ PDP status
   [Tags]  local
   Ensure PDP running
   ${cmd}=  Set Variable  ${T_PDP_CTRL} status | grep -q "Status: OK"
-  Execute and Check Success  ${cmd}
+  Execute Command and Check Success  ${cmd}
 
 Error exit codes (bug 65542)
   [Tags]  local
   Ensure PDP stopped
-  Execute and Check Failure  ${T_PDP_CTRL} status
+  Execute Command and Check Failure  ${T_PDP_CTRL} status
 
 XACML SOAP handler error (bug 75860)
   [Tags]  local
   Ensure PAP running
   Ensure PDP running
   ${cmd}=  Set Variable  echo "POST /authz" | openssl s_client -connect `hostname`:8152 -quiet
-  ${output}=  Execute and Check Success  ${cmd}
+  ${output}=  Execute Command and Check Success  ${cmd}
   Should Contain  ${output}  soap11:Fault
 
 The proposed file-structure for is given (bug 77532)

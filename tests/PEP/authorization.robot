@@ -1,8 +1,8 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  Restore configurations  AND  Close All Connections
 
 
 *** Test Cases ***

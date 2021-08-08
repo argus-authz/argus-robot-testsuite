@@ -1,8 +1,8 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  Restore configurations  AND  Close All Connections
 
 
 *** Keywords ***
@@ -13,7 +13,7 @@ Setup PEP
   ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
   Log Dictionary  ${dict}
   Create Directory  /etc/vomses
-  Create File  /etc/vomses/${VO}  ${VOMSES_STRING}
+  Create File on Server  /etc/vomses/${VO}  ${VOMSES_STRING}
   Remove all leases in gridmapdir
   Init grid map file  ${dict.vo_map}  ${dict.dn_map}
   Init grid group map file  ${dict.grp_vo_map}  ${dict.grp_vo_sec_map}  ${dict.grp_dn_map}
@@ -45,7 +45,7 @@ Start PEP with missing auth profile policy file
   Remove file  ${GRIDDIR}/${AUTHN_PROFILE_FILE}
   Start PEP service
   ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
-  Execute and Check Success  ${cmd}
+  Execute Command and Check Success  ${cmd}
   [Teardown]  Restore PEP configuration
     
 Classis CA is accepted with fallback authentication profile file

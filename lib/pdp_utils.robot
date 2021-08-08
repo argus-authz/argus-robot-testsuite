@@ -22,6 +22,6 @@ Resolve PDP admin password
   [Return]  ${password}
 
 Read passwd from file  [Arguments]  ${file}
-  Should Exist  ${file}  msg=Neither Environment Variable T_PDP_ADMIN_PASSWORD nor conf file found.
+  SSHLibrary.File Should Exist  ${file}
   ${value}=  Read parameter from INI file  ${file}  adminPassword
   [Return]  ${value}

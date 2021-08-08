@@ -34,7 +34,6 @@ sed -i -e "s#\/etc\/argus\/pepd\/vo-ca-ap-file#\/etc\/grid-security\/vo-ca-ap-fi
 
 cp /files/policy-test.info /etc/grid-security/certificates/policy-test.info
 cp /files/vo-ca-ap-file /etc/grid-security/vo-ca-ap-file
-#echo -e '\n/test.vo file:policy-test.info' >> /etc/argus/pepd/vo-ca-ap-file
 
 mkdir -p /etc/grid-security/vomsdir/test.vo/ /etc/vomses/
 wget ${VGRID02_LSC} -O /etc/grid-security/vomsdir/test.vo/vgrid02.cnaf.infn.it.lsc

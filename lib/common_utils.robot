@@ -77,7 +77,7 @@ Replace string  [Arguments]  ${file}  ${old_string}  ${new_string}
 
 Read parameter from INI file  [Arguments]  ${file}  ${parameter}
   ${cmd}=  Set Variable  awk -F "=" '/${parameter}/ {print $2}' ${file} | xargs
-  ${output}=  Execute and Check Success  ${cmd}
+  ${output}=  Execute Command and Check Success  ${cmd}
   [Return]  ${output}
 
 Setup Argus suite

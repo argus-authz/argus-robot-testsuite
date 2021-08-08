@@ -1,6 +1,9 @@
 *** Settings ***
 Resource   lib/utils.robot
 
+Suite Setup  Open Connection And Log In
+Suite Teardown  Close All Connections
+
 Test Teardown  Cleanup  host=${T_PAP_HOST}
 
 *** Test Cases ***

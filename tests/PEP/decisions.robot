@@ -1,7 +1,7 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup  Open Connection And Log In
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Restore services
 Suite Teardown  Close All Connections
 
 Test Teardown  Cleanup  host=${T_PAP_HOST}

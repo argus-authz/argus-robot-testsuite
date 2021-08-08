@@ -30,9 +30,11 @@ sed -i -e "s#8153#8153\nadminHost = 0.0.0.0#g" /etc/argus/pdp/pdp.ini
 sed -i -e "s#argus-pap.example.org#${HOSTNAME}#g" /etc/argus/pdp/pdp.ini
 
 sed -i -e "s#argus.example.org#${HOSTNAME}#g" /etc/argus/pepd/pepd.ini
+sed -i -e "s#\/etc\/argus\/pepd\/vo-ca-ap-file#\/etc\/grid-security\/vo-ca-ap-file#g" /etc/argus/pepd/pepd.ini
 
 cp /files/policy-test.info /etc/grid-security/certificates/policy-test.info
-echo -e '\n/test.vo file:policy-test.info' >> /etc/argus/pepd/vo-ca-ap-file
+cp /files/vo-ca-ap-file /etc/grid-security/vo-ca-ap-file
+#echo -e '\n/test.vo file:policy-test.info' >> /etc/argus/pepd/vo-ca-ap-file
 
 mkdir -p /etc/grid-security/vomsdir/test.vo/ /etc/vomses/
 wget ${VGRID02_LSC} -O /etc/grid-security/vomsdir/test.vo/vgrid02.cnaf.infn.it.lsc

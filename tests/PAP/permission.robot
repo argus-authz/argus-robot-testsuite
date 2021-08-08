@@ -1,8 +1,11 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  
+  ...           Restore configurations  AND
+  ...           Ensure PAP running  AND
+  ...           Close All Connections
 
 Test Setup     Ensure PAP stopped
 Test Teardown  Restore PAP configuration
@@ -15,23 +18,23 @@ Argus syntax error: missing ']'
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   Replace string  ${file}  \\[dn\\]  \\[dn
   Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
+  Execute Command and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 Argus syntax error: missing ':'
   [Tags]  local
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   ${content}=  Get content test 6
-  Create File  ${file}  ${content}
+  Create File on Server  ${file}  ${content}
   Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
+  Execute Command and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 Argus syntax error: missing 'permission'
   [Tags]  local
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   ${content}=  Get content test 7
-  Create File  ${file}  ${content}
+  Create File on Server  ${file}  ${content}
   Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
+  Execute Command and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 
 *** Keywords ***

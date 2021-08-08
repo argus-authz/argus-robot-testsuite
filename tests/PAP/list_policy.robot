@@ -41,7 +41,7 @@ List by resource or action with incremental loading (bug 60044)
 Calling pap-admin from a symlink (bug 63180)
   [Tags]  remote  cli
   ${tmp_bin}=  Set Variable  /tmp/bin
-  Create Directory  ${tmp_bin}
+  OperatingSystem.Create Directory  ${tmp_bin}
   Execute and Check Success  ln -fs ${T_PAP_HOME}/bin/pap-admin ${tmp_bin}/pap-admin
   Execute and Check Success  ${tmp_bin}/pap-admin remove-all-policies
   @{list}=  Get policy list

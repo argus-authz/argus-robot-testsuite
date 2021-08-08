@@ -1,11 +1,8 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup  Open Connection And Log In
-Suite Teardown  Close All Connections
-
-#Suite Setup     Make backup of the configuration
-#Suite Teardown  Restore configurations
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  Restore configurations  AND  Close All Connections
 
 
 *** Test Cases ***
@@ -22,7 +19,7 @@ PEP with SSL
   Change parameter value  ${file}  enableSSL  true
   Start PEP service
   ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
-  Execute and Check Success  ${cmd}
+  Execute Command and Check Success  ${cmd}
   [Teardown]  Restore PEP configuration
 
 PEP with no config file
@@ -30,9 +27,9 @@ PEP with no config file
   Ensure PEP stopped
   ${file}=  Join Path  ${T_PEP_CONF}  ${T_PEP_INI}
   Remove File  ${file}
-  Execute and Check Failure  ${T_PEP_CONF} start
+  Execute Command and Check Failure  ${T_PEP_CONF} start
   ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
-  Execute and Check Failure  ${cmd}
+  Execute Command and Check Failure  ${cmd}
   [Teardown]  Restore PEP configuration
 
 Error exit codes (bug 65542)

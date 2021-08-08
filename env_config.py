@@ -4,6 +4,7 @@
 
 # Locations for storing needed files
 TMP_DIR = '/tmp'
+BCK_DIR = TMP_DIR + '/argus-testsuite_bck'
 
 # Home Directories
 T_PAP_HOME = '/usr/share/argus/pap'

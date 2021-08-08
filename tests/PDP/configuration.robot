@@ -1,11 +1,9 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup  Open Connection And Log In
-Suite Teardown  Close All Connections
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  Restore configurations  AND  Close All Connections
 
-#Suite Setup     Make backup of the configuration
-#Suite Teardown  Restore configurations
 
 *** Test Cases ***
 PDP status

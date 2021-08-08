@@ -1,10 +1,10 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-#Suite Setup     Make backup of the configuration
-#Suite Teardown  Restore configurations
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  Restore configurations  AND  Close All Connections
 
-#Test Setup  Ensure PAP running
+Test Setup  Ensure PAP running
 
 *** Variables ***
 ${alias}  mypap
@@ -133,7 +133,7 @@ List policies with no authorization
   [Setup]  Ensure PAP stopped
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   ${content}=  Get content test 1
-  Create File  ${file}  ${content}
+  Create File on Server  ${file}  ${content}
   Start PAP service
   Execute and Check Failure  ${PAP_ADMIN} list-policies >/dev/null 2>&1
   [Teardown]  Restore PAP configuration
@@ -143,7 +143,7 @@ List policies with anyone full power
   [Setup]  Ensure PAP stopped
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   ${content}=  Get content test 2
-  Create File  ${file}  ${content}
+  Create File on Server  ${file}  ${content}
   Start PAP service
   Execute and Check Success  ${PAP_ADMIN} list-policies >/dev/null 2>&1
   [Teardown]  Restore PAP configuration

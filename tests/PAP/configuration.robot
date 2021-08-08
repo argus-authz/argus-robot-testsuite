@@ -1,14 +1,11 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup  Open Connection And Log In
-Suite Teardown  Close All Connections
-
-#Suite Setup     Make backup of the configuration
-#Suite Teardown  Restore configurations
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  Restore configurations  AND  Close All Connections
 
 Test Setup     Ensure PAP stopped
-#Test Teardown  Restore PAP configuration
+Test Teardown  Restore PAP configuration
 
 *** Test Cases ***
 
@@ -16,17 +13,17 @@ Missing configuration file
   [Tags]  local
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
   Remove File  ${file}
-  List Directory  ${T_PAP_CONF}
+  SSHLibrary.List Directory  ${T_PAP_CONF}
   Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
+  Execute Command and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 Missing Argus file
   [Tags]  local
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_AUTH_INI}
   Remove File  ${file}
-  List Directory  ${T_PAP_CONF}
+  SSHLibrary.List Directory  ${T_PAP_CONF}
   Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
+  Execute Command and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
   [Teardown]  Restore PAP configuration
 
 Required pool_interval

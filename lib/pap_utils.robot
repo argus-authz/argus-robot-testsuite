@@ -62,8 +62,8 @@ Remove obligation  [Arguments]  ${policy_id}  ${obligation}
   Execute and Check Success  ${PAP_ADMIN} remove-obligation ${policy_id} ${obligation}
 
 Remove policy file  [Arguments]  ${file}=${POLICY_FILE}
-  Remove File  ${file}
+  OperatingSystem.Remove File  ${file}
 
 Start PAP
-  Run Process  papctl  start
+  Execute Command  papctl start
   Sleep  15s

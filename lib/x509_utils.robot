@@ -44,12 +44,12 @@ Get user proxy path
   [Return]  /tmp/x509up_u${uid}
 
 Get temporary user key  [Arguments]  ${key}=${USERKEY}
-  Copy File  ${key}  ${tmp_userkey}
+  OperatingSystem.Copy File  ${key}  ${tmp_userkey}
   [Return]  ${tmp_userkey}
 
 Remove user proxy certificate
   ${filepath}=  Get user proxy path
-  Remove File  ${filepath}
+  OperatingSystem.Remove File  ${filepath}
 
 Remove temporary user key
-  Remove File  ${tmp_userkey}
+  OperatingSystem.Remove File  ${tmp_userkey}

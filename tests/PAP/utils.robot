@@ -9,7 +9,7 @@ ${PERMISSIONS}           POLICY_READ_LOCAL|POLICY_READ_REMOTE|CONFIGURATION_READ
 *** Test Cases ***
 
 Config file is properly declared in the rpm (bug 81738)
-  [Tags]  cli
+  [Tags]  remote  cli
   ${output}=  Execute and Check Success  rpm -qlc argus-pap
   Should Contain  ${output}  pap-admin.properties
 

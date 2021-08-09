@@ -230,7 +230,7 @@ Renew timestamp of leases (bug 83281)
   Prepare PEP environment  &{dict}
   ${user_proxy}=  Get user proxy path
   Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
-  ${file}=  Execute and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR} | grep %
+  ${file}=  Execute Command and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR} | grep %
   ${lease_file}=  Join Path  ${GRIDDIR}/${GRIDMAPDIR}  ${file}
   ${timestamp}=  Get Modified Time  ${lease_file}
   Sleep  5
@@ -253,7 +253,7 @@ PEPD write the secondary group into the lease (bug 83317)
   Change parameter value  ${file}  useSecondaryGroupNamesForMapping  false
   Restart PEP service
   Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
-  ${leases_num}=  Execute and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR}/%* | wc -l
+  ${leases_num}=  Execute Command and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR}/%* | wc -l
   Should Be Equal  ${leases_num}  2
 
 Legacy LCAS/LCMAPS lease filename encoding (bug 83419)
@@ -265,4 +265,4 @@ Legacy LCAS/LCMAPS lease filename encoding (bug 83419)
   Prepare PEP environment  &{dict}
   ${user_proxy}=  Get user proxy path
   Perform PEP request  ${USERKEY}  ${USERCERT}  ${user_proxy}  ${TEST_RESOURCE}  ${TEST_ACTION}
-  Execute and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR}/%* | grep ${VO}
+  Execute Command and Check Success  ls ${GRIDDIR}/${GRIDMAPDIR}/%* | grep ${VO}

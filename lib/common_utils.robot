@@ -16,7 +16,7 @@ Variables  ${ENV_FILE}
 
 Add conf parameter  [Arguments]  ${file}  ${parameter}  ${value}
   ${cmd}=  Set Variable  sed -i '/^${parameter}.*/d' ${file}
-  Execute and Check Success  ${cmd}
+  Execute Command and Check Success  ${cmd}
   ${row}=  Set Variable  ${parameter} = ${value}
   Append To File  ${file}  \n${row}
 
@@ -25,7 +25,7 @@ Change parameter value  [Arguments]  ${file}  ${parameter}  ${value}
 
 Check string presence into file  [Arguments]  ${file}  ${string}
   ${cmd}=  Set Variable  grep -q ${string} ${file}
-  Execute and Check Success  ${cmd}
+  Execute Command and Check Success  ${cmd}
 
 Comment parameter  [Arguments]  ${file}  ${parameter}
   Execute Command and Check Success  sed -i 's/${parameter}/#${parameter}/g' ${file}

@@ -11,6 +11,10 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
+Append To File  [Arguments]  ${file}  ${content}
+  Execute Command and Check Success  echo '${content}' >> ${file}
+  [Return]  ${file}
+
 Check directory  [Arguments]  ${directory}
   SSHLibrary.Directory Should Exist  ${directory}
   Execute Command and Check Success  [ ! -z "$(ls -A ${directory})" ]
@@ -29,7 +33,7 @@ Create Directory  [Arguments]  ${directory}
   Execute Command and Check Success  mkdir -p ${directory}
 
 Create File on Server  [Arguments]  ${file}  ${content}
-  Execute Command and Check Success  echo "${content}" > ${file}
+  Execute Command and Check Success  echo '${content}' > ${file}
   [Return]  ${file}
 
 Create working directory
@@ -41,7 +45,11 @@ Create working directory
   [Return]  ${workdir}
   
 Empty file  [Arguments]  ${file}
-  Create File  ${file}
+  Execute Command and Check Success  > ${file}
+
+Get Modified Time  [Arguments]  ${file}
+  ${output}=  Execute Command and Check Success  stat -c%y ${file}
+  [Return]  ${output}
 
 Make backup of the configuration
 #  ${workdir}=  Create working directory
@@ -62,14 +70,13 @@ Make backup of the configuration
   Copy Directory  ${GRIDDIR}/${GRIDMAPDIR}    ${bck_conf_dir}
 
 Remove all leases in gridmapdir
-  Remove File  ${GRIDDIR}/${GRIDMAPDIR}/%*
+  Remove File  ${GRIDDIR}/${GRIDMAPDIR}/*
 
 Remove Directory  [Arguments]  ${directory}
   SSHLibrary.Directory Should Exist  ${directory}
   Execute Command and Check Success  rm -rfv ${directory}
 
 Remove File  [Arguments]  ${file}
-  SSHLibrary.File Should Exist  ${file}
   Execute Command and Check Success  rm -fv ${file}
 
 Restore grid files
@@ -103,5 +110,5 @@ Restore configurations
   
 Touch pool account  [Arguments]  ${account}
   ${file}=  Set Variable  ${GRIDDIR}/${GRIDMAPDIR}/${account}
-  Touch  ${file}
+  Execute Command and Check success  touch ${file}
   

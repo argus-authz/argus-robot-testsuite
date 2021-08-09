@@ -69,7 +69,7 @@ Classis CA with VOMS extension is accepted with fallback authentication profile 
   [Teardown]  Restore PEP configuration  
   
 IOTA CA is rejected with fallback authentication profile file
-  [Tags]  local  cli
+  [Tags]  local  cli  iota
   Setup PEP
   Mapping tests setup
   ${output}=  Perform PEP request  ${IOTA_USERKEY}  ${IOTA_USERCERT}  ${IOTA_USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
@@ -77,7 +77,7 @@ IOTA CA is rejected with fallback authentication profile file
   [Teardown]  Restore PEP configuration 
 
 IOTA CA with VOMS extensions is rejected with fallback authentication profile file
-  [Tags]  local  cli
+  [Tags]  local  cli  iota
   Setup PEP
   Mapping tests setup
   Create user proxy  ${IOTA_USERCERT}  ${IOTA_USERKEY}

@@ -47,14 +47,14 @@ Perform request with VOMS extension in supported profile
   Check if username match  ${output}  ${TEST_DN_UID}
     
 Perform request with IOTA plain certificate in not-supported profile
-  [Tags]  local  cli
+  [Tags]  local  cli  iota
   Setup PEP
   Mapping tests setup
   ${output}=  Perform PEP request  ${IOTA_USERKEY}  ${IOTA_USERCERT}  ${IOTA_USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
   Should Contain  ${output}  Not Applicable
     
 Perform request with IOTA and VOMS extension in supported profile
-  [Tags]  local  cli
+  [Tags]  local  cli  iota
   Setup PEP
   Mapping tests setup
   Create user proxy  ${IOTA_USERCERT}  ${IOTA_USERKEY}
@@ -64,7 +64,7 @@ Perform request with IOTA and VOMS extension in supported profile
   Check if username match  ${output}  ${TEST_DN_UID}
 
 Request resource with classic profile
-  [Tags]  local  cli
+  [Tags]  local  cli  iota
   Setup PEP
   Setup IOTA profile policies
   Create user proxy
@@ -73,7 +73,7 @@ Request resource with classic profile
   Check if rule match  ${output}  Permit
   
 Request resource with IOTA profile
-  [Tags]  local  cli
+  [Tags]  local  cli  iota
   Setup PEP
   Setup IOTA profile policies
   Create user proxy  ${IOTA_USER_CERT}  ${IOTA_USERKEY}
@@ -82,7 +82,7 @@ Request resource with IOTA profile
   Check if rule match  ${output}  Deny
   
 Request resource with classic CA issuer
-  [Tags]  local  cli
+  [Tags]  local  cli  iota
   Setup PEP
   Setup IOTA CA policies
   Create user proxy
@@ -91,7 +91,7 @@ Request resource with classic CA issuer
   Check if rule match  ${output}  Permit
   
 Request resource with IOTA CA issuer
-  [Tags]  local  cli
+  [Tags]  local  cli  iota
   Setup PEP
   Setup IOTA CA policies
   Create user proxy  ${IOTA_USER_CERT}  ${IOTA_USERKEY}

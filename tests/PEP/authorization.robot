@@ -47,7 +47,8 @@ DN group mapping (bug 68805)
   Add policy with obligation  ${TEST_RESOURCE}  ${TEST_ACTION}  ${TEST_OBLIGATION}  ${TEST_RULE}  ${host_dn}
   Add policy  ${TEST_RESOURCE}  ${action}  ${TEST_RULE}  subject="${host_dn}"
   Reload policy
-  ${output}=  Perform PEP request  ${HOSTKEY}  ${HOSTCERT}  ${HOSTCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}  None
+  ${cmd}=  Build PEPCLI command line  ${HOSTKEY}  ${HOSTCERT}  ${HOSTCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}  None  ${T_PEP_HOST}  ${T_PEP_PORT}
+  ${output}=  Execute Command and Check Success  ${cmd}
   Should Contain  ${output}  ${TEST_RESOURCE}
   Should Contain Ignore Case  ${output}  ${TEST_RULE}
   ${username}=  Get match  ${output}  Username: (.*)

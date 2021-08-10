@@ -23,7 +23,8 @@ Create user proxy  [Arguments]  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${vo}=${
   [Teardown]  Remove temporary user key
 
 Get host DN
-  ${output}=  Get DN  ${HOSTCERT}
+  ${cmd}=  Set Variable  openssl x509 -in ${HOSTCERT} -subject -noout | sed 's/subject= //'
+  ${output}=  Execute Command and Check Success  ${cmd}
   [Return]  ${output}
 
 Get user DN  [Arguments]  ${cert}=${USERCERT}

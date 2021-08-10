@@ -70,7 +70,7 @@ Make backup of the configuration
   Copy Directory  ${GRIDDIR}/${GRIDMAPDIR}    ${bck_conf_dir}
 
 Remove all leases in gridmapdir
-  Remove File  ${GRIDDIR}/${GRIDMAPDIR}/*
+  Remove File  ${GRIDDIR}/${GRIDMAPDIR}/%*
 
 Remove Directory  [Arguments]  ${directory}
   SSHLibrary.Directory Should Exist  ${directory}

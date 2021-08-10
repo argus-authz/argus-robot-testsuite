@@ -2,13 +2,10 @@
 Resource   lib/utils.robot
 
 Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
-Suite Teardown  Run Keywords  
-...   Restore PEP configuration  AND  
-...   Restart PEP service  AND
-...   Close All Connections
+Suite Teardown  Close All Connections
 
 Test Setup  Mapping tests setup
-Test Teardown  Restore PEP configuration
+Test Teardown  Run Keywords  Restore PEP configuration  AND  Restart PEP service
 
 
 *** Test Cases ***

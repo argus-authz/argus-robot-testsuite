@@ -63,7 +63,7 @@ pipeline {
       mkdir $workdir/argus_logs $workdir/argus_conf $workdir/argus_reports
       docker cp argus-testsuite_argus_1:/var/log/argus/ $workdir/argus_logs
       docker cp argus-testsuite_argus_1:/etc/argus/ $workdir/argus_conf
-      docker cp argus-testsuite_argus_1:/tmp/reports $workdir/argus_reports
+      docker cp argus-testsuite_argus:/tmp/reports $workdir/argus_reports
       cd compose
       docker-compose down -v
       '''

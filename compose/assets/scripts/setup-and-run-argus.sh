@@ -32,6 +32,9 @@ sed -i -e "s#argus-pap.example.org#${HOSTNAME}#g" /etc/argus/pdp/pdp.ini
 sed -i -e "s#argus.example.org#${HOSTNAME}#g" /etc/argus/pepd/pepd.ini
 sed -i -e "s#\/etc\/argus\/pepd\/vo-ca-ap-file#\/etc\/grid-security\/vo-ca-ap-file#g" /etc/argus/pepd/pepd.ini
 
+# set DEBUG log to pepd service
+sed -i -e "s#\"INFO\"#\"DEBUG\"#g" /etc/argus/pepd/logging.xml
+
 cp /files/policy-test.info /etc/grid-security/certificates/policy-test.info
 cp /files/vo-ca-ap-file /etc/grid-security/vo-ca-ap-file
 

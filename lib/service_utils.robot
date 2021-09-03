@@ -67,14 +67,17 @@ Restore services
 
 Restart PAP service
   Ensure PAP stopped
+  Sleep 5
   Ensure PAP running
 
 Restart PDP service
   Ensure PDP stopped
+  Sleep 5
   Ensure PDP running
 
 Restart PEP service
   Ensure PEP stopped
+  Sleep 5
   Ensure PEP running
 
 Start PAP service

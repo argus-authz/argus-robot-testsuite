@@ -28,4 +28,4 @@ DEFAULT_ARGS="--pythonpath .:lib  -d ${REPORTS_DIR} -o ${OUT_FILE} -l ${LOG_FILE
 read -a ARGS <<< "${DEFAULT_ARGS} ${DEFAULT_EXCLUDES} ${ROBOT_ARGS}"
 ARGS+=("$@")
 
-robot "${ARGS[@]}" tests
+robot "${ARGS[@]}" tests/PEP

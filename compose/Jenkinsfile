@@ -56,17 +56,21 @@ pipeline {
 
   post {
     always {
-      sh '''#!/bin/bash
+      sh returnStatus: true, script: '''#!/bin/bash
       set -ex
-      workdir=$PWD
-      rm -rfv $workdir/argus_*
-      mkdir $workdir/argus_logs $workdir/argus_conf $workdir/argus_reports
-      docker cp argus-testsuite_argus_1:/var/log/argus/ $workdir/argus_logs
-      docker cp argus-testsuite_argus_1:/etc/argus/ $workdir/argus_conf
-      docker cp argus-testsuite:/tmp/reports $workdir/argus_reports
+      output='./output'
+      mkdir $output/argus_logs $output/argus_conf $output/argus_reports
+      docker cp argus-testsuite_argus_1:/var/log/argus/ $output/argus_logs
+      docker cp argus-testsuite_argus_1:/etc/argus/ $output/argus_conf
+      docker cp argus-testsuite:/tmp/reports $output/argus_reports
       cd compose
       docker-compose down -v
       '''
+      archiveArtifacts 'output/**'
+    }
+
+    cleanup{
+        cleanWs()
     }
 
     failure {

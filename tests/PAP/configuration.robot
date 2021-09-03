@@ -31,14 +31,14 @@ Required pool_interval
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
   Comment parameter  ${file}  poll_interval
   Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
+  Execute Command and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 Syntax error: missing ']'
   [Tags]  local
   ${file}=  Join Path  ${T_PAP_CONF}  ${T_PAP_CONF_INI}
   Replace string  ${file}  \\[paps:properties\\]  \\[paps:properties
   Start PAP
-  Execute and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
+  Execute Command and Check Failure  ${T_PAP_CTRL} status | grep -q 'PAP running'
 
 Error exit codes (bug 65542)
   [Tags]  local

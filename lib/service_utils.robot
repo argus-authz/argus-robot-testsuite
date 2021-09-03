@@ -81,37 +81,37 @@ Restart PEP service
   Ensure PEP running
 
 Start PAP service
-  Execute Command and Check Success  papctl start
+  Start Command  papctl start
   ${hostname}=  Get hostname
   Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PAP_PORT}
   Log  PAP started
 
 Start PDP service
-  Execute Command and Check Success  pdpctl start  
+  Start Command  pdpctl start  
   ${hostname}=  Get hostname
   Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PDP_PORT}
   Log  PDP started
 
 Start PEP service
-  Execute Command and Check Success  pepdctl start
+  Start Command  pepdctl start
   ${hostname}=  Get hostname
   Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PEP_PORT}
   Log  PEP started
 
 Stop PAP service
-  Execute Command and Check Success  papctl stop
+  Start Command  papctl stop
   ${hostname}=  Get hostname
   Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
   Log  PAP stopped
 
 Stop PDP service
-  Execute Command and Check Success  pdpctl stop
+  Start Command  pdpctl stop
   ${hostname}=  Get hostname
   Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
   Log  PDP stopped
 
 Stop PEP service
-  Execute Command and Check Success  pepdctl stop
+  Start Command  pepdctl stop
   ${hostname}=  Get hostname
   Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
   Log  PEP stopped

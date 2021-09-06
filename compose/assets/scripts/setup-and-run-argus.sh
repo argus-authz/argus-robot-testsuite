@@ -26,7 +26,9 @@ sed -i -e "s#pap.example.id#${HOSTNAME}#g" /etc/argus/pap/pap_configuration.ini
 sed -i -e "s#localhost#${HOSTNAME}#g" /etc/argus/pap/pap_configuration.ini
 
 sed -i -e "s#argus.example.org#${HOSTNAME}#g" /etc/argus/pdp/pdp.ini
-sed -i -e "s#8153#8153\nadminHost = 0.0.0.0#g" /etc/argus/pdp/pdp.ini
+if ! grep -q adminHost /etc/argus/pdp/pdp.ini; then
+    sed -i -e "s#8153#8153\nadminHost = 0.0.0.0#g" /etc/argus/pdp/pdp.ini
+fi
 sed -i -e "s#argus-pap.example.org#${HOSTNAME}#g" /etc/argus/pdp/pdp.ini
 
 sed -i -e "s#argus.example.org#${HOSTNAME}#g" /etc/argus/pepd/pepd.ini

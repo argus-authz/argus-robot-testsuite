@@ -10,8 +10,23 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
+Check PAP running
+  ${cmd}=  Set Variable  papctl status
+  ${output}  ${rc}=  Execute Command  ${cmd}  return_rc=True
+  Should Be Equal As Integers  ${rc}  0
+
+Check PDP running
+  ${cmd}=  Set Variable  pdpctl status
+  ${output}  ${rc}=  Execute Command  ${cmd}  return_rc=True
+  Should Be Equal As Integers  ${rc}  0
+
+Check PEP running
+  ${cmd}=  Set Variable  pepdctl status
+  ${output}  ${rc}=  Execute Command  ${cmd}  return_rc=True
+  Should Be Equal As Integers  ${rc}  0
+
 Check port  [Arguments]  ${hostname}  ${port}
-  ${cmd}=  Set Variable  (echo > /dev/tcp/${hostname}/${port}) &>/dev/null
+  ${cmd}=  Set Variable  pepdctl status
   ${output}  ${rc}=  Execute Command  ${cmd}  return_rc=True
   Should Be Equal As Integers  ${rc}  0
 
@@ -82,36 +97,33 @@ Restart PEP service
 
 Start PAP service
   Start Command  papctl start
-  ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Check PAP running
   Log  PAP started
 
 Start PDP service
   Start Command  pdpctl start  
-  ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PDP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Check PDP running
   Log  PDP started
 
 Start PEP service
   Start Command  pepdctl start
-  ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Check PEP running
   Log  PEP started
 
 Stop PAP service
   Start Command  papctl stop
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
   Log  PAP stopped
 
 Stop PDP service
   Start Command  pdpctl stop
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
   Log  PDP stopped
 
 Stop PEP service
   Start Command  pepdctl stop
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
   Log  PEP stopped

@@ -89,35 +89,35 @@ Restart PEP service
 Start PAP service
   Start Command  papctl start
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  70 sec  5 sec  Check service running  ${T_PAP_CTRL}  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Check service running  ${T_PAP_CTRL}  ${hostname}  ${T_PAP_PORT}
   Log  PAP started
 
 Start PDP service
   Start Command  pdpctl start 
   ${hostname}=  Get hostname 
-  Wait Until Keyword Succeeds  70 sec  5 sec  Check service running  ${T_PDP_CTRL}  ${hostname}  ${T_PDP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Check service running  ${T_PDP_CTRL}  ${hostname}  ${T_PDP_PORT}
   Log  PDP started
 
 Start PEP service
   Start Command  pepdctl start
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  70 sec  5 sec  Check service running  ${T_PEP_CTRL}  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Check service running  ${T_PEP_CTRL}  ${hostname}  ${T_PEP_PORT}
   Log  PEP started
 
 Stop PAP service
   Start Command  papctl stop
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  70 sec  5 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
   Log  PAP stopped
 
 Stop PDP service
   Start Command  pdpctl stop
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  70 sec  5 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
   Log  PDP stopped
 
 Stop PEP service
   Start Command  pepdctl stop
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  70 sec  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  90 sec  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
   Log  PEP stopped

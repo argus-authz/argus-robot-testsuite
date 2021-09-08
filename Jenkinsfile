@@ -24,7 +24,7 @@ pipeline {
     stage('push-dockerhub') {
 
       environment {
-        DOCKER_PUSH_TO_DOCKERHUB=y
+        DOCKER_PUSH_TO_DOCKERHUB='y'
       }
 
       steps {

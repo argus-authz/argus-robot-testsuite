@@ -6,7 +6,7 @@ volumes:
 
 services:
   trust:
-    image: indigoiam/egi-trustanchors
+    image: indigoiam/trustanchors
 
     volumes:
       - trustanchors:/tmp/certificates
@@ -40,6 +40,7 @@ services:
     hostname: argus-centos7.cnaf.test
   
     volumes:
+      - trustanchors:/etc/grid-security/certificates
       - ./assets/scripts:/scripts
       - ./assets/certs/:/certs
       - ./assets/files:/files

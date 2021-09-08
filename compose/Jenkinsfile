@@ -29,7 +29,8 @@ pipeline {
           cd compose
           docker-compose up trust
           docker-compose up --detach argus testsuite
-          docker-compose exec -T --workdir /scripts argus bash /scripts/setup-and-run-argus.sh
+          docker-compose exec -T --workdir /scripts argus bash /scripts/setup-argus.sh
+          docker-compose exec -T --workdir /scripts argus bash /scripts/start-argus.sh
           docker-compose exec -T testsuite bash /scripts/ci-run-testsuite.sh
           '''
         }

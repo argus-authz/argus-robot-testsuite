@@ -12,24 +12,29 @@ pipeline {
       steps {
         script {
           dir('docker/testsuite') {
-            sh './build-image.sh'           
+            sh 'build-docker-image.sh' 
           }
           dir('docker/all-in-one-centos7') {
-            sh './build-image.sh'           
+            sh 'build-docker-image.sh' 
           }
         }
       }
     }
 
     stage('push-dockerhub') {
+
+      environment {
+        DOCKER_PUSH_TO_DOCKERHUB=y
+      }
+
       steps {
         script {
           withDockerRegistry([ credentialsId: "dockerhub-enrico", url: "" ]) {
             dir('docker/testsuite') {
-              sh './push-image.sh'
+              sh 'push-docker-image.sh' 
             }
             dir('docker/all-in-one-centos7') {
-              sh './push-image.sh'
+              sh 'push-docker-image.sh' 
             }
           }
         }

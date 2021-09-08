@@ -18,8 +18,8 @@ pipeline {
 
   environment {
     ROBOT_ARGS = "${params.ROBOT_ARGS}"
-    TS_IMAGE_TAG="${env.GIT_BRANCH}"
-    ARGUS_IMAGE_TAG="${env.GIT_BRANCH}"
+    TS_IMAGE_TAG="${env.GIT_BRANCH}-latest"
+    ARGUS_IMAGE_TAG="${env.GIT_BRANCH}-latest"
   }
 
   stages {

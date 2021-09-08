@@ -13,7 +13,7 @@ pipeline {
   }
 
   parameters {
-    string(defaultValue: "--exclude iota -s mapping", description: 'Robot arguments', name: 'ROBOT_ARGS')
+    string(defaultValue: "--exclude iota" , description: 'Robot arguments', name: 'ROBOT_ARGS')
   }
 
   environment {

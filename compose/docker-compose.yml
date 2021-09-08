@@ -18,7 +18,7 @@ services:
       CA_BUNDLE_TARGET: /tmp/pki
 
   testsuite:
-    image: ${TS_IMAGE}:${TS_IMAGE_BRANCH}
+    image: ${TS_IMAGE}:${TS_IMAGE_TAG}
     container_name: ${COMPOSE_PROJECT_NAME}
     init: true
 
@@ -36,7 +36,7 @@ services:
     command: ["sleep", "infinity"]
 
   argus:
-    image: ${ARGUS_IMAGE}
+    image: ${ARGUS_IMAGE}:${ARGUS_IMAGE_TAG}
     hostname: argus-centos7.cnaf.test
   
     volumes:

@@ -18,6 +18,8 @@ pipeline {
 
   environment {
     ROBOT_ARGS = "${params.ROBOT_ARGS}"
+    TS_IMAGE_TAG="${env.GIT_COMMIT.take(7)}"
+    ARGUS_IMAGE_TAG="${env.GIT_COMMIT.take(7)}"
   }
 
   stages {

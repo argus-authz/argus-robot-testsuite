@@ -12,6 +12,8 @@ pipeline {
     timestamps()
   }
 
+  triggers { cron '@daily' }
+
   parameters {
     string(defaultValue: "--exclude iota" , description: 'Robot arguments', name: 'ROBOT_ARGS')
   }

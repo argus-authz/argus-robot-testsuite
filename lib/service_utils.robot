@@ -10,11 +10,6 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
-Check port  [Arguments]  ${hostname}  ${port}
-  ${cmd}=  Set Variable  pepdctl status
-  ${output}  ${rc}=  Execute Command  ${cmd}  return_rc=True
-  Should Be Equal As Integers  ${rc}  0
-
 Port not reachable  [Arguments]  ${hostname}  ${port}
   ${cmd}=  Set Variable  (echo > /dev/tcp/${hostname}/${port}) &>/dev/null
   ${output}  ${rc}=  Execute Command  ${cmd}  return_rc=True
@@ -93,37 +88,37 @@ Restart PEP service
   Ensure PEP running
 
 Start PAP service
-  Start Command  papctl start
+  Start Command  systemctl start argus-pap
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  90 sec  5 sec  Check service running  ${T_PAP_CTRL}  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service running  ${T_PAP_CTRL}  ${hostname}  ${T_PAP_PORT}
   Log  PAP started
 
 Start PDP service
-  Start Command  pdpctl start 
+  Start Command  systemctl start argus-pdp
   ${hostname}=  Get hostname 
-  Wait Until Keyword Succeeds  90 sec  5 sec  Check service running  ${T_PDP_CTRL}  ${hostname}  ${T_PDP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service running  ${T_PDP_CTRL}  ${hostname}  ${T_PDP_PORT}
   Log  PDP started
 
 Start PEP service
-  Start Command  pepdctl start
+  Start Command  systemctl start argus-pepd
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  90 sec  5 sec  Check service running  ${T_PEP_CTRL}  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service running  ${T_PEP_CTRL}  ${hostname}  ${T_PEP_PORT}
   Log  PEP started
 
 Stop PAP service
-  Start Command  papctl stop
+  Start Command  systemctl stop argus-pap
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  90 sec  5 sec  Check service stopped  ${T_PAP_CTRL}  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service stopped  ${T_PAP_CTRL}  ${hostname}  ${T_PAP_PORT}
   Log  PAP stopped
 
 Stop PDP service
-  Start Command  pdpctl stop
+  Start Command  systemctl stop argus-pdp
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  90 sec  5 sec  Check service stopped  ${T_PDP_CTRL}  ${hostname}  ${T_PDP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service stopped  ${T_PDP_CTRL}  ${hostname}  ${T_PDP_PORT}
   Log  PDP stopped
 
 Stop PEP service
-  Start Command  pepdctl stop
+  Start Command  systemctl stop argus-pepd
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  90 sec  5 sec  Check service stopped  ${T_PEP_CTRL}  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service stopped  ${T_PEP_CTRL}  ${hostname}  ${T_PEP_PORT}
   Log  PEP stopped

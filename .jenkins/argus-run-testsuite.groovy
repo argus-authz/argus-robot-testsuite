@@ -12,12 +12,16 @@ pipeline {
     timestamps()
   }
 
+  triggers { cron '@daily' }
+
   parameters {
-    string(defaultValue: "--exclude iota -s mapping", description: 'Robot arguments', name: 'ROBOT_ARGS')
+    string(defaultValue: "--exclude iota" , description: 'Robot arguments', name: 'ROBOT_ARGS')
   }
 
   environment {
     ROBOT_ARGS = "${params.ROBOT_ARGS}"
+    TS_IMAGE_TAG="${env.GIT_BRANCH}-latest"
+    ARGUS_IMAGE_TAG="${env.GIT_BRANCH}-latest"
   }
 
   stages {
@@ -29,7 +33,8 @@ pipeline {
           cd compose
           docker-compose up trust
           docker-compose up --detach argus testsuite
-          docker-compose exec -T --workdir /scripts argus bash /scripts/setup-and-run-argus.sh
+          docker-compose exec -T --workdir /scripts argus bash /scripts/setup-argus.sh
+          docker-compose exec -T --workdir /scripts argus bash /scripts/start-argus.sh
           docker-compose exec -T testsuite bash /scripts/ci-run-testsuite.sh
           '''
         }

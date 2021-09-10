@@ -1,4 +1,4 @@
-name: build docker image
+name: Build images, deploy and run testsuite
 
 on: 
   schedule:
@@ -84,7 +84,7 @@ jobs:
     needs: [build-and-push-docker-testsuite, build-and-push-docker-argus]
 
     env:
-      ROBOT_OPTIONS: --exclude iota
+      ROBOT_OPTIONS: --include iota
     
     steps:
       - name: Checkout
@@ -104,11 +104,35 @@ jobs:
           docker-compose exec -T --workdir /scripts argus bash /scripts/start-argus.sh
         working-directory: compose
 
+      - name: Create artifacts dir
+        if: ${{ always() }}
+        run: |
+          ARTIFACTS_PATH=${HOME}/artifacts
+          echo ARTIFACTS_PATH: ${ARTIFACTS_PATH}
+          # save it in the job environment
+          echo "ARTIFACTS_PATH=${ARTIFACTS_PATH}" >> ${GITHUB_ENV}
+          mkdir -p ${ARTIFACTS_PATH}/argus_logs ${ARTIFACTS_PATH}/argus_conf ${ARTIFACTS_PATH}/argus_reports
+      
       - name: Run testsuite
         run: docker-compose exec -T -e ROBOT_OPTIONS="${ROBOT_OPTIONS}" testsuite bash /scripts/ci-run-testsuite.sh
+        working-directory: compose
+
+      - name: Collect test reports, logs and conf
+        if: ${{ always() }}
+        run: |
+          docker cp argus-testsuite:/tmp/reports ${ARTIFACTS_PATH}/argus_reports
+          docker cp argus-testsuite_argus_1:/var/log/argus/ ${ARTIFACTS_PATH}/argus_logs
+          docker cp argus-testsuite_argus_1:/etc/argus/ ${ARTIFACTS_PATH}/argus_conf
         working-directory: compose
 
       - name: Stop compose
         if: ${{ always() }}
         run: docker-compose down -v
         working-directory: compose
+
+      - name: Upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-reports_logs_conf
+          path: ${{ env.ARTIFACTS_PATH }}

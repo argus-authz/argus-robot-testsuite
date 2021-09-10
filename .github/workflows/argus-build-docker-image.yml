@@ -69,5 +69,5 @@ jobs:
           context: docker/all-in-one-centos7
           file: ./docker/all-in-one-centos7/Dockerfile
           push: true
-          tags: ${{ steps.meta_ts.outputs.tags }}
-          labels: ${{ steps.meta_ts.outputs.labels }}
+          tags: ${{ steps.meta_argus.outputs.tags }}
+          labels: ${{ steps.meta_argus.outputs.labels }}

@@ -108,17 +108,17 @@ Start PEP service
 Stop PAP service
   Start Command  systemctl stop argus-pap
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  60 sec  5 sec  Check service stopped  ${T_PAP_CTRL}  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
   Log  PAP stopped
 
 Stop PDP service
   Start Command  systemctl stop argus-pdp
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  60 sec  5 sec  Check service stopped  ${T_PDP_CTRL}  ${hostname}  ${T_PDP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
   Log  PDP stopped
 
 Stop PEP service
   Start Command  systemctl stop argus-pepd
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  60 sec  5 sec  Check service stopped  ${T_PEP_CTRL}  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
   Log  PEP stopped

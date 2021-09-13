@@ -9,18 +9,24 @@ This test suite provides a bunch of tests for validate the components of Argus:
 1. PAP tests
    * Add, remove, update and list policies from the repository
    * Ban and Unban users
+   * Check status
    * Configuration parameters
 2. PDP tests
+   * Check status
    * Configuration parameters
+   * Policies management
 3. PEP tests
-   * Authorization request
+   * Authorization requests
    * Different user mapping scenarios
+   * Check status
    * Configuration parameters
 
-Test cases are classified in two type:
+Test cases are classified in four types:
 
   * local: must be executed on the same host where Argus services run and they require root privileges to run.
   * remote: can be run from external host, because they interact with Argus endpoints.
+  * cli: test the command line, both in local and remote configuration.
+  * iota: requires iota CA installed (excluded by default from CI).
 
 
 
@@ -46,7 +52,7 @@ $ sudo pip install robotframework
 ```
 
 ## Run manually
-The testsuite must run on the same node where Argus services are installed.
+To run local tests the testsuite requires an ssh key pair on the node where Argus services are installed.
 
 Then execute the entire testsuite:
 
@@ -64,33 +70,29 @@ Some useful option are:
   -t "Test name"       : execute only the test named with "Test name"
 ```
 
-
-## Run with Docker
-This testsuite provides a Docker image for run the tests. All the needed files are located in _docker_ folder.
-
-First, build the new image:
+To run remote tests only, just type:
 
 ```console
-$ ./build-image.sh
+$ cd argus-robot-testsuite
+$ robot --pythonpath .:lib -d /tmp/robot -e local tests/
 ```
-This shell script creates a new docker image, named _italiangrid/argus-testsuite_ in the local image repository.
-Then run the container:
-
-```console
-$ docker run italiangrid/argus-testsuite:latest
-```
-The last command launch a container that run the testsuite with default setup. For customize the execution, provide to Docker the proper environment variables with _-e_ option.
-For example:
-
-```console
-$ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e TESTSUITE_REPO=issue/issue-1 -e T_PDP_ADMIN_PASSWORD=pdpadmin_password -e PAP_HOST=argus-pap.cnaf.test -e PDP_HOST=argus-pdp.cnaf.test -e PEP_HOST=argus-pep.cnaf.test italiangrid/argus-testsuite:latest
-```
-
 **Warnings**
 
-1. This Docker implementation runs only test cases with the _remote_ tag: these tests interact with Argus endpoints. Other tests, that require direct access to the Argus host and root privileges, are not executed.
-2. Ensure that PDP admin port (default 8153) is both open and reachable from the Docker container that run the testsuite. Usually admin port listens only on `localhost`: to change this behavior, set `adminHost=0.0.0.0` in `pdp.ini` configuration file.
+1. This implementation is safe just for test cases with the _remote_ tag: these tests interact with Argus endpoints. On the other hand, _local_ tests require direct access to the Argus host and root privileges; don't do run them production!
+2. Ensure that PDP admin port (default 8153) is both open and reachable from the testsuite host. Usually admin port listens only on `localhost`: to change this behavior, set `adminHost=0.0.0.0` in `pdp.ini` configuration file.
 3. Expose admin ports outside `localhost`, is useful for test purposes, but dangerous for security: don't do this in production!
+
+## Run with Docker
+This testsuite provides a `docker-compose.yml` file with three services:
+* `trust`
+* `argus`: a centos7 container where the services run
+* `testsuite`: runned against the services.
+  
+An ssh key pair is already set up in the container to run both *remote* and *local* tests. *Iota* tests are excluded by default.  
+All the needed files are located in _compose_ folder.
+
+Explanation on *How to run the tests locally* can be found [here](compose/README.md).
+
 
 ##### Available environment variables
 
@@ -99,8 +101,8 @@ $ docker run -e TESTSUITE_REPO=file:///tmp/local_repo/argus-robot-testsuite -e T
 | TESTSUITE_REPO       | https://github.com/marcocaberletti/argus-robot-testsuite.git | Repository hosting testsuite code |
 | TESTSUITE_BRANCH     | master                                                       | Git branch to checkout |
 | T_PDP_ADMIN_PASSWORD | pdpadmin_password                                            | Password use to communicate to PDP admin service |
-| PAP_HOST             | argus-pap.cnaf.test                                          | Argus PAP service hostname |
-| PDP_HOST             | argus-pdp.cnaf.test                                          | Argus PDP service hostname |
-| PEP_HOST             | argus-pep.cnaf.test                                          | Argus PEP service hostname |
+| PAP_HOST             | argus-centos7.cnaf.test                                       | Argus PAP service hostname |
+| PDP_HOST             | argus-centos7.cnaf.test                                       | Argus PDP service hostname |
+| PEP_HOST             | argus-centos7.cnaf.test                                       | Argus PEP service hostname |
 | OUTPUT_REPORTS       | /home/tester/argus-robot-testsuite/reports                   | Directory where RobotFramework save execution report and tests outputs |
 

@@ -65,7 +65,7 @@ Init authentication profile file
   ...  /*${SPACE}${SPACE}file:policy-test-classic.info
   ...  "-"${SPACE}${SPACE}file:policy-test-classic.info  
   ...  ${SPACE}
-  Create File  ${file}  ${content}
+  Create File on Server  ${file}  ${content}
   
 Init fallback authentication profile file
   ${file}=  Set Variable  ${T_PEP_CONF}/vo-ca-ap-file
@@ -73,7 +73,7 @@ Init fallback authentication profile file
   ...  /*${SPACE}${SPACE}file:policy-test-classic.info
   ...  "-"${SPACE}${SPACE}file:policy-test-classic.info
   ...  ${SPACE} 
-  Create File  ${file}  ${content}
+  Create File on Server  ${file}  ${content}
   
 Init test CAs policy files
   ${classic}=  Set Variable  ${GRIDDIR}/certificates/policy-test-classic.info
@@ -82,19 +82,20 @@ Init test CAs policy files
   ...  subjectdn = "/C=IT/O=INFN/CN=INFN Certification Authority", \\
   ...    "/C=IT/O=IGI/CN=Test CA"
   ...  ${SPACE}
-  Create File  ${classic}  ${content}
+  Create File on Server  ${classic}  ${content}
   ${iota}=  Set Variable  ${GRIDDIR}/certificates/policy-test-iota.info
   ${content}=  catenate  SEPARATOR=\n
   ...  alias = policy-test-iota
   ...  subjectdn = "/C=IT/O=IGI/CN=Test CA 2"
   ...  ${SPACE}
-  Create File  ${iota}  ${content}
+  Create File on Server  ${iota}  ${content}
 
 Init pool accounts
-  :FOR  ${idx}  IN RANGE  1  3
-  \  Touch pool account  ${VO}00${idx}
+  FOR  ${idx}  IN RANGE  1  3
+    Touch pool account  ${VO}00${idx}
+  END
 
-Perform PEP request  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}=None  ${host}=%{HOSTNAME}  ${port}=${T_PEP_PORT}
+Perform PEP request  [Arguments]  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}=None  ${host}=${T_PEP_HOST}  ${port}=${T_PEP_PORT}
   ${cmd}=  Build PEPCLI command line  ${client_key}  ${client_cert}  ${subject_keyinfo}  ${resource}  ${action}  ${fqan}  ${host}  ${port}
   ${output}=  Execute and Check Success  ${cmd}
   [Return]  ${output}
@@ -116,7 +117,7 @@ Build PEPCLI command line  [Arguments]  ${client_key}  ${client_cert}  ${subject
 Prepare PEP environment  [Arguments]  &{dict}
   Log Dictionary  ${dict}
   Create Directory  /etc/vomses
-  Create File  /etc/vomses/${VO}  ${VOMSES_STRING}
+  Create File on Server  /etc/vomses/${VO}  ${VOMSES_STRING}
   Remove all leases in gridmapdir
   Init grid map file  ${dict.vo_map}  ${dict.dn_map}
   Init grid group map file  ${dict.grp_vo_map}  ${dict.grp_vo_sec_map}  ${dict.grp_dn_map}

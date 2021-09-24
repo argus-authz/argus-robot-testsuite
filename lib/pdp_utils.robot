@@ -8,7 +8,7 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
-Reload policy  [Arguments]  ${host}=localhost  ${port}=${T_PDP_ADMIN_PORT}
+Reload policy  [Arguments]  ${host}=${T_PDP_HOST}  ${port}=${T_PDP_ADMIN_PORT}
   ${passwd}=  Resolve PDP admin password
   ${cmd}=  Set Variable  curl -Gv http://${host}:${port}/reloadPolicy?password=${passwd}
   ${output}=  Execute and Check Success  ${cmd}
@@ -22,6 +22,6 @@ Resolve PDP admin password
   [Return]  ${password}
 
 Read passwd from file  [Arguments]  ${file}
-  Should Exist  ${file}  msg=Neither Environment Variable T_PDP_ADMIN_PASSWORD nor conf file found.
+  SSHLibrary.File Should Exist  ${file}
   ${value}=  Read parameter from INI file  ${file}  adminPassword
   [Return]  ${value}

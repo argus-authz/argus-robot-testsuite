@@ -1,29 +1,30 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
-
-Test Setup     Ensure PAP running
 Test Teardown  Clean up
 
 *** Test Cases ***
 
 Remove all policies
+  [Tags]  remote  cli
   [Setup]  Prepare
   Execute and Check Success  ${PAP_ADMIN} rap
   ${rc}  ${output}=  Run And Return Rc And Output  ${PAP_ADMIN} lp -sai | egrep -c 'id='
   Should Be Equal As Integers  ${output}  0
 
 Remove with non existing id
-  Execute and Check Failure  ${PAP_ADMIN} rp ${DUMMY_ID}
+  [Tags]  remote  cli
+  ${output}=  Execute and Check Failure  ${PAP_ADMIN} rp ${DUMMY_ID}
+  Should Contain  ${output}  Id not found
 
 Remove with resource id
+  [Tags]  remote  cli
   [Setup]  Prepare
   ${rc}  ${output}=  Run And Return Rc And Output  ${PAP_ADMIN} lp -srai | egrep -m 1 'id=' | awk '{print $1}' | sed 's/id=//'
   Execute and Check Success  ${PAP_ADMIN} rp ${output}
 
 Remove with action id
+  [Tags]  remote  cli
   [Setup]  Prepare test 3
   ${rc}  ${output}=  Run And Return Rc And Output  ${PAP_ADMIN} lp -srai | egrep 'id=' | tail -1 | awk '{print $1}' | sed 's/id=//'
   Execute and Check Success  ${PAP_ADMIN} rp ${output}
@@ -32,6 +33,7 @@ Remove with action id
   Should Be Equal As Integers  ${output}  2
 
 Remove with rule id
+  [Tags]  remote  cli
   [Setup]  Prepare test 4
   ${rc}  ${output}=  Run And Return Rc And Output  ${PAP_ADMIN} lp -sai | egrep 'id=' | tail -1 | awk '{print $1}' | sed 's/id=//' | xargs
   Execute and Check Success  ${PAP_ADMIN} rp ${output}
@@ -40,6 +42,7 @@ Remove with rule id
   Should Be Equal As Integers  ${output}  3
 
 Remove with multiple rules
+  [Tags]  remote  cli
   [Setup]  Prepare test 5
   ${rc}  ${output}=  Run And Return Rc And Output  ${PAP_ADMIN} lp -sai | egrep 'id=' | tail -4 | head -3 | awk '{print $1}' | sed 's/id=//' | xargs
   Execute and Check Success  ${PAP_ADMIN} rp ${output}
@@ -48,6 +51,7 @@ Remove with multiple rules
   Should Be Equal As Integers  ${output}  3
 
 Remove with multiple rules and one wrong
+  [Tags]  remote  cli
   [Setup]  Prepare test 5
   ${rc}  ${output}=  Run And Return Rc And Output  ${PAP_ADMIN} lp -sai | egrep 'id=' | tail -4 | head -3 | awk '{print $1}' | sed 's/id=//' | xargs
   Execute and Check Failure  ${PAP_ADMIN} rp ${output} ${DUMMY_ID}
@@ -56,8 +60,10 @@ Remove with multiple rules and one wrong
   Should Be Equal As Integers  ${output}  3
 
 Remove with empty repository
+  [Tags]  remote  cli
   [Setup]  Remove all policies
-  Execute and Check Failure  ${PAP_ADMIN} rp ${DUMMY_ID}
+  ${output}=  Execute and Check Failure  ${PAP_ADMIN} rp ${DUMMY_ID}
+  Should Contain  ${output}  Id not found
 
 
 *** Keywords ***

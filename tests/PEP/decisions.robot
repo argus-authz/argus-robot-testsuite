@@ -1,12 +1,15 @@
 *** Settings ***
 Resource   lib/utils.robot
 
+Suite Setup  Open Connection And Log In
+Suite Teardown  Close All Connections
+
 Test Teardown  Cleanup  host=${T_PAP_HOST}
 
 *** Test Cases ***
 
 Test permit rule
-  [Tags]  remote
+  [Tags]  remote  cli
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
@@ -17,7 +20,7 @@ Test permit rule
   Should Contain  ${output}  Decision: Permit
 
 Test deny rule
-  [Tags]  remote
+  [Tags]  remote  cli
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
@@ -28,7 +31,7 @@ Test deny rule
   Should Contain  ${output}  Decision: Deny
 
 Test not applicable rule
-  [Tags]  remote
+  [Tags]  remote  cli
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
@@ -39,7 +42,7 @@ Test not applicable rule
   Should Contain  ${output}  Decision: Not Applicable
 
 Test ban/unban user by subject
-  [Tags]  remote
+  [Tags]  remote  cli
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}
@@ -63,7 +66,7 @@ Test ban/unban user by subject
   Should Contain  ${output}  Decision: Not Applicable
 
 Test ban/unban user by FQAN
-  [Tags]  remote
+  [Tags]  remote  cli
   Remove all policies  host=${T_PAP_HOST}
   Prepare policy file
   Load policy file  host=${T_PAP_HOST}

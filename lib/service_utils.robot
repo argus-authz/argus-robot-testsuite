@@ -10,15 +10,22 @@ Variables  ${ENV_FILE}
 
 *** Keywords ***
 
-Check port  [Arguments]  ${hostname}  ${port}
-  ${cmd}=  Set Variable  (echo > /dev/tcp/${hostname}/${port}) &>/dev/null
-  ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
-  Should Be Equal As Integers  ${rc}  0
-
 Port not reachable  [Arguments]  ${hostname}  ${port}
   ${cmd}=  Set Variable  (echo > /dev/tcp/${hostname}/${port}) &>/dev/null
-  ${rc}  ${output}=  Run And Return Rc And Output  ${cmd}
+  ${output}  ${rc}=  Execute Command  ${cmd}  return_rc=True
   Should Be Equal As Integers  ${rc}  1
+
+Check service running  [Arguments]  ${t_ctrl}  ${hostname}  ${port}
+  ${cmd}=  Set Variable  ${t_ctrl} status
+  Execute Command and Check Success  ${cmd}
+  ${cmd}=  Set Variable  curl --capath ${GRIDDIR}/certificates/ --cert ${USERCERT} --key ${USERKEY} https://${hostname}:${port} &> /dev/null
+  Execute and Check Success  ${cmd}
+
+Check service stopped  [Arguments]  ${t_ctrl}  ${hostname}  ${port}
+  ${cmd}=  Set Variable  ${t_ctrl} status
+  Execute Command and Check Failure  ${cmd}
+  ${cmd}=  Set Variable  curl --capath ${GRIDDIR}/certificates/ --cert ${USERCERT} --key ${USERKEY} https://${hostname}:${port} &> /dev/null
+  Execute and Check Failure  ${cmd}
 
 Ensure PAP running
   ${status}=  Get PAP status
@@ -45,15 +52,15 @@ Ensure PEP stopped
   Run Keyword If  ${status}==0  Stop PEP service
 
 Get PAP status
-  ${rc}  ${output}=  Run And Return Rc And Output  papctl status
+  ${output}  ${rc}=  Execute Command  papctl status  return_rc=True
   [Return]  ${rc}
 
 Get PDP status
-  ${rc}  ${output}=  Run And Return Rc And Output  pdpctl status
+  ${output}  ${rc}=  Execute Command  pdpctl status  return_rc=True
   [Return]  ${rc}
 
 Get PEP status
-  ${rc}  ${output}=  Run And Return Rc And Output  pepdctl status
+  ${output}  ${rc}=  Execute Command  pepdctl status  return_rc=True
   [Return]  ${rc}
 
 Restore services
@@ -67,48 +74,51 @@ Restore services
 
 Restart PAP service
   Ensure PAP stopped
+  Sleep  5
   Ensure PAP running
 
 Restart PDP service
   Ensure PDP stopped
+  Sleep  5
   Ensure PDP running
 
 Restart PEP service
   Ensure PEP stopped
+  Sleep  5
   Ensure PEP running
 
 Start PAP service
-  Start process  papctl  start
+  Start Command  systemctl start argus-pap
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service running  ${T_PAP_CTRL}  ${hostname}  ${T_PAP_PORT}
   Log  PAP started
 
 Start PDP service
-  Start process  pdpctl  start
-  ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PDP_PORT}
+  Start Command  systemctl start argus-pdp
+  ${hostname}=  Get hostname 
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service running  ${T_PDP_CTRL}  ${hostname}  ${T_PDP_PORT}
   Log  PDP started
 
 Start PEP service
-  Start process  pepdctl  start
+  Start Command  systemctl start argus-pepd
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Check port  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Check service running  ${T_PEP_CTRL}  ${hostname}  ${T_PEP_PORT}
   Log  PEP started
 
 Stop PAP service
-  Start process  papctl  stop
+  Start Command  systemctl stop argus-pap
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Port not reachable  ${hostname}  ${T_PAP_PORT}
   Log  PAP stopped
 
 Stop PDP service
-  Start process  pdpctl  stop
+  Start Command  systemctl stop argus-pdp
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Port not reachable  ${hostname}  ${T_PDP_PORT}
   Log  PDP stopped
 
 Stop PEP service
-  Start process  pepdctl  stop
+  Start Command  systemctl stop argus-pepd
   ${hostname}=  Get hostname
-  Wait Until Keyword Succeeds  2 min  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
+  Wait Until Keyword Succeeds  60 sec  5 sec  Port not reachable  ${hostname}  ${T_PEP_PORT}
   Log  PEP stopped

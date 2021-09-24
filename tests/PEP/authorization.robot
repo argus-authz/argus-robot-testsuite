@@ -1,12 +1,15 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
-
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  
+...   Restore PEP configuration  AND  
+...   Restart PEP service  AND
+...   Close All Connections
 
 *** Test Cases ***
 User group mapping (bug 64340)
+  [Tags]  local  cli
   &{dict}=  Create Dictionary  vo_map=no  dn_map=yes
   ...  grp_vo_map=no  grp_vo_sec_map=no  grp_dn_map=yes
   ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
@@ -26,6 +29,7 @@ User group mapping (bug 64340)
   [Teardown]  Restore PEP configuration
 
 DN group mapping (bug 68805)
+  [Tags]  local  cli
   Init authentication profile file
   Init test CAs policy files
   ${host_dn}=  Get host dn
@@ -45,7 +49,8 @@ DN group mapping (bug 68805)
   Add policy with obligation  ${TEST_RESOURCE}  ${TEST_ACTION}  ${TEST_OBLIGATION}  ${TEST_RULE}  ${host_dn}
   Add policy  ${TEST_RESOURCE}  ${action}  ${TEST_RULE}  subject="${host_dn}"
   Reload policy
-  ${output}=  Perform PEP request  ${HOSTKEY}  ${HOSTCERT}  ${HOSTCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}  None
+  ${cmd}=  Build PEPCLI command line  ${HOSTKEY}  ${HOSTCERT}  ${HOSTCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}  None  ${T_PEP_HOST}  ${T_PEP_PORT}
+  ${output}=  Execute Command and Check Success  ${cmd}
   Should Contain  ${output}  ${TEST_RESOURCE}
   Should Contain Ignore Case  ${output}  ${TEST_RULE}
   ${username}=  Get match  ${output}  Username: (.*)

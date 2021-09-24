@@ -1,15 +1,11 @@
 *** Settings ***
 Resource   lib/utils.robot
 
+Suite Setup  Open Connection And Log In
+Suite Teardown  Close All Connections
+
 *** Test Cases ***
 
-Load policy to PAP
-  [Tags]  remote
-  Remove all policies  host=${T_PAP_HOST}
-  Prepare policy file
-  Load policy file  host=${T_PAP_HOST}
-  ${output}=  Execute and Check Success  ${PAP_ADMIN} --cert ${USERCERT} --key ${USERKEY} --host ${T_PAP_HOST} --port ${T_PAP_PORT} lp -sai | egrep -c 'id='
-  Should Be Equal As Integers  ${output}  6
 
 Reload policy on PDP
   [Tags]  remote

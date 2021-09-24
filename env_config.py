@@ -4,6 +4,7 @@
 
 # Locations for storing needed files
 TMP_DIR = '/tmp'
+BCK_DIR = TMP_DIR + '/argus-testsuite_bck'
 
 # Home Directories
 T_PAP_HOME = '/usr/share/argus/pap'
@@ -53,6 +54,11 @@ USERCERT = '~/.globus/usercert.pem'
 USERKEY = '~/.globus/userkey.pem'
 # in case of empty passphrase set this to /dev/null
 USERPWD_FILE = '~/.globus/password'
+
+# SSH config
+SSH_HOST = 'argus-centos7.cnaf.test'
+SSH_USER = 'root'
+SSH_KEYFILE = '/home/test/.ssh/id_rsa'
 
 VO = "test.vo"
 VO_PRIMARY_GROUP = "/test.vo"

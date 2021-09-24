@@ -20,7 +20,7 @@ Add policy  [Arguments]  ${resource}  ${action}  ${rule}  ${attributes}
 Add obligation  [Arguments]  ${policy_id}  ${obligation}
   Execute and Check Success  ${PAP_ADMIN} add-obligation ${policy_id} ${obligation}
 
-Remove all policies  [Arguments]  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
+Remove all policies  [Arguments]  ${host}=${T_PAP_HOST}  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
   Execute And Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} rap
 
 Ban by subject  [Arguments]  ${subject}  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
@@ -35,14 +35,14 @@ Ban by FQAN  [Arguments]  ${fqan}  ${host}=localhost  ${port}=${T_PAP_PORT}  ${c
 Un-ban by FQAN  [Arguments]  ${fqan}  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}
   Execute And Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} un-ban fqan ${fqan}
 
-Clean up  [Arguments]  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${file}=${POLICY_FILE}
+Clean up  [Arguments]  ${host}=${T_PAP_HOST}  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${file}=${POLICY_FILE}
   Remove all policies  ${host}  ${port}  ${cert}  ${key}
   Remove policy file  ${file}
 
 Create policy file  [Arguments]  ${policies}
   Create File  ${POLICY_FILE}  ${policies}
 
-Load policy file  [Arguments]  ${host}=localhost  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${file}=${POLICY_FILE}
+Load policy file  [Arguments]  ${host}=${T_PAP_HOST}  ${port}=${T_PAP_PORT}  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${file}=${POLICY_FILE}
   Execute and Check Success  ${PAP_ADMIN} --host ${host} --port ${port} --cert ${cert} --key ${key} apf ${file}
 
 List policy with resource and action ids
@@ -62,8 +62,8 @@ Remove obligation  [Arguments]  ${policy_id}  ${obligation}
   Execute and Check Success  ${PAP_ADMIN} remove-obligation ${policy_id} ${obligation}
 
 Remove policy file  [Arguments]  ${file}=${POLICY_FILE}
-  Remove File  ${file}
+  OperatingSystem.Remove File  ${file}
 
 Start PAP
-  Run Process  papctl  start
+  Execute Command  papctl start
   Sleep  15s

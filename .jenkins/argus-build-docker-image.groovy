@@ -6,18 +6,36 @@ pipeline {
     timeout(time: 3, unit: 'HOURS')
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
-  
-  environment {
-    DOCKER_REGISTRY_HOST = "${env.DOCKER_REGISTRY_HOST}"
-  }
 
   stages {
     stage('build image') {
       steps {
         script {
-          dir('docker') {
-            sh './build-image.sh'
-            sh './push-image.sh'
+          dir('docker/testsuite') {
+            sh 'build-docker-image.sh' 
+          }
+          dir('docker/all-in-one-centos7') {
+            sh 'build-docker-image.sh' 
+          }
+        }
+      }
+    }
+
+    stage('push-dockerhub') {
+
+      environment {
+        DOCKER_PUSH_TO_DOCKERHUB='y'
+      }
+
+      steps {
+        script {
+          withDockerRegistry([ credentialsId: "dockerhub-enrico", url: "" ]) {
+            dir('docker/testsuite') {
+              sh 'push-docker-image.sh' 
+            }
+            dir('docker/all-in-one-centos7') {
+              sh 'push-docker-image.sh' 
+            }
           }
         }
       }

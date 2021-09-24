@@ -1,0 +1,8 @@
+[argus-authz]
+name=argus-authz
+baseurl=https://ci.cloud.cnaf.infn.it/view/argus/job/pkg.argus/job/nightly/lastSuccessfulBuild/artifact/artifacts/stage-area/centos7/
+protect=1
+enabled=1
+priority=1
+gpgcheck=0
+sslverify=0

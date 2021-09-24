@@ -1,25 +1,26 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
-
-Test Setup     Ensure PAP running
 Test Teardown  Clean up
-
 
 *** Test Cases ***
 
-Update from file with non existing file
-  Execute and Check Failure  ${PAP_ADMIN} upf ${DUMMY_ID} ${DUMMY_FILE}
+Attempt policy update from a non-existing file
+  [Tags]   remote  cli
+  ${out}   Execute and Check Failure  ${PAP_ADMIN} upf ${DUMMY_ID} ${DUMMY_FILE}
+  Should contain   ${out}   does not exists.
+  
 
-Update from file with non existing resource id
+Update from file with non-existing resource id
+  [Tags]   remote  cli
   [Setup]  Prepare
   Remove policy file
   Prepare new policy file
-  Execute and Check Failure  ${PAP_ADMIN} upf ${DUMMY_ID} ${POLICY_FILE}
+  ${output}=  Execute and Check Failure  ${PAP_ADMIN} upf ${DUMMY_ID} ${POLICY_FILE}
+  Should contain  ${output}  does not exists.
 
 Update from file with correct resource id
+  [Tags]   remote  cli
   [Setup]  Prepare
   Remove policy file
   Prepare new policy file
@@ -27,6 +28,7 @@ Update from file with correct resource id
   Execute and Check Success  ${PAP_ADMIN} upf ${output} ${POLICY_FILE}
 
 Update from file with changing only an action
+  [Tags]   remote  cli
   [Setup]  Prepare
   Remove policy file
   Prepare new policy file with only an action

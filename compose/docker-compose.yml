@@ -1,0 +1,58 @@
+version: '3.7'
+
+volumes:
+  trustanchors:
+  cabundle:
+
+services:
+  trust:
+    image: indigoiam/trustanchors
+
+    volumes:
+      - trustanchors:/tmp/certificates
+      - cabundle:/tmp/pki
+
+    environment:
+      FORCE_TRUST_ANCHORS_UPDATE: 1
+      TRUST_ANCHORS_TARGET: /tmp/certificates
+      CA_BUNDLE_TARGET: /tmp/pki
+
+  testsuite:
+    image: ${TS_IMAGE}:${TS_IMAGE_TAG}
+    container_name: ${COMPOSE_PROJECT_NAME}
+    init: true
+
+    environment:
+      - TZ=Europe/Rome
+      - X509_USER_PROXY=/tmp/x509up_u501
+      - ROBOT_ARGS
+
+    volumes:
+      - trustanchors:/etc/grid-security/certificates
+      - ./assets/scripts:/scripts
+      - ./assets/certs/:/certs
+      - ..:/home/test/argus-testsuite:cached
+
+    command: ["sleep", "infinity"]
+
+  argus:
+    image: ${ARGUS_IMAGE}:${ARGUS_IMAGE_TAG}
+    hostname: argus-centos7.cnaf.test
+  
+    volumes:
+      - trustanchors:/etc/grid-security/certificates
+      - ./assets/scripts:/scripts
+      - ./assets/certs/:/certs
+      - ./assets/files:/files
+  
+    ports:
+      - "8150:8150"
+      - "8152:8152"
+      - "8154:8154"
+  
+    privileged: true
+  
+    networks:
+      default:
+        aliases:
+          - argus-centos7.cnaf.test

@@ -1,8 +1,11 @@
 *** Settings ***
 Resource   lib/utils.robot
 
-Suite Setup     Make backup of the configuration
-Suite Teardown  Restore configurations
+Suite Setup  Run Keywords  Open Connection And Log In  AND  Make backup of the configuration
+Suite Teardown  Run Keywords  
+...   Restore PEP configuration  AND  
+...   Restart PEP service  AND
+...   Close All Connections
 
 
 *** Keywords ***
@@ -13,7 +16,7 @@ Setup PEP
   ...  pref_dn_for_login=true  pref_dn_for_primary_grp=true  no_primary_grp_is_error=true
   Log Dictionary  ${dict}
   Create Directory  /etc/vomses
-  Create File  /etc/vomses/${VO}  ${VOMSES_STRING}
+  Create File on Server  /etc/vomses/${VO}  ${VOMSES_STRING}
   Remove all leases in gridmapdir
   Init grid map file  ${dict.vo_map}  ${dict.dn_map}
   Init grid group map file  ${dict.grp_vo_map}  ${dict.grp_vo_sec_map}  ${dict.grp_dn_map}
@@ -31,10 +34,12 @@ Setup PEP
 
 *** Test Cases ***
 Check AUTHN_PROFILE_PIP is enabled
+  [Tags]  local
   ${pips}=  Read parameter from INI file  ${T_PEP_CONF}/${T_PEP_INI}  pips
   Should Contain  ${pips}  AUTHN_PROFILE_PIP
   
 Start PEP with missing auth profile policy file
+  [Tags]  local
   Ensure PEP stopped
   ${value}=  Escape char  ${GRIDDIR}/${AUTHN_PROFILE_FILE}  /
   Change parameter value  ${T_PEP_CONF}/${T_PEP_INI}  authenticationProfilePolicyFile  ${value}
@@ -43,10 +48,11 @@ Start PEP with missing auth profile policy file
   Remove file  ${GRIDDIR}/${AUTHN_PROFILE_FILE}
   Start PEP service
   ${cmd}=  Set Variable  ${T_PEP_CTRL} status | grep -q "Status: OK"
-  Execute and Check Success  ${cmd}
+  Execute Command and Check Success  ${cmd}
   [Teardown]  Restore PEP configuration
     
 Classis CA is accepted with fallback authentication profile file
+  [Tags]  local  cli
   Setup PEP
   Mapping tests setup
   ${output}=  Perform PEP request  ${USERKEY}  ${USERCERT}  ${USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
@@ -55,6 +61,7 @@ Classis CA is accepted with fallback authentication profile file
   [Teardown]  Restore PEP configuration
 
 Classis CA with VOMS extension is accepted with fallback authentication profile file
+  [Tags]  local  cli
   Setup PEP
   Create user proxy
   Mapping tests setup
@@ -65,6 +72,7 @@ Classis CA with VOMS extension is accepted with fallback authentication profile 
   [Teardown]  Restore PEP configuration  
   
 IOTA CA is rejected with fallback authentication profile file
+  [Tags]  local  cli  iota
   Setup PEP
   Mapping tests setup
   ${output}=  Perform PEP request  ${IOTA_USERKEY}  ${IOTA_USERCERT}  ${IOTA_USERCERT}  ${TEST_RESOURCE}  ${TEST_ACTION}
@@ -72,6 +80,7 @@ IOTA CA is rejected with fallback authentication profile file
   [Teardown]  Restore PEP configuration 
 
 IOTA CA with VOMS extensions is rejected with fallback authentication profile file
+  [Tags]  local  cli  iota
   Setup PEP
   Mapping tests setup
   Create user proxy  ${IOTA_USERCERT}  ${IOTA_USERKEY}

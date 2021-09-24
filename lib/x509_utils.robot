@@ -23,7 +23,8 @@ Create user proxy  [Arguments]  ${cert}=${USERCERT}  ${key}=${USERKEY}  ${vo}=${
   [Teardown]  Remove temporary user key
 
 Get host DN
-  ${output}=  Get DN  ${HOSTCERT}
+  ${cmd}=  Set Variable  openssl x509 -in ${HOSTCERT} -subject -noout | sed 's/subject= //'
+  ${output}=  Execute Command and Check Success  ${cmd}
   [Return]  ${output}
 
 Get user DN  [Arguments]  ${cert}=${USERCERT}
@@ -44,12 +45,12 @@ Get user proxy path
   [Return]  /tmp/x509up_u${uid}
 
 Get temporary user key  [Arguments]  ${key}=${USERKEY}
-  Copy File  ${key}  ${tmp_userkey}
+  OperatingSystem.Copy File  ${key}  ${tmp_userkey}
   [Return]  ${tmp_userkey}
 
 Remove user proxy certificate
   ${filepath}=  Get user proxy path
-  Remove File  ${filepath}
+  OperatingSystem.Remove File  ${filepath}
 
 Remove temporary user key
-  Remove File  ${tmp_userkey}
+  OperatingSystem.Remove File  ${tmp_userkey}

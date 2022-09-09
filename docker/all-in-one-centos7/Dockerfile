@@ -9,6 +9,7 @@ ARG UMD_RELEASE_PACKAGE_URL=http://repository.egi.eu/sw/production/umd/4/centos7
 RUN echo "include_only=.garr.it,.cern.ch" >> /etc/yum/pluginconf.d/fastestmirror.conf && \
   yum install -y wget sudo openssh-server epel-release ${UMD_RELEASE_PACKAGE_URL} && \
   wget https://ci.cloud.cnaf.infn.it/view/repos/job/repo_test_ca/lastSuccessfulBuild/artifact/test-ca.repo -O /etc/yum.repos.d/test-ca.repo && \
+  wget http://argus-authz.github.io/repo/yum/argus-rpm-beta-centos7.repo -O /etc/yum.repos.d/argus-rpm-beta-centos7.repo && \
   yum install -y argus-authz igi-test-ca && \
   yum clean all && \
   rm -rf /var/cache/yum && \
